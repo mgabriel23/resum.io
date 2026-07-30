@@ -27,6 +27,12 @@ const ResumeRender = (function () {
       endDate: 'Present',
       bullets: ['Developed and maintained responsive websites for 20+ clients', 'Collaborated with designers to translate mockups into functional pages']
     },
+    projects: {
+      name: 'Resume Builder',
+      techStack: 'React, Node.js',
+      link: 'github.com/jamierivera/resume-builder',
+      bullets: ['Built a full-stack app used by 100+ students', 'Deployed with CI/CD on Vercel']
+    },
     education: {
       school: 'State University',
       degree: 'B.S. in Computer Science',
@@ -70,13 +76,13 @@ const ResumeRender = (function () {
     return fields.map(span).join('');
   }
 
-  function renderBullets(bullets, forcePlaceholder) {
+  function renderBullets(bullets, forcePlaceholder, sampleBullets) {
     // Bullets are entered as separate inputs (an array); a plain string is
     // only possible for resumes saved before that change, so split it here.
     const list = Array.isArray(bullets) ? bullets : (bullets || '').split('\n');
     const real = list.map(l => (l || '').trim()).filter(Boolean);
     const isPlaceholder = forcePlaceholder || !real.length;
-    const items = isPlaceholder ? SAMPLE.experience.bullets : real;
+    const items = isPlaceholder ? (sampleBullets || SAMPLE.experience.bullets) : real;
     if (!items.length) return '';
     const cls = isPlaceholder ? ' is-placeholder' : '';
     return `<ul class="resume-doc__bullets${cls}">${items.map(l => `<li>${escapeHtml(l)}</li>`).join('')}</ul>`;
@@ -98,6 +104,20 @@ const ResumeRender = (function () {
           <span class="resume-doc__entry-date">${renderDateRange(entry.startDate, entry.endDate, SAMPLE.experience.startDate, SAMPLE.experience.endDate, forcePlaceholder)}</span>
         </div>
         ${renderBullets(entry.bullets, forcePlaceholder)}
+      </div>`;
+  }
+
+  function renderProjectRow(entry, forcePlaceholder) {
+    const name = forcePlaceholder ? { text: entry.name, placeholder: true } : fieldValue(entry.name, SAMPLE.projects.name);
+    const techStack = forcePlaceholder ? { text: entry.techStack, placeholder: true } : fieldValue(entry.techStack, SAMPLE.projects.techStack);
+    const link = forcePlaceholder ? { text: entry.link, placeholder: true } : fieldValue(entry.link, SAMPLE.projects.link);
+    return `
+      <div class="resume-doc__entry">
+        <div class="resume-doc__entry-head">
+          <span class="resume-doc__entry-title">${boldSpan(name)} &mdash; ${span(techStack)}</span>
+          <span class="resume-doc__entry-date">${span(link)}</span>
+        </div>
+        ${renderBullets(entry.bullets, forcePlaceholder, SAMPLE.projects.bullets)}
       </div>`;
   }
 
@@ -126,6 +146,18 @@ const ResumeRender = (function () {
     return `
       <div class="resume-doc__section">
         <h2 class="resume-doc__label">&mdash; Experience</h2>
+        ${rows}
+      </div>`;
+  }
+
+  function renderProjects(entries) {
+    const real = (entries || []).filter(e => e.name || e.techStack || e.link || hasBulletContent(e.bullets));
+    const items = real.length ? real : [SAMPLE.projects];
+    const forcePlaceholder = real.length === 0;
+    const rows = items.map(e => renderProjectRow(e, forcePlaceholder)).join('');
+    return `
+      <div class="resume-doc__section">
+        <h2 class="resume-doc__label">&mdash; Projects</h2>
         ${rows}
       </div>`;
   }
@@ -180,6 +212,7 @@ const ResumeRender = (function () {
       renderHeader(data.personal || {}),
       renderSummary(data.summary),
       renderExperience(data.experience),
+      renderProjects(data.projects),
       renderEducation(data.education),
       renderSkills(data.skills)
     ].join('');

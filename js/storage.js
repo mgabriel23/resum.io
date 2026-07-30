@@ -20,6 +20,7 @@ const ResumeStorage = (function () {
       },
       summary: '',
       experience: [],
+      projects: [],
       education: [],
       skills: []
     };

@@ -257,6 +257,19 @@
             </div>
           </div>
 
+          <!-- Projects -->
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelProjects">Projects</button>
+            </h2>
+            <div id="panelProjects" class="accordion-collapse collapse" data-bs-parent="#resumeAccordion">
+              <div class="accordion-body">
+                <div id="projectsList" class="entry-list"></div>
+                <button type="button" id="addProjectBtn" class="btn btn-outline-dark btn-sm add-entry-btn">+ Add project</button>
+              </div>
+            </div>
+          </div>
+
           <!-- Education -->
           <div class="accordion-item">
             <h2 class="accordion-header">
@@ -337,6 +350,31 @@
     <div class="bullet-row">
       <input type="text" class="form-control bullet-input" placeholder="Built responsive features using PHP and SQL">
       <button type="button" class="bullet-remove" aria-label="Remove bullet">&times;</button>
+    </div>
+  </template>
+
+  <template id="projectEntryTemplate">
+    <div class="entry-card" data-entry="projects">
+      <button type="button" class="entry-remove" aria-label="Remove project">&times;</button>
+      <div class="row g-3">
+        <div class="col-6">
+          <label class="form-label">Project name</label>
+          <input type="text" class="form-control" data-field="name" placeholder="Resume Builder">
+        </div>
+        <div class="col-6">
+          <label class="form-label">Tech stack</label>
+          <input type="text" class="form-control" data-field="techStack" placeholder="React, Node.js">
+        </div>
+        <div class="col-12">
+          <label class="form-label">Link <span class="form-hint">(optional)</span></label>
+          <input type="text" class="form-control" data-field="link" placeholder="github.com/you/project">
+        </div>
+        <div class="col-12">
+          <label class="form-label">Highlights</label>
+          <div class="bullet-list"></div>
+          <button type="button" class="btn btn-outline-dark btn-sm add-entry-btn add-bullet-btn">+ Add bullet</button>
+        </div>
+      </div>
     </div>
   </template>
 

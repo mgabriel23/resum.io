@@ -8,6 +8,12 @@ const ResumeEditor = (function () {
   let saveTimer = null;
   let elementFocusedBeforeOpen = null;
 
+  const ENTRY_CONFIG = {
+    experience: { templateId: 'experienceEntryTemplate', listSelector: '#experienceList', hasBullets: true },
+    projects: { templateId: 'projectEntryTemplate', listSelector: '#projectsList', hasBullets: true },
+    education: { templateId: 'educationEntryTemplate', listSelector: '#educationList', hasBullets: false }
+  };
+
   function previewEl() {
     return document.getElementById('resumePreview');
   }
@@ -71,6 +77,9 @@ const ResumeEditor = (function () {
     $('#experienceList').empty();
     (data.experience || []).forEach(entry => addEntry('experience', entry));
 
+    $('#projectsList').empty();
+    (data.projects || []).forEach(entry => addEntry('projects', entry));
+
     $('#educationList').empty();
     (data.education || []).forEach(entry => addEntry('education', entry));
 
@@ -80,9 +89,8 @@ const ResumeEditor = (function () {
 
   function addEntry(type, values) {
     values = values || {};
-    const templateElId = type === 'experience' ? 'experienceEntryTemplate' : 'educationEntryTemplate';
-    const listSelector = type === 'experience' ? '#experienceList' : '#educationList';
-    const tpl = document.getElementById(templateElId);
+    const config = ENTRY_CONFIG[type];
+    const tpl = document.getElementById(config.templateId);
     const node = tpl.content.firstElementChild.cloneNode(true);
 
     $(node).find('[data-field]').each(function () {
@@ -90,11 +98,11 @@ const ResumeEditor = (function () {
       if (values[field] !== undefined) $(this).val(values[field]);
     });
 
-    if (type === 'experience') {
+    if (config.hasBullets) {
       populateBullets(node, values.bullets);
     }
 
-    $(listSelector).append(node);
+    $(config.listSelector).append(node);
   }
 
   // Accepts either the new array shape or the old newline-separated string
@@ -125,14 +133,14 @@ const ResumeEditor = (function () {
   }
 
   function collectEntries(type) {
-    const listSelector = type === 'experience' ? '#experienceList' : '#educationList';
+    const config = ENTRY_CONFIG[type];
     const entries = [];
-    $(listSelector).children('.entry-card').each(function () {
+    $(config.listSelector).children('.entry-card').each(function () {
       const entry = {};
       $(this).find('[data-field]').each(function () {
         entry[$(this).data('field')] = $(this).val();
       });
-      if (type === 'experience') {
+      if (config.hasBullets) {
         entry.bullets = $(this).find('.bullet-input').map(function () { return $(this).val(); }).get();
       }
       entries.push(entry);
@@ -162,6 +170,7 @@ const ResumeEditor = (function () {
       },
       summary: $('#summaryInput').val(),
       experience: collectEntries('experience'),
+      projects: collectEntries('projects'),
       education: collectEntries('education'),
       skills: collectSkills()
     };
@@ -207,6 +216,11 @@ const ResumeEditor = (function () {
 
     $('#addExperienceBtn').on('click', function () {
       addEntry('experience', {});
+      syncFromForm();
+    });
+
+    $('#addProjectBtn').on('click', function () {
+      addEntry('projects', {});
       syncFromForm();
     });
 
