@@ -55,6 +55,7 @@ body * { visibility: hidden; }
 .resume-page {
   width: 100% !important;
   max-width: none !important;
+  aspect-ratio: auto !important;
   box-shadow: none !important;
   border-radius: 0 !important;
   overflow: visible !important;
