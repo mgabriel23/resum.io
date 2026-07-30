@@ -454,7 +454,11 @@ body.editor-open { overflow: hidden; }
 
 .preview-close {
   display: none;
-  position: absolute;
+  /* Fixed, not absolute — .preview-panel is now scrollable (both axes) since
+     the resume renders at natural size on mobile, and an absolutely
+     positioned child would scroll away with that content instead of
+     staying put on screen. */
+  position: fixed;
   top: 1rem;
   right: 1rem;
   z-index: 5;
@@ -640,10 +644,23 @@ body.editor-open { overflow: hidden; }
     position: fixed;
     inset: 0;
     z-index: 1060;
-    padding: 3.5rem 1rem 2rem;
+    /* Top padding clears the fixed close button (top: 1rem, 40px tall)
+       plus a gap, so the resume page doesn't start flush against it. */
+    padding: 4.75rem 1rem 2rem;
+    /* Show the resume at its true size instead of shrinking it to fit the
+       screen — scroll to see the rest, in both directions if needed. */
+    overflow-x: auto;
+    overflow-y: auto;
+    justify-content: flex-start;
   }
 
   .preview-panel.mobile-open { display: flex; }
+
+  .resume-page {
+    width: 210mm;
+    max-width: none;
+    flex-shrink: 0;
+  }
 
   .preview-close { display: inline-flex; }
 
