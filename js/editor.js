@@ -90,7 +90,32 @@ const ResumeEditor = (function () {
       if (values[field] !== undefined) $(this).val(values[field]);
     });
 
+    if (type === 'experience') {
+      populateBullets(node, values.bullets);
+    }
+
     $(listSelector).append(node);
+  }
+
+  // Accepts either the new array shape or the old newline-separated string
+  // (resumes saved before bullets became separate inputs), always returns an array.
+  function toBulletArray(value) {
+    if (Array.isArray(value)) return value;
+    return (value || '').split('\n').map(s => s.trim()).filter(Boolean);
+  }
+
+  function populateBullets(entryNode, bullets) {
+    const $list = $(entryNode).find('.bullet-list');
+    $list.empty();
+    const items = toBulletArray(bullets);
+    (items.length ? items : ['']).forEach(text => addBulletRow($list, text));
+  }
+
+  function addBulletRow($list, value) {
+    const tpl = document.getElementById('bulletRowTemplate');
+    const node = tpl.content.firstElementChild.cloneNode(true);
+    $(node).find('.bullet-input').val(value || '');
+    $list.append(node);
   }
 
   function addSkillChip(skill) {
@@ -107,6 +132,9 @@ const ResumeEditor = (function () {
       $(this).find('[data-field]').each(function () {
         entry[$(this).data('field')] = $(this).val();
       });
+      if (type === 'experience') {
+        entry.bullets = $(this).find('.bullet-input').map(function () { return $(this).val(); }).get();
+      }
       entries.push(entry);
     });
     return entries;
@@ -189,6 +217,17 @@ const ResumeEditor = (function () {
 
     $(document).on('click', '.entry-remove', function () {
       $(this).closest('.entry-card').remove();
+      syncFromForm();
+    });
+
+    $(document).on('click', '.add-bullet-btn', function () {
+      const $list = $(this).siblings('.bullet-list');
+      addBulletRow($list, '');
+      syncFromForm();
+    });
+
+    $(document).on('click', '.bullet-remove', function () {
+      $(this).closest('.bullet-row').remove();
       syncFromForm();
     });
 

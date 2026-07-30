@@ -325,10 +325,18 @@
           <input type="text" class="form-control" data-field="endDate" placeholder="Present">
         </div>
         <div class="col-12">
-          <label class="form-label">Highlights <span class="form-hint">(one per line)</span></label>
-          <textarea class="form-control" data-field="bullets" rows="3" placeholder="Built responsive features using PHP and SQL..."></textarea>
+          <label class="form-label">Highlights</label>
+          <div class="bullet-list"></div>
+          <button type="button" class="btn btn-outline-dark btn-sm add-entry-btn add-bullet-btn">+ Add bullet</button>
         </div>
       </div>
+    </div>
+  </template>
+
+  <template id="bulletRowTemplate">
+    <div class="bullet-row">
+      <input type="text" class="form-control bullet-input" placeholder="Built responsive features using PHP and SQL">
+      <button type="button" class="bullet-remove" aria-label="Remove bullet">&times;</button>
     </div>
   </template>
 

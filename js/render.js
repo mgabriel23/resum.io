@@ -25,7 +25,7 @@ const ResumeRender = (function () {
       role: 'Web Developer',
       startDate: 'Jan 2023',
       endDate: 'Present',
-      bullets: 'Developed and maintained responsive websites for 20+ clients\nCollaborated with designers to translate mockups into functional pages'
+      bullets: ['Developed and maintained responsive websites for 20+ clients', 'Collaborated with designers to translate mockups into functional pages']
     },
     education: {
       school: 'State University',
@@ -70,14 +70,16 @@ const ResumeRender = (function () {
     return fields.map(span).join('');
   }
 
-  function renderBullets(bulletsText, forcePlaceholder) {
-    const trimmed = (bulletsText || '').trim();
-    const isPlaceholder = forcePlaceholder || !trimmed;
-    const source = isPlaceholder ? SAMPLE.experience.bullets : bulletsText;
-    const lines = source.split('\n').map(l => l.trim()).filter(Boolean);
-    if (!lines.length) return '';
+  function renderBullets(bullets, forcePlaceholder) {
+    // Bullets are entered as separate inputs (an array); a plain string is
+    // only possible for resumes saved before that change, so split it here.
+    const list = Array.isArray(bullets) ? bullets : (bullets || '').split('\n');
+    const real = list.map(l => (l || '').trim()).filter(Boolean);
+    const isPlaceholder = forcePlaceholder || !real.length;
+    const items = isPlaceholder ? SAMPLE.experience.bullets : real;
+    if (!items.length) return '';
     const cls = isPlaceholder ? ' is-placeholder' : '';
-    return `<ul class="resume-doc__bullets${cls}">${lines.map(l => `<li>${escapeHtml(l)}</li>`).join('')}</ul>`;
+    return `<ul class="resume-doc__bullets${cls}">${items.map(l => `<li>${escapeHtml(l)}</li>`).join('')}</ul>`;
   }
 
   function renderDateRange(start, end, sampleStart, sampleEnd, forcePlaceholder) {
@@ -111,8 +113,13 @@ const ResumeRender = (function () {
       </div>`;
   }
 
+  function hasBulletContent(bullets) {
+    if (Array.isArray(bullets)) return bullets.some(b => (b || '').trim());
+    return !!(bullets || '').trim();
+  }
+
   function renderExperience(entries) {
-    const real = (entries || []).filter(e => e.company || e.role || e.startDate || e.endDate || (e.bullets || '').trim());
+    const real = (entries || []).filter(e => e.company || e.role || e.startDate || e.endDate || hasBulletContent(e.bullets));
     const items = real.length ? real : [SAMPLE.experience];
     const forcePlaceholder = real.length === 0;
     const rows = items.map(e => renderExperienceRow(e, forcePlaceholder)).join('');
