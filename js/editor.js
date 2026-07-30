@@ -183,6 +183,30 @@ const ResumeEditor = (function () {
 
   function renderPreview() {
     ResumeRender.renderInto(previewEl(), state);
+    updatePageBreaks();
+  }
+
+  // Draws a dashed line + "Page N" label wherever content crosses another
+  // A4 page height, so the preview shows a multi-page resume before export.
+  // One page's height is derived from the page's own current on-screen
+  // width (via its 210:297 aspect-ratio), so it stays correct at any zoom.
+  function updatePageBreaks() {
+    const pageEl = document.querySelector('.resume-page');
+    if (!pageEl) return;
+
+    $(pageEl).find('.page-break-marker').remove();
+
+    const width = pageEl.getBoundingClientRect().width;
+    if (!width) return;
+    const pageHeightPx = width * (297 / 210);
+    const contentHeight = pageEl.scrollHeight;
+    const pageCount = Math.max(1, Math.ceil(contentHeight / pageHeightPx));
+
+    for (let i = 1; i < pageCount; i++) {
+      const $marker = $('<div class="page-break-marker"><span>Page ' + (i + 1) + '</span></div>');
+      $marker.css('top', (i * pageHeightPx) + 'px');
+      $(pageEl).append($marker);
+    }
   }
 
   function syncFromForm() {
