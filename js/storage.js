@@ -22,6 +22,7 @@ const ResumeStorage = (function () {
       experience: [],
       projects: [],
       education: [],
+      certificates: [],
       skills: []
     };
   }

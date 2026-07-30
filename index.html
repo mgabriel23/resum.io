@@ -283,6 +283,19 @@
             </div>
           </div>
 
+          <!-- Certificates -->
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelCertificates">Certificates</button>
+            </h2>
+            <div id="panelCertificates" class="accordion-collapse collapse" data-bs-parent="#resumeAccordion">
+              <div class="accordion-body">
+                <div id="certificatesList" class="entry-list"></div>
+                <button type="button" id="addCertificateBtn" class="btn btn-outline-dark btn-sm add-entry-btn">+ Add certificate</button>
+              </div>
+            </div>
+          </div>
+
           <!-- Skills -->
           <div class="accordion-item">
             <h2 class="accordion-header">
@@ -397,6 +410,26 @@
         <div class="col-6">
           <label class="form-label">End date</label>
           <input type="text" class="form-control" data-field="endDate" placeholder="May 2019">
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="certificateEntryTemplate">
+    <div class="entry-card" data-entry="certificates">
+      <button type="button" class="entry-remove" aria-label="Remove certificate">&times;</button>
+      <div class="row g-3">
+        <div class="col-12">
+          <label class="form-label">Certificate name</label>
+          <input type="text" class="form-control" data-field="name" placeholder="AWS Certified Cloud Practitioner">
+        </div>
+        <div class="col-6">
+          <label class="form-label">Issuing organization</label>
+          <input type="text" class="form-control" data-field="issuer" placeholder="Amazon Web Services">
+        </div>
+        <div class="col-6">
+          <label class="form-label">Date</label>
+          <input type="text" class="form-control" data-field="date" placeholder="March 2024">
         </div>
       </div>
     </div>

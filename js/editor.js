@@ -11,7 +11,8 @@ const ResumeEditor = (function () {
   const ENTRY_CONFIG = {
     experience: { templateId: 'experienceEntryTemplate', listSelector: '#experienceList', hasBullets: true },
     projects: { templateId: 'projectEntryTemplate', listSelector: '#projectsList', hasBullets: true },
-    education: { templateId: 'educationEntryTemplate', listSelector: '#educationList', hasBullets: false }
+    education: { templateId: 'educationEntryTemplate', listSelector: '#educationList', hasBullets: false },
+    certificates: { templateId: 'certificateEntryTemplate', listSelector: '#certificatesList', hasBullets: false }
   };
 
   function previewEl() {
@@ -82,6 +83,9 @@ const ResumeEditor = (function () {
 
     $('#educationList').empty();
     (data.education || []).forEach(entry => addEntry('education', entry));
+
+    $('#certificatesList').empty();
+    (data.certificates || []).forEach(entry => addEntry('certificates', entry));
 
     $('#skillChips').empty();
     (data.skills || []).forEach(skill => addSkillChip(skill));
@@ -172,6 +176,7 @@ const ResumeEditor = (function () {
       experience: collectEntries('experience'),
       projects: collectEntries('projects'),
       education: collectEntries('education'),
+      certificates: collectEntries('certificates'),
       skills: collectSkills()
     };
   }
@@ -226,6 +231,11 @@ const ResumeEditor = (function () {
 
     $('#addEducationBtn').on('click', function () {
       addEntry('education', {});
+      syncFromForm();
+    });
+
+    $('#addCertificateBtn').on('click', function () {
+      addEntry('certificates', {});
       syncFromForm();
     });
 

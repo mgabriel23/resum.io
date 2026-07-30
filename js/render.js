@@ -39,6 +39,11 @@ const ResumeRender = (function () {
       startDate: '2019',
       endDate: '2023'
     },
+    certificates: {
+      name: 'AWS Certified Cloud Practitioner',
+      issuer: 'Amazon Web Services',
+      date: 'March 2024'
+    },
     skills: ['HTML', 'CSS', 'JavaScript', 'React', 'Git']
   };
 
@@ -133,6 +138,19 @@ const ResumeRender = (function () {
       </div>`;
   }
 
+  function renderCertificateRow(entry, forcePlaceholder) {
+    const name = forcePlaceholder ? { text: entry.name, placeholder: true } : fieldValue(entry.name, SAMPLE.certificates.name);
+    const issuer = forcePlaceholder ? { text: entry.issuer, placeholder: true } : fieldValue(entry.issuer, SAMPLE.certificates.issuer);
+    const date = forcePlaceholder ? { text: entry.date, placeholder: true } : fieldValue(entry.date, SAMPLE.certificates.date);
+    return `
+      <div class="resume-doc__entry">
+        <div class="resume-doc__entry-head">
+          <span class="resume-doc__entry-title">${boldSpan(name)} &mdash; ${span(issuer)}</span>
+          <span class="resume-doc__entry-date">${span(date)}</span>
+        </div>
+      </div>`;
+  }
+
   function hasBulletContent(bullets) {
     if (Array.isArray(bullets)) return bullets.some(b => (b || '').trim());
     return !!(bullets || '').trim();
@@ -170,6 +188,18 @@ const ResumeRender = (function () {
     return `
       <div class="resume-doc__section">
         <h2 class="resume-doc__label">&mdash; Education</h2>
+        ${rows}
+      </div>`;
+  }
+
+  function renderCertificates(entries) {
+    const real = (entries || []).filter(e => e.name || e.issuer || e.date);
+    const items = real.length ? real : [SAMPLE.certificates];
+    const forcePlaceholder = real.length === 0;
+    const rows = items.map(e => renderCertificateRow(e, forcePlaceholder)).join('');
+    return `
+      <div class="resume-doc__section">
+        <h2 class="resume-doc__label">&mdash; Certificates</h2>
         ${rows}
       </div>`;
   }
@@ -214,6 +244,7 @@ const ResumeRender = (function () {
       renderExperience(data.experience),
       renderProjects(data.projects),
       renderEducation(data.education),
+      renderCertificates(data.certificates),
       renderSkills(data.skills)
     ].join('');
   }
