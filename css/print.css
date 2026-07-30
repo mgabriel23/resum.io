@@ -1,0 +1,88 @@
+/* This stylesheet is loaded with media="print" — every rule here only
+   applies when the browser's print / "Save as PDF" dialog is engaged. */
+
+@page {
+  size: A4;
+  margin: 15mm 16mm;
+}
+
+html, body {
+  background: #fff !important;
+  margin: 0;
+  padding: 0;
+}
+
+/* Print-isolation: hide everything, then reveal only the resume itself. */
+body * { visibility: hidden; }
+
+#resumePreview,
+#resumePreview * { visibility: visible; }
+
+#resumePreview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+}
+
+/* .editor-overlay/.editor-body are `position: fixed` on screen so the editor
+   can sit above everything. Left as fixed, browsers repeat that subtree on
+   every printed page (producing a duplicate blank page). Drop them back
+   into normal flow so pagination is driven by the resume's real height. */
+.editor-overlay {
+  position: static !important;
+  inset: auto !important;
+  display: block !important;
+  height: auto !important;
+}
+
+.editor-body {
+  display: block !important;
+  height: auto !important;
+}
+
+/* Neutralise the on-screen chrome around the resume so it prints as a
+   plain, single A4 page rather than a card floating on a grey canvas. */
+.preview-panel {
+  display: block !important;
+  position: static !important;
+  inset: auto !important;
+  padding: 0 !important;
+  background: none !important;
+  overflow: visible !important;
+}
+
+.resume-page {
+  width: 100% !important;
+  max-width: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+}
+
+.resume-doc {
+  padding: 0 !important;
+  font-size: 12px;
+}
+
+/* @page already supplies the page margin, so let backgrounds/colors print
+   even if the browser's "Background graphics" print option is left off —
+   important for the Highlight template's accent badge. */
+.resume-doc, .resume-doc * {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* Everything else in the app UI is irrelevant on paper. `visibility: hidden`
+   above only removes ink, not layout space — `main` (hero/how-it-works/
+   templates) has to be `display: none` too, or its height still pushes the
+   document past one A4 page and prints a trailing blank page. */
+.editor-topbar,
+.editor-form-panel,
+.preview-close,
+.mobile-preview-btn,
+.site-header,
+.site-footer,
+main {
+  display: none !important;
+}

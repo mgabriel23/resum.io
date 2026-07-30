@@ -1,0 +1,212 @@
+/* ==========================================================================
+   Template variants
+   Each template only changes accent color / font — the underlying resume
+   structure stays identical (single column, semantic headings) so every
+   template stays ATS-parseable.
+   ========================================================================== */
+.template-default,
+.template-operator,
+.template-highlight {
+  --accent: #4f46e5;
+  --doc-font: var(--font-sans);
+}
+
+.template-operator {
+  --accent: #0d9488;
+  --doc-font: var(--font-mono);
+}
+
+.template-highlight {
+  --accent: #4f46e5;
+}
+
+/* ==========================================================================
+   Resume document (used both in the live editor preview and for print)
+   ========================================================================== */
+.resume-doc {
+  font-family: var(--doc-font);
+  color: #111827;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.resume-doc__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  text-align: center;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: .95rem;
+  padding: 2rem;
+}
+
+.resume-doc__header {
+  margin-bottom: 1.1em;
+  padding-bottom: .9em;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.resume-doc__name {
+  font-size: 1.9em;
+  font-weight: 800;
+  letter-spacing: -.01em;
+  margin: 0 0 .2em;
+  color: #0f172a;
+}
+
+.template-highlight .resume-doc__name { color: var(--accent); }
+
+.resume-doc__headline {
+  display: inline-block;
+  font-size: .8em;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 .55em;
+}
+
+.template-highlight .resume-doc__headline {
+  color: #fff;
+  background: var(--accent);
+  padding: .18em .7em;
+  border-radius: 999px;
+}
+
+.resume-doc__contact {
+  font-size: .85em;
+  color: #475569;
+  margin: 0;
+}
+
+.resume-doc__contact span:not(:last-child)::after {
+  content: "\00a0|\00a0";
+  color: #cbd5e1;
+}
+
+.resume-doc__section { margin-bottom: 1.1em; }
+.resume-doc__section:last-child { margin-bottom: 0; }
+
+.resume-doc__label {
+  font-size: .74em;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 .65em;
+}
+
+.resume-doc__summary {
+  margin: 0;
+  color: #1f2937;
+}
+
+.resume-doc__entry { margin-bottom: .85em; }
+.resume-doc__entry:last-child { margin-bottom: 0; }
+
+.resume-doc__entry-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1em;
+}
+
+.resume-doc__entry-title {
+  font-weight: 600;
+  color: #111827;
+}
+
+.resume-doc__entry-title strong { font-weight: 700; }
+
+.resume-doc__entry-subtitle {
+  display: block;
+  font-size: .93em;
+  color: #475569;
+}
+
+.resume-doc__entry-date {
+  flex-shrink: 0;
+  font-size: .85em;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.resume-doc__bullets {
+  margin: .4em 0 0;
+  padding-left: 1.1em;
+}
+
+.resume-doc__bullets li { margin-bottom: .2em; }
+.resume-doc__bullets li:last-child { margin-bottom: 0; }
+
+.resume-doc__skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4em;
+}
+
+.skill-pill {
+  display: inline-block;
+  font-size: .82em;
+  border: 1px solid #d1d5db;
+  color: #1f2937;
+  border-radius: 999px;
+  padding: .18em .75em;
+}
+
+.template-operator .skill-pill {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ==========================================================================
+   Template-card mock previews on the landing page
+   ========================================================================== */
+.template-card__preview .tcp-name {
+  font-family: var(--doc-font);
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #0f172a;
+}
+
+.template-highlight.template-card__preview .tcp-name,
+.template-card__preview.template-highlight .tcp-name { color: var(--accent); }
+
+.template-card__preview .tcp-role {
+  font-family: var(--doc-font);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  color: var(--accent);
+  margin-bottom: .5rem;
+}
+
+.template-highlight .tcp-role {
+  color: #fff;
+  background: var(--accent);
+  display: inline-block;
+  padding: .15em .6em;
+  border-radius: 999px;
+  width: fit-content;
+}
+
+.template-card__preview .tcp-label {
+  font-family: var(--font-mono);
+  font-size: .62rem;
+  letter-spacing: .06em;
+  color: var(--accent);
+  margin-top: .5rem;
+}
+
+.template-card__preview .tcp-line {
+  display: block;
+  height: 6px;
+  border-radius: 4px;
+  background: #e5e7eb;
+}
+
+.tcp-line--w80 { width: 80%; }
+.tcp-line--w70 { width: 70%; }
+.tcp-line--w60 { width: 60%; }
