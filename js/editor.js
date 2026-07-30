@@ -120,11 +120,20 @@ const ResumeEditor = (function () {
     return [...(order || []), ...missing];
   }
 
+  // Matches the CSS breakpoint that hides the drag handle (editor.css).
+  // A draggable="true" ancestor can swallow touch taps meant for its child
+  // buttons/checkbox on mobile browsers, so the attribute itself — not just
+  // the handle's visibility — needs to be conditional, not just hidden.
+  function isDragCapableViewport() {
+    return window.matchMedia('(min-width: 992px)').matches;
+  }
+
   function sectionOrderRowHtml(item, index, total) {
     const label = SECTION_LABELS[item.id] || item.id;
     const hiddenClass = item.visible ? '' : ' section-order-row--hidden';
+    const draggableAttr = isDragCapableViewport() ? ' draggable="true"' : '';
     return `
-      <div class="section-order-row${hiddenClass}" draggable="true" data-section-id="${item.id}">
+      <div class="section-order-row${hiddenClass}"${draggableAttr} data-section-id="${item.id}">
         <span class="section-order-row__handle" aria-hidden="true">&#8942;&#8942;</span>
         <span class="section-order-row__label">${label}</span>
         <div class="section-order-row__actions">
