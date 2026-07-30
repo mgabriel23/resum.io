@@ -213,6 +213,36 @@
             <div id="panelPersonal" class="accordion-collapse collapse show" data-bs-parent="#resumeAccordion">
               <div class="accordion-body">
                 <div class="row g-3">
+                  <div class="col-12">
+                    <label class="form-label" id="photoFieldLabel">Profile photo <span class="form-hint">(optional)</span></label>
+                    <div class="photo-field" id="photoField">
+                      <div class="photo-field__preview" id="photoPreview" aria-hidden="true">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                      </div>
+                      <div class="photo-field__controls">
+                        <button type="button" class="btn btn-outline-dark btn-sm" id="photoUploadBtn">Upload photo</button>
+                        <button type="button" class="btn btn-outline-dark btn-sm photo-field__remove" id="photoRemoveBtn">Remove</button>
+                        <div class="photo-position" id="photoPosition" role="group" aria-label="Photo position">
+                          <label class="photo-position__option">
+                            <input type="radio" name="photoPosition" value="left" checked>
+                            <span>Left</span>
+                          </label>
+                          <label class="photo-position__option">
+                            <input type="radio" name="photoPosition" value="right">
+                            <span>Right</span>
+                          </label>
+                        </div>
+                        <label class="photo-field__toggle-label" id="photoVisibleLabel">
+                          <span class="toggle-switch">
+                            <input type="checkbox" id="photoVisibleInput" aria-label="Show photo on resume">
+                            <span class="toggle-switch__track" aria-hidden="true"></span>
+                          </span>
+                          Show on resume
+                        </label>
+                      </div>
+                    </div>
+                    <input type="file" accept="image/*" id="photoInput" class="visually-hidden" aria-labelledby="photoFieldLabel">
+                  </div>
                   <div class="col-12 col-sm-6">
                     <label class="form-label" for="firstName">First name</label>
                     <input type="text" class="form-control" id="firstName" autocomplete="given-name" placeholder="Mark Bryan A.">

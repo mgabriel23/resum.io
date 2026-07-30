@@ -213,12 +213,22 @@ const ResumeRender = (function () {
     const first = fieldValue(personal.firstName, SAMPLE.personal.firstName);
     const last = fieldValue(personal.lastName, SAMPLE.personal.lastName);
     const headline = fieldValue(personal.headline, SAMPLE.personal.headline);
-    return `
-      <div class="resume-doc__header">
+    const textBlock = `
         <h1 class="resume-doc__name">${span(first)} ${span(last)}</h1>
         <p class="resume-doc__headline${headline.placeholder ? ' is-placeholder' : ''}">${escapeHtml(headline.text)}</p>
-        <p class="resume-doc__contact">${renderContact(personal)}</p>
+        <p class="resume-doc__contact">${renderContact(personal)}</p>`;
+
+    // The photo is optional and never sample-guided — an uploaded photo is
+    // real content, not a field with a placeholder-worthy sample value.
+    if (personal.photo && personal.photoVisible !== false) {
+      const positionClass = personal.photoPosition === 'right' ? ' resume-doc__header--photo-right' : '';
+      return `
+      <div class="resume-doc__header resume-doc__header--with-photo${positionClass}">
+        <img class="resume-doc__photo" src="${escapeHtml(personal.photo)}" alt="">
+        <div class="resume-doc__header-text">${textBlock}</div>
       </div>`;
+    }
+    return `<div class="resume-doc__header">${textBlock}</div>`;
   }
 
   // Maps each optional section's id (as used in data.sectionOrder) to the

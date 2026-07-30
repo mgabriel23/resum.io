@@ -16,7 +16,10 @@ const ResumeStorage = (function () {
         email: '',
         phone: '',
         location: '',
-        website: ''
+        website: '',
+        photo: '',
+        photoVisible: true,
+        photoPosition: 'left'
       },
       summary: '',
       experience: [],

@@ -253,7 +253,10 @@ body.editor-open { overflow: hidden; }
   cursor: not-allowed;
 }
 
-.section-order-row__toggle {
+/* Shared hidden-checkbox toggle switch — used by section-order rows and
+   the profile photo's "show on resume" control. Deliberately generic (not
+   scoped to either feature's name) since both reuse it as-is. */
+.toggle-switch {
   position: relative;
   display: inline-flex;
   flex-shrink: 0;
@@ -263,7 +266,7 @@ body.editor-open { overflow: hidden; }
   cursor: pointer;
 }
 
-.section-order-row__toggle input {
+.toggle-switch input {
   position: absolute;
   inset: 0;
   opacity: 0;
@@ -271,7 +274,7 @@ body.editor-open { overflow: hidden; }
   cursor: pointer;
 }
 
-.section-order-row__switch {
+.toggle-switch__track {
   position: absolute;
   inset: 0;
   background: #cbd5e1;
@@ -280,7 +283,7 @@ body.editor-open { overflow: hidden; }
   pointer-events: none;
 }
 
-.section-order-row__switch::before {
+.toggle-switch__track::before {
   content: "";
   position: absolute;
   top: 2px;
@@ -293,21 +296,120 @@ body.editor-open { overflow: hidden; }
   transition: transform .15s ease;
 }
 
-.section-order-row__toggle input:checked + .section-order-row__switch {
+.toggle-switch input:checked + .toggle-switch__track {
   background: var(--indigo);
 }
 
-.section-order-row__toggle input:checked + .section-order-row__switch::before {
+.toggle-switch input:checked + .toggle-switch__track::before {
   transform: translateX(14px);
 }
 
-.section-order-row__toggle input:focus-visible + .section-order-row__switch {
+.toggle-switch input:focus-visible + .toggle-switch__track {
   outline: 2px solid var(--indigo);
   outline-offset: 2px;
 }
 
 @media (max-width: 991.98px) {
   .section-order-row__handle { display: none; }
+}
+
+/* ==========================================================================
+   Profile photo upload (Personal details)
+   ========================================================================== */
+.photo-field {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.photo-field__preview {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  overflow: hidden;
+}
+
+.photo-field__preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-field__controls {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  flex-wrap: wrap;
+}
+
+.photo-field__remove,
+.photo-field__toggle-label {
+  display: none;
+}
+
+.photo-field.has-photo .photo-field__remove,
+.photo-field.has-photo .photo-field__toggle-label,
+.photo-field.has-photo .photo-position {
+  display: inline-flex;
+}
+
+.photo-field__toggle-label {
+  align-items: center;
+  gap: .5rem;
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.photo-position {
+  display: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.photo-position__option {
+  position: relative;
+  cursor: pointer;
+}
+
+.photo-position__option input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.photo-position__option span {
+  display: inline-block;
+  padding: .35rem .75rem;
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.photo-position__option:first-child span {
+  border-right: 1px solid var(--line);
+}
+
+.photo-position__option input:checked + span {
+  background: var(--indigo);
+  color: #fff;
+}
+
+.photo-position__option input:focus-visible + span {
+  outline: 2px solid var(--indigo);
+  outline-offset: -2px;
 }
 
 .resume-page {

@@ -26,6 +26,10 @@ const ResumeEditor = (function () {
 
   let dragSectionId = null;
 
+  const PHOTO_MAX_DIMENSION = 480; // px, longest side, after resize
+  const PHOTO_MAX_FILE_BYTES = 8 * 1024 * 1024; // reject absurdly large files before even reading them
+  const PHOTO_PLACEHOLDER_HTML = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
+
   function previewEl() {
     return document.getElementById('resumePreview');
   }
@@ -59,6 +63,7 @@ const ResumeEditor = (function () {
     populateForm(state);
     $('#templateSwitcher').val(state.templateId);
     renderSectionList();
+    renderPhotoField();
     renderPreview();
 
     elementFocusedBeforeOpen = document.activeElement;
@@ -125,9 +130,9 @@ const ResumeEditor = (function () {
         <div class="section-order-row__actions">
           <button type="button" class="section-order-row__arrow" data-direction="up" aria-label="Move ${label} up"${index === 0 ? ' disabled' : ''}>&uarr;</button>
           <button type="button" class="section-order-row__arrow" data-direction="down" aria-label="Move ${label} down"${index === total - 1 ? ' disabled' : ''}>&darr;</button>
-          <label class="section-order-row__toggle">
+          <label class="toggle-switch">
             <input type="checkbox" ${item.visible ? 'checked' : ''} aria-label="Show ${label} section">
-            <span class="section-order-row__switch" aria-hidden="true"></span>
+            <span class="toggle-switch__track" aria-hidden="true"></span>
           </label>
         </div>
       </div>`;
@@ -161,6 +166,81 @@ const ResumeEditor = (function () {
     renderSectionList();
     renderPreview();
     scheduleSave();
+  }
+
+  function readFileAsDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(reader.error || new Error('Could not read the selected file.'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Downscales to at most PHOTO_MAX_DIMENSION on the longest side and
+  // re-encodes as JPEG — a raw phone-camera photo can be several MB, which
+  // risks the localStorage quota and makes for a slow, bloated PDF export.
+  function resizeImage(dataUrl, maxDimension) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDimension || height > maxDimension) {
+          if (width >= height) {
+            height = Math.round(height * (maxDimension / width));
+            width = maxDimension;
+          } else {
+            width = Math.round(width * (maxDimension / height));
+            height = maxDimension;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.85));
+      };
+      img.onerror = () => reject(new Error('Could not load the selected image.'));
+      img.src = dataUrl;
+    });
+  }
+
+  async function handlePhotoFile(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    if (file.size > PHOTO_MAX_FILE_BYTES) {
+      console.warn('ResumeEditor: photo file is too large, ignoring.');
+      return;
+    }
+    try {
+      const rawDataUrl = await readFileAsDataUrl(file);
+      state.personal.photo = await resizeImage(rawDataUrl, PHOTO_MAX_DIMENSION);
+      state.personal.photoVisible = true;
+      renderPhotoField();
+      renderPreview();
+      scheduleSave();
+    } catch (err) {
+      console.warn('ResumeEditor: could not process the selected photo.', err);
+    }
+  }
+
+  function removePhoto() {
+    state.personal.photo = '';
+    state.personal.photoVisible = true;
+    state.personal.photoPosition = 'left';
+    $('#photoInput').val('');
+    renderPhotoField();
+    renderPreview();
+    scheduleSave();
+  }
+
+  function renderPhotoField() {
+    const hasPhoto = !!state.personal.photo;
+    $('#photoField').toggleClass('has-photo', hasPhoto);
+    $('#photoPreview').html(hasPhoto ? `<img src="${state.personal.photo}" alt="">` : PHOTO_PLACEHOLDER_HTML);
+    $('#photoVisibleInput').prop('checked', hasPhoto && state.personal.photoVisible !== false);
+    $('input[name="photoPosition"]').each(function () {
+      $(this).prop('checked', $(this).val() === (state.personal.photoPosition || 'left'));
+    });
   }
 
   function addEntry(type, values) {
@@ -246,7 +326,12 @@ const ResumeEditor = (function () {
         email: $('#email').val().trim(),
         phone: $('#phone').val().trim(),
         location: $('#location').val().trim(),
-        website: $('#website').val().trim()
+        website: $('#website').val().trim(),
+        // Not derived from a form field — carried over as-is; the file
+        // input's own handler mutates state.personal.photo directly.
+        photo: state.personal.photo,
+        photoVisible: state.personal.photoVisible,
+        photoPosition: state.personal.photoPosition
       },
       summary: $('#summaryInput').val(),
       experience: collectEntries('experience'),
@@ -320,9 +405,31 @@ const ResumeEditor = (function () {
       scheduleSave();
     });
 
-    $(document).on('input change', '.editor-form-panel input:not(#skillInput):not(.section-order-row__toggle input), .editor-form-panel textarea', syncFromForm);
+    $(document).on('input change', '.editor-form-panel input:not(#skillInput):not(#photoInput):not(#photoVisibleInput):not([name="photoPosition"]):not(.section-order-row input), .editor-form-panel textarea', syncFromForm);
 
-    $(document).on('change', '.section-order-row__toggle input', function () {
+    $('#photoUploadBtn').on('click', function () {
+      $('#photoInput').trigger('click');
+    });
+
+    $('#photoInput').on('change', function () {
+      handlePhotoFile(this.files && this.files[0]);
+    });
+
+    $('#photoRemoveBtn').on('click', removePhoto);
+
+    $('#photoVisibleInput').on('change', function () {
+      state.personal.photoVisible = $(this).is(':checked');
+      renderPreview();
+      scheduleSave();
+    });
+
+    $(document).on('change', 'input[name="photoPosition"]', function () {
+      state.personal.photoPosition = $(this).val();
+      renderPreview();
+      scheduleSave();
+    });
+
+    $(document).on('change', '.section-order-row .toggle-switch input', function () {
       const id = $(this).closest('.section-order-row').data('section-id');
       const entry = state.sectionOrder.find(s => String(s.id) === String(id));
       if (!entry) return;

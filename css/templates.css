@@ -36,6 +36,30 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
+.resume-doc__header--with-photo {
+  display: flex;
+  align-items: center;
+  gap: 1.3em;
+}
+
+.resume-doc__header--photo-right {
+  flex-direction: row-reverse;
+}
+
+.resume-doc__photo {
+  width: 7em;
+  height: 7em;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #e5e7eb;
+}
+
+.resume-doc__header-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .resume-doc__name {
   font-size: 1.9em;
   font-weight: 800;
