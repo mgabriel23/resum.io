@@ -51,13 +51,5 @@ const ResumeStorage = (function () {
     }
   }
 
-  function clear() {
-    try {
-      window.localStorage.removeItem(STORAGE_KEY);
-    } catch (err) {
-      console.warn('ResumeStorage: could not clear saved resume.', err);
-    }
-  }
-
-  return { getDefaultData, load, save, clear };
+  return { getDefaultData, load, save };
 })();

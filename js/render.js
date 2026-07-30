@@ -47,6 +47,41 @@ const ResumeRender = (function () {
     skills: ['HTML', 'CSS', 'JavaScript', 'React', 'Git']
   };
 
+  // Declares the shape of each repeatable resume section (title/subtitle
+  // fields, what goes on the right side, whether it has bullets) so a
+  // single renderEntryRow()/renderSection() pair can drive all four,
+  // instead of four almost-identical render functions.
+  const SECTIONS = {
+    experience: {
+      label: 'Experience',
+      sample: SAMPLE.experience,
+      title: 'company', subtitle: 'role',
+      right: { type: 'range', start: 'startDate', end: 'endDate' },
+      bullets: true
+    },
+    projects: {
+      label: 'Projects',
+      sample: SAMPLE.projects,
+      title: 'name', subtitle: 'techStack',
+      right: { type: 'text', field: 'link' },
+      bullets: true
+    },
+    education: {
+      label: 'Education',
+      sample: SAMPLE.education,
+      title: 'school', subtitle: 'degree',
+      right: { type: 'range', start: 'startDate', end: 'endDate' },
+      bullets: false
+    },
+    certificates: {
+      label: 'Certificates',
+      sample: SAMPLE.certificates,
+      title: 'name', subtitle: 'issuer',
+      right: { type: 'text', field: 'date' },
+      bullets: false
+    }
+  };
+
   function escapeHtml(value) {
     return String(value == null ? '' : value)
       .replace(/&/g, '&amp;')
@@ -63,12 +98,24 @@ const ResumeRender = (function () {
     return trimmed ? { text: trimmed, placeholder: false } : { text: sample, placeholder: true };
   }
 
+  // Same as fieldValue, but when a whole entry/section is a placeholder
+  // (no real data at all yet) every field in it must read as a placeholder,
+  // including its own text — not fall back further to the sample.
+  function resolveField(value, sampleValue, forcePlaceholder) {
+    return forcePlaceholder ? { text: value, placeholder: true } : fieldValue(value, sampleValue);
+  }
+
   function span(f) {
     return `<span${f.placeholder ? ' class="is-placeholder"' : ''}>${escapeHtml(f.text)}</span>`;
   }
 
   function boldSpan(f) {
     return `<span${f.placeholder ? ' class="is-placeholder"' : ''}><strong>${escapeHtml(f.text)}</strong></span>`;
+  }
+
+  function hasBulletContent(bullets) {
+    if (Array.isArray(bullets)) return bullets.some(b => (b || '').trim());
+    return !!(bullets || '').trim();
   }
 
   function renderContact(personal) {
@@ -87,119 +134,56 @@ const ResumeRender = (function () {
     const list = Array.isArray(bullets) ? bullets : (bullets || '').split('\n');
     const real = list.map(l => (l || '').trim()).filter(Boolean);
     const isPlaceholder = forcePlaceholder || !real.length;
-    const items = isPlaceholder ? (sampleBullets || SAMPLE.experience.bullets) : real;
+    const items = isPlaceholder ? sampleBullets : real;
     if (!items.length) return '';
     const cls = isPlaceholder ? ' is-placeholder' : '';
     return `<ul class="resume-doc__bullets${cls}">${items.map(l => `<li>${escapeHtml(l)}</li>`).join('')}</ul>`;
   }
 
   function renderDateRange(start, end, sampleStart, sampleEnd, forcePlaceholder) {
-    const s = forcePlaceholder ? { text: start, placeholder: true } : fieldValue(start, sampleStart);
-    const e = forcePlaceholder ? { text: end, placeholder: true } : fieldValue(end, sampleEnd);
+    const s = resolveField(start, sampleStart, forcePlaceholder);
+    const e = resolveField(end, sampleEnd, forcePlaceholder);
     return `${span(s)} &ndash; ${span(e)}`;
   }
 
-  function renderExperienceRow(entry, forcePlaceholder) {
-    const company = forcePlaceholder ? { text: entry.company, placeholder: true } : fieldValue(entry.company, SAMPLE.experience.company);
-    const role = forcePlaceholder ? { text: entry.role, placeholder: true } : fieldValue(entry.role, SAMPLE.experience.role);
+  function entryHasContent(entry, schema) {
+    const fields = schema.right.type === 'range'
+      ? [schema.title, schema.subtitle, schema.right.start, schema.right.end]
+      : [schema.title, schema.subtitle, schema.right.field];
+    const hasField = fields.some(f => (entry[f] || '').trim());
+    return hasField || (schema.bullets && hasBulletContent(entry.bullets));
+  }
+
+  function renderEntryRight(entry, schema, forcePlaceholder) {
+    if (schema.right.type === 'range') {
+      return renderDateRange(entry[schema.right.start], entry[schema.right.end], schema.sample[schema.right.start], schema.sample[schema.right.end], forcePlaceholder);
+    }
+    const field = schema.right.field;
+    return span(resolveField(entry[field], schema.sample[field], forcePlaceholder));
+  }
+
+  function renderEntryRow(entry, schema, forcePlaceholder) {
+    const title = resolveField(entry[schema.title], schema.sample[schema.title], forcePlaceholder);
+    const subtitle = resolveField(entry[schema.subtitle], schema.sample[schema.subtitle], forcePlaceholder);
+    const bullets = schema.bullets ? renderBullets(entry.bullets, forcePlaceholder, schema.sample.bullets) : '';
     return `
       <div class="resume-doc__entry">
         <div class="resume-doc__entry-head">
-          <span class="resume-doc__entry-title">${boldSpan(company)} &mdash; ${span(role)}</span>
-          <span class="resume-doc__entry-date">${renderDateRange(entry.startDate, entry.endDate, SAMPLE.experience.startDate, SAMPLE.experience.endDate, forcePlaceholder)}</span>
+          <span class="resume-doc__entry-title">${boldSpan(title)} &mdash; ${span(subtitle)}</span>
+          <span class="resume-doc__entry-date">${renderEntryRight(entry, schema, forcePlaceholder)}</span>
         </div>
-        ${renderBullets(entry.bullets, forcePlaceholder)}
+        ${bullets}
       </div>`;
   }
 
-  function renderProjectRow(entry, forcePlaceholder) {
-    const name = forcePlaceholder ? { text: entry.name, placeholder: true } : fieldValue(entry.name, SAMPLE.projects.name);
-    const techStack = forcePlaceholder ? { text: entry.techStack, placeholder: true } : fieldValue(entry.techStack, SAMPLE.projects.techStack);
-    const link = forcePlaceholder ? { text: entry.link, placeholder: true } : fieldValue(entry.link, SAMPLE.projects.link);
-    return `
-      <div class="resume-doc__entry">
-        <div class="resume-doc__entry-head">
-          <span class="resume-doc__entry-title">${boldSpan(name)} &mdash; ${span(techStack)}</span>
-          <span class="resume-doc__entry-date">${span(link)}</span>
-        </div>
-        ${renderBullets(entry.bullets, forcePlaceholder, SAMPLE.projects.bullets)}
-      </div>`;
-  }
-
-  function renderEducationRow(entry, forcePlaceholder) {
-    const school = forcePlaceholder ? { text: entry.school, placeholder: true } : fieldValue(entry.school, SAMPLE.education.school);
-    const degree = forcePlaceholder ? { text: entry.degree, placeholder: true } : fieldValue(entry.degree, SAMPLE.education.degree);
-    return `
-      <div class="resume-doc__entry">
-        <div class="resume-doc__entry-head">
-          <span class="resume-doc__entry-title">${boldSpan(school)} &mdash; ${span(degree)}</span>
-          <span class="resume-doc__entry-date">${renderDateRange(entry.startDate, entry.endDate, SAMPLE.education.startDate, SAMPLE.education.endDate, forcePlaceholder)}</span>
-        </div>
-      </div>`;
-  }
-
-  function renderCertificateRow(entry, forcePlaceholder) {
-    const name = forcePlaceholder ? { text: entry.name, placeholder: true } : fieldValue(entry.name, SAMPLE.certificates.name);
-    const issuer = forcePlaceholder ? { text: entry.issuer, placeholder: true } : fieldValue(entry.issuer, SAMPLE.certificates.issuer);
-    const date = forcePlaceholder ? { text: entry.date, placeholder: true } : fieldValue(entry.date, SAMPLE.certificates.date);
-    return `
-      <div class="resume-doc__entry">
-        <div class="resume-doc__entry-head">
-          <span class="resume-doc__entry-title">${boldSpan(name)} &mdash; ${span(issuer)}</span>
-          <span class="resume-doc__entry-date">${span(date)}</span>
-        </div>
-      </div>`;
-  }
-
-  function hasBulletContent(bullets) {
-    if (Array.isArray(bullets)) return bullets.some(b => (b || '').trim());
-    return !!(bullets || '').trim();
-  }
-
-  function renderExperience(entries) {
-    const real = (entries || []).filter(e => e.company || e.role || e.startDate || e.endDate || hasBulletContent(e.bullets));
-    const items = real.length ? real : [SAMPLE.experience];
+  function renderSection(entries, schema) {
+    const real = (entries || []).filter(e => entryHasContent(e, schema));
+    const items = real.length ? real : [schema.sample];
     const forcePlaceholder = real.length === 0;
-    const rows = items.map(e => renderExperienceRow(e, forcePlaceholder)).join('');
+    const rows = items.map(e => renderEntryRow(e, schema, forcePlaceholder)).join('');
     return `
       <div class="resume-doc__section">
-        <h2 class="resume-doc__label">&mdash; Experience</h2>
-        ${rows}
-      </div>`;
-  }
-
-  function renderProjects(entries) {
-    const real = (entries || []).filter(e => e.name || e.techStack || e.link || hasBulletContent(e.bullets));
-    const items = real.length ? real : [SAMPLE.projects];
-    const forcePlaceholder = real.length === 0;
-    const rows = items.map(e => renderProjectRow(e, forcePlaceholder)).join('');
-    return `
-      <div class="resume-doc__section">
-        <h2 class="resume-doc__label">&mdash; Projects</h2>
-        ${rows}
-      </div>`;
-  }
-
-  function renderEducation(entries) {
-    const real = (entries || []).filter(e => e.school || e.degree || e.startDate || e.endDate);
-    const items = real.length ? real : [SAMPLE.education];
-    const forcePlaceholder = real.length === 0;
-    const rows = items.map(e => renderEducationRow(e, forcePlaceholder)).join('');
-    return `
-      <div class="resume-doc__section">
-        <h2 class="resume-doc__label">&mdash; Education</h2>
-        ${rows}
-      </div>`;
-  }
-
-  function renderCertificates(entries) {
-    const real = (entries || []).filter(e => e.name || e.issuer || e.date);
-    const items = real.length ? real : [SAMPLE.certificates];
-    const forcePlaceholder = real.length === 0;
-    const rows = items.map(e => renderCertificateRow(e, forcePlaceholder)).join('');
-    return `
-      <div class="resume-doc__section">
-        <h2 class="resume-doc__label">&mdash; Certificates</h2>
+        <h2 class="resume-doc__label">&mdash; ${schema.label}</h2>
         ${rows}
       </div>`;
   }
@@ -241,10 +225,10 @@ const ResumeRender = (function () {
     return [
       renderHeader(data.personal || {}),
       renderSummary(data.summary),
-      renderExperience(data.experience),
-      renderProjects(data.projects),
-      renderEducation(data.education),
-      renderCertificates(data.certificates),
+      renderSection(data.experience, SECTIONS.experience),
+      renderSection(data.projects, SECTIONS.projects),
+      renderSection(data.education, SECTIONS.education),
+      renderSection(data.certificates, SECTIONS.certificates),
       renderSkills(data.skills)
     ].join('');
   }
@@ -254,5 +238,5 @@ const ResumeRender = (function () {
     el.innerHTML = toHtml(data);
   }
 
-  return { toHtml, renderInto, escapeHtml };
+  return { renderInto };
 })();

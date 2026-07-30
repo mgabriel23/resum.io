@@ -130,6 +130,10 @@ const ResumeEditor = (function () {
     $list.append(node);
   }
 
+  function focusFirstField($container) {
+    $container.find('input, textarea').first().trigger('focus');
+  }
+
   function addSkillChip(skill) {
     const $chip = $('<span class="skill-chip"><span class="skill-chip__label"></span><button type="button" aria-label="Remove skill">&times;</button></span>');
     $chip.find('.skill-chip__label').text(skill);
@@ -243,24 +247,13 @@ const ResumeEditor = (function () {
 
     $(document).on('input change', '.editor-form-panel input:not(#skillInput), .editor-form-panel textarea', syncFromForm);
 
-    $('#addExperienceBtn').on('click', function () {
-      addEntry('experience', {});
+    // One delegated handler for all four "+ Add ..." entry buttons, instead
+    // of four near-identical click handlers — see data-entry-type in the HTML.
+    $(document).on('click', '.add-entry-btn[data-entry-type]', function () {
+      const type = $(this).data('entry-type');
+      addEntry(type, {});
       syncFromForm();
-    });
-
-    $('#addProjectBtn').on('click', function () {
-      addEntry('projects', {});
-      syncFromForm();
-    });
-
-    $('#addEducationBtn').on('click', function () {
-      addEntry('education', {});
-      syncFromForm();
-    });
-
-    $('#addCertificateBtn').on('click', function () {
-      addEntry('certificates', {});
-      syncFromForm();
+      focusFirstField($(ENTRY_CONFIG[type].listSelector).children('.entry-card').last());
     });
 
     $(document).on('click', '.entry-remove', function () {
@@ -272,6 +265,7 @@ const ResumeEditor = (function () {
       const $list = $(this).siblings('.bullet-list');
       addBulletRow($list, '');
       syncFromForm();
+      $list.children('.bullet-row').last().find('.bullet-input').trigger('focus');
     });
 
     $(document).on('click', '.bullet-remove', function () {
@@ -325,7 +319,7 @@ const ResumeEditor = (function () {
     bindEvents();
   }
 
-  return { init, open, close };
+  return { init, open };
 })();
 
 $(function () {

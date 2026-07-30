@@ -33,8 +33,8 @@ body.editor-open { overflow: hidden; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border: 1px solid var(--line);
   background: #fff;
   border-radius: var(--radius-sm);
@@ -236,8 +236,8 @@ body.editor-open { overflow: hidden; }
   position: absolute;
   top: .5rem;
   right: .5rem;
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -273,8 +273,8 @@ body.editor-open { overflow: hidden; }
 
 .bullet-remove {
   flex-shrink: 0;
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -369,6 +369,17 @@ body.editor-open { overflow: hidden; }
   .preview-close { display: inline-flex; }
 
   .mobile-preview-btn { display: inline-flex; }
+
+  /* Bigger tap targets on touch screens for the small remove/close icons. */
+  .entry-remove,
+  .bullet-remove {
+    width: 36px;
+    height: 36px;
+  }
+
+  .skill-chip button {
+    padding: .35rem;
+  }
 }
 
 @media (max-width: 480px) {
