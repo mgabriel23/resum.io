@@ -30,8 +30,14 @@
   line-height: 1.5;
 }
 
+/* Spacing hierarchy (biggest gap = biggest structural break), so the eye
+   can tell "new section" from "another entry in the same section" without
+   reading the labels — bullets (.28em) < label-to-content (.5em) <
+   entry-to-entry (1em) < section-to-section (1.6em). Previously sections
+   and entries were nearly the same gap (1.1em / .85em), which flattened
+   that hierarchy. */
 .resume-doc__header {
-  margin-bottom: 1.1em;
+  margin-bottom: 1.6em;
   padding-bottom: .9em;
   border-bottom: 1px solid #e5e7eb;
 }
@@ -98,7 +104,7 @@
   color: #cbd5e1;
 }
 
-.resume-doc__section { margin-bottom: 1.1em; }
+.resume-doc__section { margin-bottom: 1.6em; }
 .resume-doc__section:last-child { margin-bottom: 0; }
 
 .resume-doc__label {
@@ -107,7 +113,7 @@
   letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--accent);
-  margin: 0 0 .65em;
+  margin: 0 0 .5em;
 }
 
 .resume-doc__summary {
@@ -115,7 +121,7 @@
   color: #1f2937;
 }
 
-.resume-doc__entry { margin-bottom: .85em; }
+.resume-doc__entry { margin-bottom: 1em; }
 .resume-doc__entry:last-child { margin-bottom: 0; }
 
 .resume-doc__entry-head {
@@ -140,11 +146,11 @@
 }
 
 .resume-doc__bullets {
-  margin: .4em 0 0;
+  margin: .5em 0 0;
   padding-left: 1.1em;
 }
 
-.resume-doc__bullets li { margin-bottom: .2em; }
+.resume-doc__bullets li { margin-bottom: .28em; }
 .resume-doc__bullets li:last-child { margin-bottom: 0; }
 
 .resume-doc__skills {
