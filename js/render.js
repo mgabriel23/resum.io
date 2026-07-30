@@ -221,16 +221,36 @@ const ResumeRender = (function () {
       </div>`;
   }
 
+  // Maps each optional section's id (as used in data.sectionOrder) to the
+  // function that renders it, so section order/visibility can drive output
+  // instead of a fixed sequence. Personal details isn't in here — it's
+  // always shown, via renderHeader() below.
+  const SECTION_RENDERERS = {
+    summary: data => renderSummary(data.summary),
+    experience: data => renderSection(data.experience, SECTIONS.experience),
+    projects: data => renderSection(data.projects, SECTIONS.projects),
+    education: data => renderSection(data.education, SECTIONS.education),
+    certificates: data => renderSection(data.certificates, SECTIONS.certificates),
+    skills: data => renderSkills(data.skills)
+  };
+
+  // A resume saved before a given section type existed (or before this
+  // ordering feature shipped) won't list it in sectionOrder — append any
+  // missing ones, visible, rather than silently dropping that section.
+  function normalizedSectionOrder(order) {
+    const present = new Set((order || []).map(s => s.id));
+    const missing = Object.keys(SECTION_RENDERERS)
+      .filter(id => !present.has(id))
+      .map(id => ({ id, visible: true }));
+    return [...(order || []), ...missing];
+  }
+
   function toHtml(data) {
-    return [
-      renderHeader(data.personal || {}),
-      renderSummary(data.summary),
-      renderSection(data.experience, SECTIONS.experience),
-      renderSection(data.projects, SECTIONS.projects),
-      renderSection(data.education, SECTIONS.education),
-      renderSection(data.certificates, SECTIONS.certificates),
-      renderSkills(data.skills)
-    ].join('');
+    const body = normalizedSectionOrder(data.sectionOrder)
+      .filter(section => section.visible)
+      .map(section => (SECTION_RENDERERS[section.id] ? SECTION_RENDERERS[section.id](data) : ''))
+      .join('');
+    return renderHeader(data.personal || {}) + body;
   }
 
   function renderInto(el, data) {

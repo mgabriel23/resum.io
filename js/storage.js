@@ -23,7 +23,17 @@ const ResumeStorage = (function () {
       projects: [],
       education: [],
       certificates: [],
-      skills: []
+      skills: [],
+      // Which optional sections show on the resume, and in what order.
+      // Personal details is always shown, so it isn't part of this list.
+      sectionOrder: [
+        { id: 'summary', visible: true },
+        { id: 'experience', visible: true },
+        { id: 'projects', visible: true },
+        { id: 'education', visible: true },
+        { id: 'certificates', visible: true },
+        { id: 'skills', visible: true }
+      ]
     };
   }
 

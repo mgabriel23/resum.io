@@ -190,6 +190,19 @@
 
       <!-- FORM PANEL -->
       <div class="editor-form-panel">
+
+        <!-- Section visibility + order -->
+        <div class="section-order">
+          <button type="button" class="section-order__header" data-bs-toggle="collapse" data-bs-target="#sectionOrderCollapse" aria-expanded="true" aria-controls="sectionOrderCollapse">
+            <span class="section-order__title">Sections</span>
+            <span class="section-order__hint">Show, hide, or reorder</span>
+            <svg class="section-order__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div id="sectionOrderCollapse" class="collapse show">
+            <div id="sectionOrderList" class="section-order__list"></div>
+          </div>
+        </div>
+
         <div class="accordion" id="resumeAccordion">
 
           <!-- Personal details -->

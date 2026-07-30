@@ -15,6 +15,17 @@ const ResumeEditor = (function () {
     certificates: { templateId: 'certificateEntryTemplate', listSelector: '#certificatesList', hasBullets: false }
   };
 
+  const SECTION_LABELS = {
+    summary: 'Summary',
+    experience: 'Experience',
+    projects: 'Projects',
+    education: 'Education',
+    certificates: 'Certificates',
+    skills: 'Skills'
+  };
+
+  let dragSectionId = null;
+
   function previewEl() {
     return document.getElementById('resumePreview');
   }
@@ -43,9 +54,11 @@ const ResumeEditor = (function () {
   function open(templateId) {
     state = ResumeStorage.load() || ResumeStorage.getDefaultData();
     if (templateId) state.templateId = templateId;
+    state.sectionOrder = normalizeSectionOrder(state.sectionOrder);
 
     populateForm(state);
     $('#templateSwitcher').val(state.templateId);
+    renderSectionList();
     renderPreview();
 
     elementFocusedBeforeOpen = document.activeElement;
@@ -89,6 +102,65 @@ const ResumeEditor = (function () {
 
     $('#skillChips').empty();
     (data.skills || []).forEach(skill => addSkillChip(skill));
+  }
+
+  // A resume saved before a given section type existed (or before this
+  // ordering feature shipped) won't list it — append any missing ones,
+  // visible, rather than silently losing that section.
+  function normalizeSectionOrder(order) {
+    const present = new Set((order || []).map(s => s.id));
+    const missing = Object.keys(SECTION_LABELS)
+      .filter(id => !present.has(id))
+      .map(id => ({ id, visible: true }));
+    return [...(order || []), ...missing];
+  }
+
+  function sectionOrderRowHtml(item, index, total) {
+    const label = SECTION_LABELS[item.id] || item.id;
+    const hiddenClass = item.visible ? '' : ' section-order-row--hidden';
+    return `
+      <div class="section-order-row${hiddenClass}" draggable="true" data-section-id="${item.id}">
+        <span class="section-order-row__handle" aria-hidden="true">&#8942;&#8942;</span>
+        <span class="section-order-row__label">${label}</span>
+        <div class="section-order-row__actions">
+          <button type="button" class="section-order-row__arrow" data-direction="up" aria-label="Move ${label} up"${index === 0 ? ' disabled' : ''}>&uarr;</button>
+          <button type="button" class="section-order-row__arrow" data-direction="down" aria-label="Move ${label} down"${index === total - 1 ? ' disabled' : ''}>&darr;</button>
+          <label class="section-order-row__toggle">
+            <input type="checkbox" ${item.visible ? 'checked' : ''} aria-label="Show ${label} section">
+            <span class="section-order-row__switch" aria-hidden="true"></span>
+          </label>
+        </div>
+      </div>`;
+  }
+
+  function renderSectionList() {
+    const $list = $('#sectionOrderList');
+    $list.empty();
+    state.sectionOrder.forEach((item, index) => {
+      $list.append(sectionOrderRowHtml(item, index, state.sectionOrder.length));
+    });
+  }
+
+  function moveSection(id, delta) {
+    const index = state.sectionOrder.findIndex(s => s.id === id);
+    const newIndex = index + delta;
+    if (index === -1 || newIndex < 0 || newIndex >= state.sectionOrder.length) return;
+    const [item] = state.sectionOrder.splice(index, 1);
+    state.sectionOrder.splice(newIndex, 0, item);
+    renderSectionList();
+    renderPreview();
+    scheduleSave();
+  }
+
+  function reorderSection(sourceId, targetId) {
+    const fromIndex = state.sectionOrder.findIndex(s => s.id === sourceId);
+    const toIndex = state.sectionOrder.findIndex(s => s.id === targetId);
+    if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) return;
+    const [item] = state.sectionOrder.splice(fromIndex, 1);
+    state.sectionOrder.splice(toIndex, 0, item);
+    renderSectionList();
+    renderPreview();
+    scheduleSave();
   }
 
   function addEntry(type, values) {
@@ -181,7 +253,10 @@ const ResumeEditor = (function () {
       projects: collectEntries('projects'),
       education: collectEntries('education'),
       certificates: collectEntries('certificates'),
-      skills: collectSkills()
+      skills: collectSkills(),
+      // Not derived from a form field — carried over as-is; its own
+      // handlers (toggle/arrows/drag) mutate state.sectionOrder directly.
+      sectionOrder: state.sectionOrder
     };
   }
 
@@ -245,7 +320,47 @@ const ResumeEditor = (function () {
       scheduleSave();
     });
 
-    $(document).on('input change', '.editor-form-panel input:not(#skillInput), .editor-form-panel textarea', syncFromForm);
+    $(document).on('input change', '.editor-form-panel input:not(#skillInput):not(.section-order-row__toggle input), .editor-form-panel textarea', syncFromForm);
+
+    $(document).on('change', '.section-order-row__toggle input', function () {
+      const id = $(this).closest('.section-order-row').data('section-id');
+      const entry = state.sectionOrder.find(s => String(s.id) === String(id));
+      if (!entry) return;
+      entry.visible = $(this).is(':checked');
+      renderSectionList();
+      renderPreview();
+      scheduleSave();
+    });
+
+    $(document).on('click', '.section-order-row__arrow', function () {
+      if ($(this).is(':disabled')) return;
+      const id = $(this).closest('.section-order-row').data('section-id');
+      moveSection(id, $(this).data('direction') === 'up' ? -1 : 1);
+    });
+
+    $(document).on('dragstart', '.section-order-row', function (e) {
+      dragSectionId = $(this).data('section-id');
+      e.originalEvent.dataTransfer.effectAllowed = 'move';
+      $(this).addClass('is-dragging');
+    });
+
+    $(document).on('dragend', '.section-order-row', function () {
+      $(this).removeClass('is-dragging');
+      $('.section-order-row').removeClass('is-drop-target');
+      dragSectionId = null;
+    });
+
+    $(document).on('dragover', '.section-order-row', function (e) {
+      e.preventDefault();
+      $('.section-order-row').removeClass('is-drop-target');
+      if ($(this).data('section-id') !== dragSectionId) $(this).addClass('is-drop-target');
+    });
+
+    $(document).on('drop', '.section-order-row', function (e) {
+      e.preventDefault();
+      const targetId = $(this).data('section-id');
+      if (dragSectionId) reorderSection(dragSectionId, targetId);
+    });
 
     // One delegated handler for all four "+ Add ..." entry buttons, instead
     // of four near-identical click handlers — see data-entry-type in the HTML.
