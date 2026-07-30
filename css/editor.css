@@ -125,11 +125,16 @@ body.editor-open { overflow: hidden; }
 .preview-panel {
   position: relative;
   flex: 1 1 auto;
+  overflow-x: auto;
   overflow-y: auto;
   background: #eef1f6;
   padding: 2.5rem 2rem;
   display: flex;
-  justify-content: center;
+  /* flex-start, not center: .resume-page centers itself via its own auto
+     margins below. Centering here instead would clip/scroll unreliably
+     once the column is narrower than the page (a well-known flexbox
+     quirk), which is exactly the "shrinks on medium-width screens" bug. */
+  justify-content: flex-start;
   align-items: flex-start;
 }
 
@@ -414,8 +419,13 @@ body.editor-open { overflow: hidden; }
 
 .resume-page {
   position: relative;
-  width: 100%;
-  max-width: 210mm;
+  /* Fixed at true A4 width always — never shrinks to fit a narrower column
+     or viewport. margin: 0 auto centers it when there's room to spare;
+     once the available space is narrower than the page, the auto margins
+     just collapse to 0 and the panel above scrolls to reach the rest. */
+  width: 210mm;
+  flex-shrink: 0;
+  margin: 0 auto;
   aspect-ratio: 210 / 297;
   background: #fff;
   border-radius: 4px;
@@ -647,20 +657,12 @@ body.editor-open { overflow: hidden; }
     /* Top padding clears the fixed close button (top: 1rem, 40px tall)
        plus a gap, so the resume page doesn't start flush against it. */
     padding: 4.75rem 1rem 2rem;
-    /* Show the resume at its true size instead of shrinking it to fit the
-       screen — scroll to see the rest, in both directions if needed. */
-    overflow-x: auto;
-    overflow-y: auto;
-    justify-content: flex-start;
+    /* overflow-x/y and justify-content: flex-start already come from the
+       base .preview-panel rule — the resume never shrinks on any screen
+       size now, so mobile needs no size-related override of its own here. */
   }
 
   .preview-panel.mobile-open { display: flex; }
-
-  .resume-page {
-    width: 210mm;
-    max-width: none;
-    flex-shrink: 0;
-  }
 
   .preview-close { display: inline-flex; }
 
