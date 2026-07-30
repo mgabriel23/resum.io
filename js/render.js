@@ -2,8 +2,40 @@
  * Turns resume data into the resume markup — the same function feeds the
  * live on-screen preview and (via the same DOM node) the printed PDF, so
  * what the user sees while editing is exactly what they download.
+ *
+ * Empty fields fall back to sample placeholder content (marked with
+ * `is-placeholder`) so the preview always looks like a real resume and
+ * guides the user — each field's sample is replaced the moment they type
+ * their own value into it.
  */
 const ResumeRender = (function () {
+  const SAMPLE = {
+    personal: {
+      firstName: 'Jamie',
+      lastName: 'Rivera',
+      headline: 'Web Developer',
+      email: 'jamie.rivera@email.com',
+      phone: '+1 555 010 2020',
+      location: 'San Francisco, CA',
+      website: 'jamierivera.dev'
+    },
+    summary: 'Detail-oriented web developer with a passion for building clean, user-friendly interfaces and solving real-world problems through code.',
+    experience: {
+      company: 'Bright Path Digital',
+      role: 'Web Developer',
+      startDate: 'Jan 2023',
+      endDate: 'Present',
+      bullets: 'Developed and maintained responsive websites for 20+ clients\nCollaborated with designers to translate mockups into functional pages'
+    },
+    education: {
+      school: 'State University',
+      degree: 'B.S. in Computer Science',
+      startDate: '2019',
+      endDate: '2023'
+    },
+    skills: ['HTML', 'CSS', 'JavaScript', 'React', 'Git']
+  };
+
   function escapeHtml(value) {
     return String(value == null ? '' : value)
       .replace(/&/g, '&amp;')
@@ -13,58 +45,77 @@ const ResumeRender = (function () {
       .replace(/'/g, '&#39;');
   }
 
-  function isEmptyResume(data) {
-    const p = data.personal || {};
-    return !p.firstName && !p.lastName && !p.headline && !p.email && !p.phone &&
-      !p.location && !p.website && !(data.summary || '').trim() &&
-      (data.experience || []).length === 0 &&
-      (data.education || []).length === 0 &&
-      (data.skills || []).length === 0;
+  // Falls back to sample text when the real value is blank; callers use
+  // `.placeholder` to mark that piece of markup as a guide, not real content.
+  function fieldValue(real, sample) {
+    const trimmed = (real || '').trim();
+    return trimmed ? { text: trimmed, placeholder: false } : { text: sample, placeholder: true };
+  }
+
+  function span(f) {
+    return `<span${f.placeholder ? ' class="is-placeholder"' : ''}>${escapeHtml(f.text)}</span>`;
+  }
+
+  function boldSpan(f) {
+    return `<span${f.placeholder ? ' class="is-placeholder"' : ''}><strong>${escapeHtml(f.text)}</strong></span>`;
   }
 
   function renderContact(personal) {
-    const parts = [personal.email, personal.phone, personal.location, personal.website]
-      .map(v => (v || '').trim())
-      .filter(Boolean)
-      .map(v => `<span>${escapeHtml(v)}</span>`);
-    return parts.join('');
+    const fields = [
+      fieldValue(personal.email, SAMPLE.personal.email),
+      fieldValue(personal.phone, SAMPLE.personal.phone),
+      fieldValue(personal.location, SAMPLE.personal.location),
+      fieldValue(personal.website, SAMPLE.personal.website)
+    ];
+    return fields.map(span).join('');
   }
 
-  function renderBullets(bulletsText) {
-    const lines = (bulletsText || '')
-      .split('\n')
-      .map(l => l.trim())
-      .filter(Boolean);
+  function renderBullets(bulletsText, forcePlaceholder) {
+    const trimmed = (bulletsText || '').trim();
+    const isPlaceholder = forcePlaceholder || !trimmed;
+    const source = isPlaceholder ? SAMPLE.experience.bullets : bulletsText;
+    const lines = source.split('\n').map(l => l.trim()).filter(Boolean);
     if (!lines.length) return '';
-    return `<ul class="resume-doc__bullets">${lines.map(l => `<li>${escapeHtml(l)}</li>`).join('')}</ul>`;
+    const cls = isPlaceholder ? ' is-placeholder' : '';
+    return `<ul class="resume-doc__bullets${cls}">${lines.map(l => `<li>${escapeHtml(l)}</li>`).join('')}</ul>`;
   }
 
-  function renderDateRange(start, end) {
-    const s = (start || '').trim();
-    const e = (end || '').trim();
-    if (!s && !e) return '';
-    if (s && e) return `${escapeHtml(s)} &ndash; ${escapeHtml(e)}`;
-    return escapeHtml(s || e);
+  function renderDateRange(start, end, sampleStart, sampleEnd, forcePlaceholder) {
+    const s = forcePlaceholder ? { text: start, placeholder: true } : fieldValue(start, sampleStart);
+    const e = forcePlaceholder ? { text: end, placeholder: true } : fieldValue(end, sampleEnd);
+    return `${span(s)} &ndash; ${span(e)}`;
   }
 
-  function renderTitleLine(primary, secondary) {
-    const p = (primary || '').trim();
-    const s = (secondary || '').trim();
-    if (p && s) return `<strong>${escapeHtml(p)}</strong> &mdash; ${escapeHtml(s)}`;
-    return `<strong>${escapeHtml(p || s)}</strong>`;
+  function renderExperienceRow(entry, forcePlaceholder) {
+    const company = forcePlaceholder ? { text: entry.company, placeholder: true } : fieldValue(entry.company, SAMPLE.experience.company);
+    const role = forcePlaceholder ? { text: entry.role, placeholder: true } : fieldValue(entry.role, SAMPLE.experience.role);
+    return `
+      <div class="resume-doc__entry">
+        <div class="resume-doc__entry-head">
+          <span class="resume-doc__entry-title">${boldSpan(company)} &mdash; ${span(role)}</span>
+          <span class="resume-doc__entry-date">${renderDateRange(entry.startDate, entry.endDate, SAMPLE.experience.startDate, SAMPLE.experience.endDate, forcePlaceholder)}</span>
+        </div>
+        ${renderBullets(entry.bullets, forcePlaceholder)}
+      </div>`;
+  }
+
+  function renderEducationRow(entry, forcePlaceholder) {
+    const school = forcePlaceholder ? { text: entry.school, placeholder: true } : fieldValue(entry.school, SAMPLE.education.school);
+    const degree = forcePlaceholder ? { text: entry.degree, placeholder: true } : fieldValue(entry.degree, SAMPLE.education.degree);
+    return `
+      <div class="resume-doc__entry">
+        <div class="resume-doc__entry-head">
+          <span class="resume-doc__entry-title">${boldSpan(school)} &mdash; ${span(degree)}</span>
+          <span class="resume-doc__entry-date">${renderDateRange(entry.startDate, entry.endDate, SAMPLE.education.startDate, SAMPLE.education.endDate, forcePlaceholder)}</span>
+        </div>
+      </div>`;
   }
 
   function renderExperience(entries) {
-    const items = (entries || []).filter(e => e.company || e.role || (e.bullets || '').trim());
-    if (!items.length) return '';
-    const rows = items.map(e => `
-      <div class="resume-doc__entry">
-        <div class="resume-doc__entry-head">
-          <span class="resume-doc__entry-title">${renderTitleLine(e.company, e.role)}</span>
-          ${renderDateRange(e.startDate, e.endDate) ? `<span class="resume-doc__entry-date">${renderDateRange(e.startDate, e.endDate)}</span>` : ''}
-        </div>
-        ${renderBullets(e.bullets)}
-      </div>`).join('');
+    const real = (entries || []).filter(e => e.company || e.role || e.startDate || e.endDate || (e.bullets || '').trim());
+    const items = real.length ? real : [SAMPLE.experience];
+    const forcePlaceholder = real.length === 0;
+    const rows = items.map(e => renderExperienceRow(e, forcePlaceholder)).join('');
     return `
       <div class="resume-doc__section">
         <h2 class="resume-doc__label">&mdash; Experience</h2>
@@ -73,15 +124,10 @@ const ResumeRender = (function () {
   }
 
   function renderEducation(entries) {
-    const items = (entries || []).filter(e => e.school || e.degree);
-    if (!items.length) return '';
-    const rows = items.map(e => `
-      <div class="resume-doc__entry">
-        <div class="resume-doc__entry-head">
-          <span class="resume-doc__entry-title">${renderTitleLine(e.school, e.degree)}</span>
-          ${renderDateRange(e.startDate, e.endDate) ? `<span class="resume-doc__entry-date">${renderDateRange(e.startDate, e.endDate)}</span>` : ''}
-        </div>
-      </div>`).join('');
+    const real = (entries || []).filter(e => e.school || e.degree || e.startDate || e.endDate);
+    const items = real.length ? real : [SAMPLE.education];
+    const forcePlaceholder = real.length === 0;
+    const rows = items.map(e => renderEducationRow(e, forcePlaceholder)).join('');
     return `
       <div class="resume-doc__section">
         <h2 class="resume-doc__label">&mdash; Education</h2>
@@ -90,9 +136,10 @@ const ResumeRender = (function () {
   }
 
   function renderSkills(skills) {
-    const items = (skills || []).filter(Boolean);
-    if (!items.length) return '';
-    const pills = items.map(s => `<span class="skill-pill">${escapeHtml(s)}</span>`).join('');
+    const real = (skills || []).filter(Boolean);
+    const isPlaceholder = real.length === 0;
+    const items = isPlaceholder ? SAMPLE.skills : real;
+    const pills = items.map(s => `<span class="skill-pill${isPlaceholder ? ' is-placeholder' : ''}">${escapeHtml(s)}</span>`).join('');
     return `
       <div class="resume-doc__section">
         <h2 class="resume-doc__label">&mdash; Skills</h2>
@@ -101,30 +148,27 @@ const ResumeRender = (function () {
   }
 
   function renderSummary(summary) {
-    const text = (summary || '').trim();
-    if (!text) return '';
+    const f = fieldValue(summary, SAMPLE.summary);
     return `
       <div class="resume-doc__section">
         <h2 class="resume-doc__label">&mdash; Summary</h2>
-        <p class="resume-doc__summary">${escapeHtml(text)}</p>
+        <p class="resume-doc__summary${f.placeholder ? ' is-placeholder' : ''}">${escapeHtml(f.text)}</p>
       </div>`;
   }
 
   function renderHeader(personal) {
-    const fullName = [personal.firstName, personal.lastName].filter(Boolean).join(' ').trim();
-    const contact = renderContact(personal);
+    const first = fieldValue(personal.firstName, SAMPLE.personal.firstName);
+    const last = fieldValue(personal.lastName, SAMPLE.personal.lastName);
+    const headline = fieldValue(personal.headline, SAMPLE.personal.headline);
     return `
       <div class="resume-doc__header">
-        ${fullName ? `<h1 class="resume-doc__name">${escapeHtml(fullName)}</h1>` : ''}
-        ${(personal.headline || '').trim() ? `<p class="resume-doc__headline">${escapeHtml(personal.headline)}</p>` : ''}
-        ${contact ? `<p class="resume-doc__contact">${contact}</p>` : ''}
+        <h1 class="resume-doc__name">${span(first)} ${span(last)}</h1>
+        <p class="resume-doc__headline${headline.placeholder ? ' is-placeholder' : ''}">${escapeHtml(headline.text)}</p>
+        <p class="resume-doc__contact">${renderContact(personal)}</p>
       </div>`;
   }
 
   function toHtml(data) {
-    if (isEmptyResume(data)) {
-      return '<div class="resume-doc__empty"><p>Start filling in your details on the left to see your resume come to life here.</p></div>';
-    }
     return [
       renderHeader(data.personal || {}),
       renderSummary(data.summary),

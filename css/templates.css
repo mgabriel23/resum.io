@@ -30,16 +30,9 @@
   line-height: 1.5;
 }
 
-.resume-doc__empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 320px;
-  text-align: center;
-  color: var(--muted);
-  font-family: var(--font-sans);
-  font-size: .95rem;
-  padding: 2rem;
+/* Sample guide text shown until the user fills in that field themselves. */
+.resume-doc .is-placeholder {
+  opacity: .45;
 }
 
 .resume-doc__header {
