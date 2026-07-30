@@ -30,11 +30,6 @@
   line-height: 1.5;
 }
 
-/* Sample guide text shown until the user fills in that field themselves. */
-.resume-doc .is-placeholder {
-  opacity: .45;
-}
-
 .resume-doc__header {
   margin-bottom: 1.1em;
   padding-bottom: .9em;
@@ -61,7 +56,7 @@
   margin: 0 0 .55em;
 }
 
-.template-highlight .resume-doc__headline {
+.template-highlight .resume-doc__headline:not(.is-placeholder) {
   color: #fff;
   background: var(--accent);
   padding: .18em .7em;
@@ -203,3 +198,14 @@
 .tcp-line--w80 { width: 80%; }
 .tcp-line--w70 { width: 70%; }
 .tcp-line--w60 { width: 60%; }
+
+/* ==========================================================================
+   Placeholder (sample) text
+   A fixed, verified-AA color rather than opacity: opacity blends toward the
+   white page background and washes dark text out to ~2:1 contrast, well
+   under the 4.5:1 WCAG AA minimum. #4b5563 on white is ~7.5:1. Declared
+   last so it wins the specificity ties against the accent-color rules above.
+   ========================================================================== */
+.resume-doc .is-placeholder {
+  color: #4b5563;
+}

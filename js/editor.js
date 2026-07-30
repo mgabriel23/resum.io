@@ -6,9 +6,31 @@
 const ResumeEditor = (function () {
   let state = ResumeStorage.getDefaultData();
   let saveTimer = null;
+  let elementFocusedBeforeOpen = null;
 
   function previewEl() {
     return document.getElementById('resumePreview');
+  }
+
+  // Elements a keyboard user can reach, in DOM/tab order, for the focus trap.
+  function getFocusableElements() {
+    const selector = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    return Array.from(document.getElementById('editorOverlay').querySelectorAll(selector))
+      .filter(el => el.offsetParent !== null);
+  }
+
+  function trapFocus(e) {
+    const focusable = getFocusableElements();
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
   }
 
   function open(templateId) {
@@ -19,6 +41,7 @@ const ResumeEditor = (function () {
     $('#templateSwitcher').val(state.templateId);
     renderPreview();
 
+    elementFocusedBeforeOpen = document.activeElement;
     $('body').addClass('editor-open');
     $('#editorOverlay').addClass('is-open').attr('aria-hidden', 'false');
     $('#editorBackBtn').trigger('focus');
@@ -28,6 +51,11 @@ const ResumeEditor = (function () {
     $('#editorOverlay').removeClass('is-open').attr('aria-hidden', 'true');
     $('body').removeClass('editor-open');
     closeMobilePreview();
+
+    if (elementFocusedBeforeOpen && document.body.contains(elementFocusedBeforeOpen)) {
+      elementFocusedBeforeOpen.focus();
+    }
+    elementFocusedBeforeOpen = null;
   }
 
   function populateForm(data) {
@@ -189,11 +217,19 @@ const ResumeEditor = (function () {
     });
 
     $(document).on('keydown', function (e) {
-      if (e.key !== 'Escape' || !$('#editorOverlay').hasClass('is-open')) return;
-      if ($('#previewPanel').hasClass('mobile-open')) {
-        closeMobilePreview();
-      } else {
-        close();
+      if (!$('#editorOverlay').hasClass('is-open')) return;
+
+      if (e.key === 'Escape') {
+        if ($('#previewPanel').hasClass('mobile-open')) {
+          closeMobilePreview();
+        } else {
+          close();
+        }
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        trapFocus(e);
       }
     });
   }

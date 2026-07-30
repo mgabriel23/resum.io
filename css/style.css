@@ -61,6 +61,24 @@ a { color: inherit; }
   margin-bottom: 0;
 }
 
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(-100%);
+  z-index: 2000;
+  background: var(--indigo);
+  color: #fff;
+  padding: .75rem 1.25rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0 0 var(--radius-sm) 0;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
 /* Focus visibility for keyboard users */
 a:focus-visible,
 button:focus-visible,
