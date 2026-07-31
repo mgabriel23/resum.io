@@ -11,40 +11,40 @@
 const ResumeRender = (function () {
   const SAMPLE = {
     personal: {
-      firstName: 'Jamie',
-      lastName: 'Rivera',
-      headline: 'Web Developer',
-      email: 'jamie.rivera@email.com',
-      phone: '+1 555 010 2020',
-      location: 'San Francisco, CA',
-      website: 'jamierivera.dev'
+      firstName: 'Mark Bryan',
+      lastName: 'Gabriel',
+      headline: 'Full Stack Web Developer',
+      email: 'mrkbryngbrl@gmail.com',
+      phone: '0927 324 3042',
+      location: 'Manila, Philippines',
+      website: 'itsmebryle.com.ph'
     },
-    summary: 'Detail-oriented web developer with a passion for building clean, user-friendly interfaces and solving real-world problems through code.',
+    summary: 'Motivated Web Developer dedicated to delivering clean, efficient, and user-focused solutions while continuously learning and evolving.',
     experience: {
-      company: 'Bright Path Digital',
-      role: 'Web Developer',
-      startDate: 'Jan 2023',
-      endDate: 'Present',
-      bullets: ['Developed and maintained responsive websites for 20+ clients', 'Collaborated with designers to translate mockups into functional pages']
+      company: 'Nityo Infotech Services',
+      role: 'PHP SQL Developer',
+      startDate: 'August 2024',
+      endDate: 'May 2026',
+      bullets: ['Developed, enhanced, and maintained core system features using PHP and SQL. Built responsive microsites and critical internal tools utilizing Python, JavaScript, jQuery, React, and AWS cloud infrastructure.']
     },
     projects: {
-      name: 'Resume Builder',
-      techStack: 'React, Node.js',
-      link: 'github.com/jamierivera/resume-builder',
-      bullets: ['Built a full-stack app used by 100+ students', 'Deployed with CI/CD on Vercel']
+      name: 'Resum.io',
+      techStack: 'HTML, CSS, JavaScript, jQuery',
+      link: 'mgabriel23.github.io/resum.io',
+      bullets: ['ATS-friendly resume builder that gets you hired.']
     },
     education: {
-      school: 'State University',
-      degree: 'B.S. in Computer Science',
-      startDate: '2019',
-      endDate: '2023'
+      school: 'Global Reciprocal Colleges',
+      degree: 'Bachelor of Science in Information Technology',
+      startDate: 'June 2015',
+      endDate: 'May 2019'
     },
     certificates: {
-      name: 'AWS Certified Cloud Practitioner',
-      issuer: 'Amazon Web Services',
-      date: 'March 2024'
+      name: 'Design Rules: Principles + Practices for Great UI Design',
+      issuer: 'Udemy Course',
+      date: 'December 2023'
     },
-    skills: ['HTML', 'CSS', 'JavaScript', 'React', 'Git']
+    skills: ['HTML', 'CSS', 'JavaScript', 'jQuery', 'PHP', 'MySQL', 'TypeScript', 'React', 'Node.js', 'Python', 'AWS', 'Git', 'PWA', 'Bootstrap']
   };
 
   // Declares the shape of each repeatable resume section (title/subtitle
