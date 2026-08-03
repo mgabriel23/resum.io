@@ -1,4 +1,4 @@
-# ResumeForge
+# resum.io
 
 A free, single-page resume builder. Pick a template, fill in your details, and
 export a clean, ATS-friendly, A4-sized PDF — no sign-up, no login, no backend.

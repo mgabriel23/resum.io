@@ -4,7 +4,7 @@
  * tab or a full storage quota should degrade to "just don't persist", not crash).
  */
 const ResumeStorage = (function () {
-  const STORAGE_KEY = 'resumeforge.resume.v1';
+  const STORAGE_KEY = 'resumio.resume.v1';
 
   function getDefaultData() {
     return {
