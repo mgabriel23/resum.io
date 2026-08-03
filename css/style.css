@@ -373,22 +373,23 @@ select:focus-visible {
   padding: 1.75rem 0;
 }
 
-.site-footer__top {
+.site-footer__inner {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: .5rem 1rem;
-  margin-bottom: 1rem;
+  justify-content: space-between;
+  gap: .75rem 1.5rem;
+}
+
+.site-footer__brand-group {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: .5rem .75rem;
 }
 
 .site-footer__brand {
   font-size: 1rem;
-}
-
-.site-footer__credit {
-  font-size: .85rem;
-  color: var(--muted);
-  margin-right: auto;
 }
 
 .site-footer__version {
@@ -405,7 +406,29 @@ select:focus-visible {
 .site-footer__badges {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: .6rem;
+}
+
+/* Once the brand group and badges no longer fit on one line, stack and
+   center both instead of leaving them ragged-left on their own lines. */
+@media (max-width: 991.98px) {
+  .site-footer__inner {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .site-footer__brand-group,
+  .site-footer__badges {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .site-footer__brand-group {
+    flex-direction: column;
+    align-items: center;
+    gap: .2rem;
+  }
 }
 
 .footer-badge {
