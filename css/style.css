@@ -373,11 +373,55 @@ select:focus-visible {
   padding: 1.75rem 0;
 }
 
-.site-footer__inner {
+.site-footer__top {
   display: flex;
   flex-wrap: wrap;
-  gap: .5rem 1.5rem;
-  justify-content: space-between;
+  align-items: center;
+  gap: .5rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.site-footer__brand {
+  font-size: 1rem;
+}
+
+.site-footer__credit {
   font-size: .85rem;
   color: var(--muted);
+  margin-right: auto;
+}
+
+.site-footer__version {
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: .2rem .65rem;
+}
+
+.site-footer__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+}
+
+.footer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .78rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: .35rem .75rem .35rem .65rem;
+}
+
+.footer-badge svg {
+  flex-shrink: 0;
+  color: #22c55e;
 }
