@@ -171,6 +171,62 @@
 .template-operator .skill-pill {
   border-color: var(--accent);
   color: var(--accent);
+  background: #f0fdfa;
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   Per-template differentiation
+   Same semantic single-column structure everywhere (still fully ATS-safe) —
+   only typography, color intensity, and small decorative touches change per
+   template, so each one has an actual reason to be picked beyond the name.
+   ========================================================================== */
+
+/* Default: the safe, neutral option — keep the headline monochrome so the
+   only color left is the light section-label accent. */
+.template-default .resume-doc__headline {
+  color: var(--ink-soft);
+}
+
+/* Operator: technical/terminal feel — dashed rule under the header and
+   chevron bullets instead of round ones (squared skill tags are set above). */
+.template-operator .resume-doc__header {
+  border-bottom-style: dashed;
+  border-bottom-color: var(--accent);
+}
+
+.template-operator .resume-doc__bullets {
+  list-style: none;
+}
+
+.template-operator .resume-doc__bullets li {
+  position: relative;
+}
+
+.template-operator .resume-doc__bullets li::before {
+  content: '\203A';
+  position: absolute;
+  left: -1.1em;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* Highlight: the boldest option — a thicker accent rule, tinted skill chips,
+   and colored bullet markers on top of the pill headline/name it already had. */
+.template-highlight .resume-doc__header {
+  border-bottom-width: 2px;
+  border-bottom-color: var(--accent);
+}
+
+.template-highlight .resume-doc__bullets li::marker {
+  color: var(--accent);
+}
+
+.template-highlight .skill-pill {
+  background: #eef2ff;
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
 }
 
 /* ==========================================================================
