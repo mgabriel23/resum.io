@@ -359,6 +359,16 @@ const ResumeEditor = (function () {
     updatePageBreaks();
   }
 
+  // Browsers suggest document.title as the "Save as PDF" filename, so a
+  // print triggered while it's still "resum.io — Build an..." hands the
+  // user a file no recruiter (or ATS) would recognize as a resume.
+  const DEFAULT_TITLE = document.title;
+
+  function exportDocumentTitle() {
+    const name = [state.personal.firstName, state.personal.lastName].map(s => (s || '').trim()).filter(Boolean).join(' ');
+    return (name || 'Resume') + ' - Resume';
+  }
+
   // Draws a dashed line + "Page N" label wherever content crosses another
   // A4 page height, so the preview shows a multi-page resume before export.
   // One page's height is derived from the page's own current on-screen
@@ -526,6 +536,19 @@ const ResumeEditor = (function () {
 
     $('#exportPdfBtn').on('click', function () {
       window.print();
+    });
+
+    // Covers both the Export button and Ctrl/Cmd+P: swap in the strict,
+    // sample-free render and a real filename right before the browser
+    // captures the page, then restore the guided editing view after.
+    window.addEventListener('beforeprint', function () {
+      document.title = exportDocumentTitle();
+      ResumeRender.renderInto(previewEl(), state, true);
+    });
+
+    window.addEventListener('afterprint', function () {
+      document.title = DEFAULT_TITLE;
+      renderPreview();
     });
 
     $(document).on('keydown', function (e) {

@@ -113,16 +113,22 @@ const ResumeRender = (function () {
 
   // Falls back to sample text when the real value is blank; callers use
   // `.placeholder` to mark that piece of markup as a guide, not real content.
-  function fieldValue(real, sample) {
+  // `hide` is true only for the export/print render pass — there, a blank
+  // field must stay blank rather than fill the document with someone else's
+  // fake data (see renderInto).
+  function fieldValue(real, sample, hide) {
     const trimmed = (real || '').trim();
-    return trimmed ? { text: trimmed, placeholder: false } : { text: sample, placeholder: true };
+    if (trimmed) return { text: trimmed, placeholder: false };
+    return hide ? { text: '', placeholder: false } : { text: sample, placeholder: true };
   }
 
   // Same as fieldValue, but when a whole entry/section is a placeholder
   // (no real data at all yet) every field in it must read as a placeholder,
-  // including its own text — not fall back further to the sample.
-  function resolveField(value, sampleValue, forcePlaceholder) {
-    return forcePlaceholder ? { text: value, placeholder: true } : fieldValue(value, sampleValue);
+  // including its own text — not fall back further to the sample. Never
+  // reached in hide mode: renderSection() omits placeholder-only sections
+  // there before forcePlaceholder can be true.
+  function resolveField(value, sampleValue, forcePlaceholder, hide) {
+    return forcePlaceholder ? { text: value, placeholder: true } : fieldValue(value, sampleValue, hide);
   }
 
   function span(f) {
@@ -138,17 +144,20 @@ const ResumeRender = (function () {
     return !!(bullets || '').trim();
   }
 
-  function renderContact(personal) {
+  function renderContact(personal, hide) {
     const fields = [
-      fieldValue(personal.email, SAMPLE.personal.email),
-      fieldValue(personal.phone, SAMPLE.personal.phone),
-      fieldValue(personal.location, SAMPLE.personal.location),
-      fieldValue(personal.website, SAMPLE.personal.website)
-    ];
+      fieldValue(personal.email, SAMPLE.personal.email, hide),
+      fieldValue(personal.phone, SAMPLE.personal.phone, hide),
+      fieldValue(personal.location, SAMPLE.personal.location, hide),
+      fieldValue(personal.website, SAMPLE.personal.website, hide)
+      // Blank fields are dropped rather than joined as empty spans, so the
+      // "|" separators (CSS, based on :last-child) never leave a dangling
+      // trailing pipe when hide mode removes the last field's text.
+    ].filter(f => f.text);
     return fields.map(span).join('');
   }
 
-  function renderBullets(bullets, forcePlaceholder, sampleBullets) {
+  function renderBullets(bullets, forcePlaceholder, sampleBullets, hide) {
     // Bullets are entered as separate inputs (an array); a plain string is
     // only possible for resumes saved before that change, so split it here.
     const list = Array.isArray(bullets) ? bullets : (bullets || '').split('\n');
@@ -156,16 +165,24 @@ const ResumeRender = (function () {
     const isPlaceholder = forcePlaceholder || !real.length;
     // real.length first, not isPlaceholder: a whole placeholder row already
     // carries its own bullets in `bullets` (=`real`) — sampleBullets is only
-    // the right fallback when a genuine entry left just this field blank.
-    const items = real.length ? real : sampleBullets;
+    // the right fallback when a genuine entry left just this field blank,
+    // and never applies in hide mode (no fabricated bullet in an export).
+    const items = real.length ? real : (hide ? [] : sampleBullets);
     if (!items.length) return '';
     const cls = isPlaceholder ? ' is-placeholder' : '';
     return `<ul class="resume-doc__bullets${cls}">${items.map(l => `<li>${escapeHtml(l)}</li>`).join('')}</ul>`;
   }
 
-  function renderDateRange(start, end, sampleStart, sampleEnd, forcePlaceholder) {
-    const s = resolveField(start, sampleStart, forcePlaceholder);
-    const e = resolveField(end, sampleEnd, forcePlaceholder);
+  function renderDateRange(start, end, sampleStart, sampleEnd, forcePlaceholder, hide) {
+    const s = resolveField(start, sampleStart, forcePlaceholder, hide);
+    const e = resolveField(end, sampleEnd, forcePlaceholder, hide);
+    // In hide mode a blank date shouldn't leave a bare "–" floating with
+    // nothing on one side — show whichever side is real, or neither.
+    if (hide) {
+      if (!s.text && !e.text) return '';
+      if (!s.text) return span(e);
+      if (!e.text) return span(s);
+    }
     return `${span(s)} &ndash; ${span(e)}`;
   }
 
@@ -177,69 +194,75 @@ const ResumeRender = (function () {
     return hasField || (schema.bullets && hasBulletContent(entry.bullets));
   }
 
-  function renderEntryRight(entry, schema, forcePlaceholder) {
+  function renderEntryRight(entry, schema, forcePlaceholder, hide) {
     if (schema.right.type === 'range') {
-      return renderDateRange(entry[schema.right.start], entry[schema.right.end], schema.sample[schema.right.start], schema.sample[schema.right.end], forcePlaceholder);
+      return renderDateRange(entry[schema.right.start], entry[schema.right.end], schema.sample[schema.right.start], schema.sample[schema.right.end], forcePlaceholder, hide);
     }
     const field = schema.right.field;
-    return span(resolveField(entry[field], schema.sample[field], forcePlaceholder));
+    return span(resolveField(entry[field], schema.sample[field], forcePlaceholder, hide));
   }
 
-  function renderEntryRow(entry, schema, forcePlaceholder) {
-    const title = resolveField(entry[schema.title], schema.sample[schema.title], forcePlaceholder);
-    const subtitle = resolveField(entry[schema.subtitle], schema.sample[schema.subtitle], forcePlaceholder);
-    const bullets = schema.bullets ? renderBullets(entry.bullets, forcePlaceholder, schema.sample.bullets) : '';
+  function renderEntryRow(entry, schema, forcePlaceholder, hide) {
+    const title = resolveField(entry[schema.title], schema.sample[schema.title], forcePlaceholder, hide);
+    const subtitle = resolveField(entry[schema.subtitle], schema.sample[schema.subtitle], forcePlaceholder, hide);
+    const bullets = schema.bullets ? renderBullets(entry.bullets, forcePlaceholder, schema.sample.bullets, hide) : '';
     return `
       <div class="resume-doc__entry">
         <div class="resume-doc__entry-head">
           <span class="resume-doc__entry-title">${boldSpan(title)} &mdash; ${span(subtitle)}</span>
-          <span class="resume-doc__entry-date">${renderEntryRight(entry, schema, forcePlaceholder)}</span>
+          <span class="resume-doc__entry-date">${renderEntryRight(entry, schema, forcePlaceholder, hide)}</span>
         </div>
         ${bullets}
       </div>`;
   }
 
-  function renderSection(entries, schema) {
+  // `hide` skips fabricated content for the export/print pass: a section
+  // with no real entries at all is omitted outright rather than showing
+  // someone else's sample company/school as if it were the user's own.
+  function renderSection(entries, schema, hide) {
     const real = (entries || []).filter(e => entryHasContent(e, schema));
+    if (hide && !real.length) return '';
     const items = real.length ? real : (schema.samplePlaceholder || [schema.sample]);
     const forcePlaceholder = real.length === 0;
-    const rows = items.map(e => renderEntryRow(e, schema, forcePlaceholder)).join('');
+    const rows = items.map(e => renderEntryRow(e, schema, forcePlaceholder, hide)).join('');
     return `
       <div class="resume-doc__section">
-        <h2 class="resume-doc__label">&mdash; ${schema.label}</h2>
+        <h2 class="resume-doc__label">${schema.label}</h2>
         ${rows}
       </div>`;
   }
 
-  function renderSkills(skills) {
+  function renderSkills(skills, hide) {
     const real = (skills || []).filter(Boolean);
+    if (hide && !real.length) return '';
     const isPlaceholder = real.length === 0;
     const items = isPlaceholder ? SAMPLE.skills : real;
     const pills = items.map(s => `<span class="skill-pill${isPlaceholder ? ' is-placeholder' : ''}">${escapeHtml(s)}</span>`).join('');
     return `
       <div class="resume-doc__section">
-        <h2 class="resume-doc__label">&mdash; Skills</h2>
+        <h2 class="resume-doc__label">Skills</h2>
         <div class="resume-doc__skills">${pills}</div>
       </div>`;
   }
 
-  function renderSummary(summary) {
-    const f = fieldValue(summary, SAMPLE.summary);
+  function renderSummary(summary, hide) {
+    const f = fieldValue(summary, SAMPLE.summary, hide);
+    if (hide && !f.text) return '';
     return `
       <div class="resume-doc__section">
-        <h2 class="resume-doc__label">&mdash; Summary</h2>
+        <h2 class="resume-doc__label">Summary</h2>
         <p class="resume-doc__summary${f.placeholder ? ' is-placeholder' : ''}">${escapeHtml(f.text)}</p>
       </div>`;
   }
 
-  function renderHeader(personal) {
-    const first = fieldValue(personal.firstName, SAMPLE.personal.firstName);
-    const last = fieldValue(personal.lastName, SAMPLE.personal.lastName);
-    const headline = fieldValue(personal.headline, SAMPLE.personal.headline);
+  function renderHeader(personal, hide) {
+    const first = fieldValue(personal.firstName, SAMPLE.personal.firstName, hide);
+    const last = fieldValue(personal.lastName, SAMPLE.personal.lastName, hide);
+    const headline = fieldValue(personal.headline, SAMPLE.personal.headline, hide);
     const textBlock = `
         <h1 class="resume-doc__name">${span(first)} ${span(last)}</h1>
         <p class="resume-doc__headline${headline.placeholder ? ' is-placeholder' : ''}">${escapeHtml(headline.text)}</p>
-        <p class="resume-doc__contact">${renderContact(personal)}</p>`;
+        <p class="resume-doc__contact">${renderContact(personal, hide)}</p>`;
 
     // The photo is optional and never sample-guided — an uploaded photo is
     // real content, not a field with a placeholder-worthy sample value.
@@ -259,12 +282,12 @@ const ResumeRender = (function () {
   // instead of a fixed sequence. Personal details isn't in here — it's
   // always shown, via renderHeader() below.
   const SECTION_RENDERERS = {
-    summary: data => renderSummary(data.summary),
-    experience: data => renderSection(data.experience, SECTIONS.experience),
-    projects: data => renderSection(data.projects, SECTIONS.projects),
-    education: data => renderSection(data.education, SECTIONS.education),
-    certificates: data => renderSection(data.certificates, SECTIONS.certificates),
-    skills: data => renderSkills(data.skills)
+    summary: (data, hide) => renderSummary(data.summary, hide),
+    experience: (data, hide) => renderSection(data.experience, SECTIONS.experience, hide),
+    projects: (data, hide) => renderSection(data.projects, SECTIONS.projects, hide),
+    education: (data, hide) => renderSection(data.education, SECTIONS.education, hide),
+    certificates: (data, hide) => renderSection(data.certificates, SECTIONS.certificates, hide),
+    skills: (data, hide) => renderSkills(data.skills, hide)
   };
 
   // A resume saved before a given section type existed (or before this
@@ -278,17 +301,21 @@ const ResumeRender = (function () {
     return [...(order || []), ...missing];
   }
 
-  function toHtml(data) {
+  function toHtml(data, hide) {
     const body = normalizedSectionOrder(data.sectionOrder)
       .filter(section => section.visible)
-      .map(section => (SECTION_RENDERERS[section.id] ? SECTION_RENDERERS[section.id](data) : ''))
+      .map(section => (SECTION_RENDERERS[section.id] ? SECTION_RENDERERS[section.id](data, hide) : ''))
       .join('');
-    return renderHeader(data.personal || {}) + body;
+    return renderHeader(data.personal || {}, hide) + body;
   }
 
-  function renderInto(el, data) {
+  // `hide`, when true, renders only genuinely-entered content — no sample
+  // fallback text anywhere. Used for the export/print pass (see editor.js's
+  // beforeprint handler) so an unfinished resume can never be exported with
+  // someone else's fake name, job history, or skills baked into the PDF.
+  function renderInto(el, data, hide) {
     el.className = 'resume-doc template-' + (data.templateId || 'default');
-    el.innerHTML = toHtml(data);
+    el.innerHTML = toHtml(data, hide);
   }
 
   return { renderInto };
