@@ -11,7 +11,7 @@
 const ResumeRender = (function () {
   const SAMPLE = {
     personal: {
-      firstName: 'Mark Bryan',
+      firstName: 'Mark Bryan A.',
       lastName: 'Gabriel',
       headline: 'Full Stack Web Developer',
       email: 'mrkbryngbrl@gmail.com',
@@ -20,13 +20,29 @@ const ResumeRender = (function () {
       website: 'itsmebryle.com.ph'
     },
     summary: 'Motivated Web Developer dedicated to delivering clean, efficient, and user-focused solutions while continuously learning and evolving.',
-    experience: {
-      company: 'Nityo Infotech Services',
-      role: 'PHP SQL Developer',
-      startDate: 'August 2024',
-      endDate: 'May 2026',
-      bullets: ['Developed, enhanced, and maintained core system features using PHP and SQL. Built responsive microsites and critical internal tools utilizing Python, JavaScript, jQuery, React, and AWS cloud infrastructure.']
-    },
+    experience: [
+      {
+        company: 'Nityo Infotech Services Philippines Inc.',
+        role: 'PHP SQL Developer',
+        startDate: 'August 2024',
+        endDate: 'May 2026',
+        bullets: ['Developed, enhanced, and maintained core system features using PHP and SQL. Built responsive microsites and critical internal tools utilizing Python, JavaScript, jQuery, React, and AWS cloud infrastructure.']
+      },
+      {
+        company: 'Global Reciprocal Colleges',
+        role: 'Part Time College Instructor',
+        startDate: 'June 2024',
+        endDate: 'May 2026',
+        bullets: ['Instructed 2nd and 3rd-year students in BSIT coursework. Delivered technical lectures, mentored students on practical projects, and designed coursework to improve academic performance and hands-on skills.']
+      },
+      {
+        company: 'Alliedbankers Insurance Corporation',
+        role: 'Jr. Software Programmer',
+        startDate: 'June 2019',
+        endDate: 'April 2024',
+        bullets: ['Maintained existing business applications, implemented new features, and developed internal tools to streamline daily operations. Diagnosed and troubleshooted technical issues to optimize application performance and system functionality.']
+      }
+    ],
     projects: {
       name: 'Resum.io',
       techStack: 'HTML, CSS, JavaScript, jQuery',
@@ -35,7 +51,7 @@ const ResumeRender = (function () {
     },
     education: {
       school: 'Global Reciprocal Colleges',
-      degree: 'Bachelor of Science in Information Technology',
+      degree: 'Bachelor of Science Information Technology',
       startDate: 'June 2015',
       endDate: 'May 2019'
     },
@@ -54,7 +70,11 @@ const ResumeRender = (function () {
   const SECTIONS = {
     experience: {
       label: 'Experience',
-      sample: SAMPLE.experience,
+      // A single representative entry for per-field fallback (see
+      // resolveField), plus the full career history to show as the
+      // guided placeholder when there's no real experience yet.
+      sample: SAMPLE.experience[0],
+      samplePlaceholder: SAMPLE.experience,
       title: 'company', subtitle: 'role',
       right: { type: 'range', start: 'startDate', end: 'endDate' },
       bullets: true
@@ -134,7 +154,10 @@ const ResumeRender = (function () {
     const list = Array.isArray(bullets) ? bullets : (bullets || '').split('\n');
     const real = list.map(l => (l || '').trim()).filter(Boolean);
     const isPlaceholder = forcePlaceholder || !real.length;
-    const items = isPlaceholder ? sampleBullets : real;
+    // real.length first, not isPlaceholder: a whole placeholder row already
+    // carries its own bullets in `bullets` (=`real`) — sampleBullets is only
+    // the right fallback when a genuine entry left just this field blank.
+    const items = real.length ? real : sampleBullets;
     if (!items.length) return '';
     const cls = isPlaceholder ? ' is-placeholder' : '';
     return `<ul class="resume-doc__bullets${cls}">${items.map(l => `<li>${escapeHtml(l)}</li>`).join('')}</ul>`;
@@ -178,7 +201,7 @@ const ResumeRender = (function () {
 
   function renderSection(entries, schema) {
     const real = (entries || []).filter(e => entryHasContent(e, schema));
-    const items = real.length ? real : [schema.sample];
+    const items = real.length ? real : (schema.samplePlaceholder || [schema.sample]);
     const forcePlaceholder = real.length === 0;
     const rows = items.map(e => renderEntryRow(e, schema, forcePlaceholder)).join('');
     return `
