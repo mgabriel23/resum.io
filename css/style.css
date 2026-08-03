@@ -300,6 +300,7 @@ select:focus-visible {
 }
 
 .template-card__preview {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: .35rem;
@@ -309,23 +310,59 @@ select:focus-visible {
   border-bottom: 1px solid var(--line);
 }
 
+.template-card__preview::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--accent);
+}
+
 .template-card__footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: .85rem 1.35rem;
+  gap: .75rem;
+  padding: .9rem 1.35rem;
 }
 
-.template-card__footer strong {
+.template-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+  min-width: 0;
+}
+
+.template-card__meta strong {
   font-size: .95rem;
   font-weight: 700;
 }
 
-.template-card__tag {
-  font-family: var(--font-mono);
-  font-size: .68rem;
-  letter-spacing: .06em;
+.template-card__desc {
+  font-size: .78rem;
   color: var(--muted);
+  line-height: 1.4;
+}
+
+.template-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  flex-shrink: 0;
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--indigo);
+}
+
+.template-card__cta svg {
+  transition: transform .15s ease;
+}
+
+.template-card:hover .template-card__cta svg,
+.template-card:focus-visible .template-card__cta svg {
+  transform: translateX(3px);
 }
 
 /* ==========================================================================
