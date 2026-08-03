@@ -16,10 +16,6 @@
   --doc-font: var(--font-mono);
 }
 
-.template-highlight {
-  --accent: #4f46e5;
-}
-
 /* ==========================================================================
    Resume document (used both in the live editor preview and for print)
    ========================================================================== */
