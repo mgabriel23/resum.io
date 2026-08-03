@@ -498,6 +498,21 @@ body.editor-open { overflow: hidden; }
   outline-offset: -2px;
 }
 
+.accordion-button:hover { background: var(--bg); }
+
+.accordion-button:not(.collapsed):hover { background: #eef2ff; }
+
+.accordion-button__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  margin-right: .65rem;
+  color: var(--muted);
+}
+
+.accordion-button:not(.collapsed) .accordion-button__icon {
+  color: var(--indigo);
+}
+
 .form-label {
   font-size: .82rem;
   font-weight: 600;
@@ -506,9 +521,46 @@ body.editor-open { overflow: hidden; }
 
 .form-hint { font-weight: 400; color: var(--muted); }
 
+.form-control {
+  border-radius: var(--radius-sm);
+  border-color: var(--line);
+  font-size: .92rem;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.form-control:hover {
+  border-color: #cbd5e1;
+}
+
 .form-control:focus {
   border-color: #a5b4fc;
   box-shadow: 0 0 0 3px #eef2ff;
+}
+
+.form-control::placeholder {
+  color: #94a3b8;
+}
+
+/* Icon glyph sitting inside a text input (personal details fields). */
+.input-icon {
+  position: relative;
+}
+
+.input-icon .form-control {
+  padding-left: 2.25rem;
+}
+
+.input-icon__icon {
+  position: absolute;
+  top: 50%;
+  left: .7rem;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.input-icon .form-control:focus ~ .input-icon__icon {
+  color: var(--indigo);
 }
 
 /* ==========================================================================
@@ -546,8 +598,18 @@ body.editor-open { overflow: hidden; }
 .entry-remove:hover { background: #fee2e2; color: #dc2626; }
 
 .add-entry-btn {
+  border: 1px dashed #c7d2fe;
   border-radius: var(--radius-sm);
+  color: var(--indigo);
+  background: #fff;
   font-weight: 600;
+  transition: background-color .15s ease, border-color .15s ease;
+}
+
+.add-entry-btn:hover {
+  background: #eef2ff;
+  border-color: var(--indigo);
+  color: var(--indigo-dark);
 }
 
 /* ==========================================================================
@@ -560,6 +622,15 @@ body.editor-open { overflow: hidden; }
   align-items: center;
   gap: .5rem;
   margin-bottom: .5rem;
+}
+
+.bullet-row__dot {
+  flex-shrink: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--muted);
+  margin-left: .3rem;
 }
 
 .bullet-row .form-control { flex: 1 1 auto; }
