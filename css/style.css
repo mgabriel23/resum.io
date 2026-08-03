@@ -191,24 +191,51 @@ select:focus-visible {
 
 .how-it-works__grid {
   margin-top: 2.5rem;
-  row-gap: 2rem;
+  row-gap: 1.75rem;
 }
 
 .how-step {
+  position: relative;
   text-align: left;
   padding: 0 .5rem;
 }
 
-.how-step__num {
-  display: inline-block;
+.how-step__card {
+  position: relative;
+  height: 100%;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 1.75rem 1.5rem;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+
+.how-step__card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card);
+  border-color: #c7d2fe;
+}
+
+.how-step__index {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
   font-family: var(--font-mono);
   font-weight: 700;
-  font-size: .85rem;
-  color: var(--indigo);
+  font-size: .78rem;
+  color: #cbd5e1;
+}
+
+.how-step__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
   background: #eef2ff;
-  border-radius: 999px;
-  padding: .25rem .65rem;
-  margin-bottom: .75rem;
+  color: var(--indigo);
+  margin-bottom: 1.1rem;
 }
 
 .how-step h3 {
