@@ -369,6 +369,10 @@ const ResumeEditor = (function () {
     return (name || 'Resume') + ' - Resume';
   }
 
+  function hasRealName(s) {
+    return !!((s.personal.firstName || '').trim() || (s.personal.lastName || '').trim());
+  }
+
   // Draws a dashed line + "Page N" label wherever content crosses another
   // A4 page height, so the preview shows a multi-page resume before export.
   // One page's height is derived from the page's own current on-screen
@@ -535,6 +539,14 @@ const ResumeEditor = (function () {
     $('#closePreviewBtn').on('click', closeMobilePreview);
 
     $('#exportPdfBtn').on('click', function () {
+      // The preview always looks like a full resume (guided sample text),
+      // but export strips all of that — a resume with no real name yet
+      // would silently produce a blank PDF with no explanation. Catch it
+      // here instead of leaving people to wonder why their download is empty.
+      if (!hasRealName(state)) {
+        alert('Add your name in Personal details first — the preview you\'re seeing is just guide text, so there\'s nothing real to export yet.');
+        return;
+      }
       window.print();
     });
 
