@@ -464,8 +464,35 @@ const ResumeEditor = (function () {
     }, 300);
   }
 
+  // .resume-page is fixed at true A4 width (210mm ≈ 794px) so the desktop
+  // split view always shows it true-to-size — but on a phone that's wider
+  // than the whole screen, leaving text cut off with no visible hint that
+  // horizontal scrolling would reveal the rest. `zoom` (unlike `transform`)
+  // shrinks its actual layout box too, so the page's own `margin: 0 auto`
+  // still centers it, just at a size that fits the screen.
+  function fitPreviewToViewport() {
+    const pageEl = document.querySelector('.resume-page');
+    const panelEl = document.querySelector('.preview-panel');
+    if (!pageEl || !panelEl) return;
+
+    const isMobileLayout = !isDragCapableViewport();
+    const isMobilePreviewOpen = panelEl.classList.contains('mobile-open');
+    if (!isMobileLayout || !isMobilePreviewOpen) {
+      pageEl.style.zoom = '';
+      return;
+    }
+
+    pageEl.style.zoom = '1';
+    const naturalWidth = pageEl.getBoundingClientRect().width;
+    const available = panelEl.clientWidth - 32; // matches .preview-panel's 1rem side padding on mobile
+    if (naturalWidth > 0 && available > 0) {
+      pageEl.style.zoom = String(Math.min(1, available / naturalWidth));
+    }
+  }
+
   function openMobilePreview() {
     $('#previewPanel').addClass('mobile-open');
+    fitPreviewToViewport();
   }
 
   function closeMobilePreview() {
@@ -665,6 +692,7 @@ const ResumeEditor = (function () {
 
     $('#mobilePreviewBtn').on('click', openMobilePreview);
     $('#closePreviewBtn').on('click', closeMobilePreview);
+    $(window).on('resize', fitPreviewToViewport);
 
     $('#exportPdfBtn').on('click', function () {
       // The preview always looks like a full resume (guided sample text),

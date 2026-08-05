@@ -13,13 +13,23 @@ All data is stored in your browser's `localStorage`.
 - **Live preview** — a full-screen editor with the form on one side and a
   true-to-size A4 preview on the other (desktop), or a floating "Preview"
   button that opens a full-screen preview overlay (mobile).
-- **Guided sample content** — an empty resume shows realistic placeholder
-  text field-by-field; typing into any field replaces just that field's
-  sample text.
+- **Guided sample content** — an untouched resume shows a full realistic
+  example; the moment any real field is filled in, the whole preview
+  switches to showing only genuine content, never a mix of the two.
+- **Section & entry reordering** — sections, individual experience/project/
+  certificate entries, and skills can all be reordered by drag-and-drop
+  (desktop) or up/down buttons (touch and keyboard).
+- **Resume Score** — a live completeness/quality badge in the editor topbar
+  that checks things like contact info validity, summary length, and bullet
+  detail, with a breakdown of exactly what's passing or failing. Hidden
+  sections are excluded from scoring rather than penalized.
+- **Guided first-run tour** — a spotlight walkthrough of the editor shown
+  once automatically, replayable anytime via the help icon.
 - **Autosave** — everything is saved to `localStorage` as you type, no save
   button required.
 - **PDF export** — `window.print()` with dedicated print styles, sized to a
-  real A4 page.
+  real A4 page. Export always uses only genuinely-entered content, even if
+  the on-screen preview is currently showing guided sample text.
 
 ## Tech stack
 
@@ -33,6 +43,14 @@ Plain HTML, CSS, and JavaScript — no build step, no framework.
 All three are loaded from a CDN, so an internet connection is required even
 when running locally.
 
+### Optional third-party integrations
+
+- [GoatCounter](https://www.goatcounter.com/) — free, cookie-free page-view
+  analytics. A single async `<script>` tag; the site is still fully static
+  and works with it removed.
+- [Tally](https://tally.so/) — a "Send feedback" link (header nav and editor
+  topbar) that opens a hosted Tally form in a new tab. No embed, no backend.
+
 ## Project structure
 
 ```
@@ -45,7 +63,9 @@ css/
 js/
   storage.js              localStorage read/write wrapper (the app's only "database")
   render.js               Resume data -> HTML, including sample-placeholder fallback logic
-  editor.js                Form bindings, autosave, focus trap, template switching
+  editor.js                Form bindings, autosave, focus trap, template switching, reordering
+  tour.js                 First-run guided spotlight tour of the editor
+  score.js                Resume completeness/quality score badge + breakdown
   app.js                  Landing page interactions (template card -> opens editor)
 assets/                  Static assets
 ```
