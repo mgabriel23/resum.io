@@ -11,54 +11,54 @@
 const ResumeRender = (function () {
   const SAMPLE = {
     personal: {
-      firstName: 'Mark Bryan A.',
-      lastName: 'Gabriel',
+      firstName: 'Jordan',
+      lastName: 'Alvarez',
       headline: 'Full Stack Web Developer',
-      email: 'mrkbryngbrl@gmail.com',
-      phone: '0927 324 3042',
-      location: 'Manila, Philippines',
-      website: 'itsmebryle.com.ph'
+      email: 'jordan.alvarez@email.com',
+      phone: '0917 123 4567',
+      location: 'Quezon City, Philippines',
+      website: 'jordanalvarez.dev'
     },
     summary: 'Motivated Web Developer dedicated to delivering clean, efficient, and user-focused solutions while continuously learning and evolving.',
     experience: [
       {
-        company: 'Nityo Infotech Services Philippines Inc.',
-        role: 'PHP SQL Developer',
-        startDate: 'August 2024',
-        endDate: 'May 2026',
-        bullets: ['Developed, enhanced, and maintained core system features using PHP and SQL. Built responsive microsites and critical internal tools utilizing Python, JavaScript, jQuery, React, and AWS cloud infrastructure.']
+        company: 'Brightwave Technologies Inc.',
+        role: 'Full Stack Developer',
+        startDate: 'August 2022',
+        endDate: 'Present',
+        bullets: ['Developed, enhanced, and maintained core system features using PHP and SQL. Built responsive interfaces and critical internal tools utilizing JavaScript, React, and cloud infrastructure.']
       },
       {
-        company: 'Global Reciprocal Colleges',
-        role: 'Part Time College Instructor',
-        startDate: 'June 2024',
-        endDate: 'May 2026',
-        bullets: ['Instructed 2nd and 3rd-year students in BSIT coursework. Delivered technical lectures, mentored students on practical projects, and designed coursework to improve academic performance and hands-on skills.']
+        company: 'Northbridge Software Co.',
+        role: 'Web Development Instructor',
+        startDate: 'June 2021',
+        endDate: 'May 2022',
+        bullets: ['Instructed students in web development coursework. Delivered technical lectures, mentored students on practical projects, and designed coursework to improve hands-on skills.']
       },
       {
-        company: 'Alliedbankers Insurance Corporation',
+        company: 'Lumen Digital Solutions',
         role: 'Jr. Software Programmer',
-        startDate: 'June 2019',
-        endDate: 'April 2024',
-        bullets: ['Maintained existing business applications, implemented new features, and developed internal tools to streamline daily operations. Diagnosed and troubleshooted technical issues to optimize application performance and system functionality.']
+        startDate: 'June 2018',
+        endDate: 'May 2021',
+        bullets: ['Maintained existing business applications, implemented new features, and developed internal tools to streamline daily operations. Diagnosed and troubleshooted technical issues to optimize application performance.']
       }
     ],
     projects: {
-      name: 'Resum.io',
-      techStack: 'HTML, CSS, JavaScript, jQuery',
-      link: 'mgabriel23.github.io/resum.io',
-      bullets: ['ATS-friendly resume builder that gets you hired.']
+      name: 'Personal Portfolio Site',
+      techStack: 'HTML, CSS, JavaScript, React',
+      link: 'jordanalvarez.dev/projects',
+      bullets: ['Designed and built a personal portfolio site to showcase web development projects.']
     },
     education: {
-      school: 'Global Reciprocal Colleges',
+      school: 'Metro State University',
       degree: 'Bachelor of Science Information Technology',
-      startDate: 'June 2015',
-      endDate: 'May 2019'
+      startDate: 'June 2014',
+      endDate: 'May 2018'
     },
     certificates: {
-      name: 'Design Rules: Principles + Practices for Great UI Design',
-      issuer: 'Udemy Course',
-      date: 'December 2023'
+      name: 'Responsive Web Design Certification',
+      issuer: 'Online Course Platform',
+      date: 'March 2022'
     },
     skills: ['HTML', 'CSS', 'JavaScript', 'jQuery', 'PHP', 'MySQL', 'TypeScript', 'React', 'Node.js', 'Python', 'AWS', 'Git', 'PWA', 'Bootstrap']
   };

@@ -354,8 +354,31 @@ const ResumeEditor = (function () {
     };
   }
 
+  // True once ANY field anywhere has real content — used to flip the whole
+  // preview from "full guided example" to "real data only" in one step,
+  // instead of leaving untouched fields showing fake sample text next to
+  // fields the user actually filled in.
+  function entryHasAnyContent(entry) {
+    return Object.keys(entry).some(function (key) {
+      const val = entry[key];
+      if (Array.isArray(val)) return val.some(v => (v || '').toString().trim());
+      return (val || '').toString().trim();
+    });
+  }
+
+  function isStateEmpty(s) {
+    const p = s.personal || {};
+    const personalFields = ['firstName', 'lastName', 'headline', 'email', 'phone', 'location', 'website'];
+    const hasPersonal = personalFields.some(k => (p[k] || '').trim()) || !!p.photo;
+    const hasSummary = !!(s.summary || '').trim();
+    const hasLists = ['experience', 'projects', 'education', 'certificates']
+      .some(key => (s[key] || []).some(entryHasAnyContent));
+    const hasSkills = (s.skills || []).length > 0;
+    return !(hasPersonal || hasSummary || hasLists || hasSkills);
+  }
+
   function renderPreview() {
-    ResumeRender.renderInto(previewEl(), state);
+    ResumeRender.renderInto(previewEl(), state, !isStateEmpty(state));
     updatePageBreaks();
   }
 
