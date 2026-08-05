@@ -382,6 +382,7 @@ const ResumeEditor = (function () {
   function renderPreview() {
     ResumeRender.renderInto(previewEl(), state, !isStateEmpty(state));
     updatePageBreaks();
+    ResumeScore.update(state);
   }
 
   // Browsers suggest document.title as the "Save as PDF" filename, so a

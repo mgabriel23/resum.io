@@ -753,6 +753,7 @@ body.editor-open { overflow: hidden; }
 
 @media (max-width: 480px) {
   .save-indicator .save-text { display: none; }
+  .score-badge__label { display: none; }
   .editor-topbar { gap: .5rem; }
 }
 
@@ -853,3 +854,110 @@ body.editor-open { overflow: hidden; }
   background: var(--indigo-dark);
   border-color: var(--indigo-dark);
 }
+
+/* ==========================================================================
+   Resume score badge + breakdown panel
+   ========================================================================== */
+.score-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  flex-shrink: 0;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 999px;
+  padding: .35rem .7rem;
+  font-size: .8rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.score-badge:hover { background: var(--bg); }
+
+.score-badge__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ef4444;
+  flex-shrink: 0;
+}
+
+.score-badge.is-fair .score-badge__dot { background: #f59e0b; }
+.score-badge.is-good .score-badge__dot { background: #22c55e; }
+
+.score-badge__label { white-space: nowrap; }
+
+.score-panel {
+  display: none;
+  position: fixed;
+  z-index: 1200;
+  width: min(320px, calc(100vw - 2rem));
+  max-height: min(420px, calc(100vh - 5rem));
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+}
+
+.score-panel__header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 800;
+  font-size: .92rem;
+  padding: .9rem .9rem .6rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.score-panel__value {
+  font-family: var(--font-mono);
+  color: var(--indigo);
+}
+
+.score-panel__list {
+  list-style: none;
+  margin: 0;
+  padding: .75rem .9rem .9rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.score-panel__list li {
+  display: flex;
+  align-items: flex-start;
+  gap: .5rem;
+  font-size: .82rem;
+  line-height: 1.4;
+}
+
+.score-panel__icon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: .1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: .65rem;
+  font-weight: 700;
+}
+
+.score-panel__list li.is-pass .score-panel__icon {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.score-panel__list li.is-fail .score-panel__icon {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.score-panel__list li.is-fail span:last-child { color: var(--ink-soft); }
