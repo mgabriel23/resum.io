@@ -25,10 +25,20 @@ const ResumeTour = (function () {
       body: 'Open any section and start typing — your resume builds itself as you go.'
     },
     {
+      selector: '[data-bs-target="#panelExperience"]',
+      title: 'Reorder anytime',
+      body: 'Added a few jobs or skills? Drag them — or use the ↑↓ buttons — into whatever order tells your story best.'
+    },
+    {
       selector: '.preview-panel',
       mobileSelector: '#mobilePreviewBtn',
       title: 'Live preview',
       body: 'This is exactly what your exported PDF will look like, true to size.'
+    },
+    {
+      selector: '#scoreBadge',
+      title: 'Resume Score',
+      body: 'Checks completeness and quality as you go. Click it anytime to see exactly what’s still missing.'
     },
     {
       selector: '#saveIndicator',
@@ -154,6 +164,10 @@ const ResumeTour = (function () {
       return;
     }
 
+    // The target can be scrolled out of view inside the form panel (e.g. a
+    // later accordion section, pushed down while an earlier one is open) —
+    // bring it into view first so the spotlight lands on something visible.
+    target.scrollIntoView({ block: 'center', inline: 'nearest' });
     const rect = target.getBoundingClientRect();
     $spotlight.show().css({
       top: (rect.top - 6) + 'px',
