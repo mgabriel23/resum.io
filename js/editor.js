@@ -675,6 +675,12 @@ const ResumeEditor = (function () {
         alert('Add your name in Personal details first — the preview you\'re seeing is just guide text, so there\'s nothing real to export yet.');
         return;
       }
+      // Only counted once a real export actually proceeds — never for
+      // attempts blocked by the guard above, so this reflects genuine
+      // resume downloads, not button clicks.
+      if (window.goatcounter && window.goatcounter.count) {
+        window.goatcounter.count({ path: 'export-pdf', title: 'Export PDF', event: true });
+      }
       window.print();
     });
 
