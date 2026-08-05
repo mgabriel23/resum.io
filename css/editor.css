@@ -812,7 +812,25 @@ body.editor-open { overflow: hidden; }
 @media (max-width: 480px) {
   .save-indicator .save-text { display: none; }
   .score-badge__label { display: none; }
-  .editor-topbar { gap: .5rem; }
+
+  .editor-topbar {
+    gap: .25rem;
+    padding: .5rem .4rem;
+  }
+
+  .editor-topbar .btn-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .editor-template-switcher select { padding: .45rem .4rem; }
+
+  .editor-export-btn__text { display: none; }
+
+  .editor-export-btn {
+    padding: .5rem;
+    gap: 0;
+  }
 }
 
 /* ==========================================================================
