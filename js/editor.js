@@ -70,12 +70,14 @@ const ResumeEditor = (function () {
     $('body').addClass('editor-open');
     $('#editorOverlay').addClass('is-open').attr('aria-hidden', 'false');
     $('#editorBackBtn').trigger('focus');
+    ResumeTour.maybeAutoStart();
   }
 
   function close() {
     $('#editorOverlay').removeClass('is-open').attr('aria-hidden', 'true');
     $('body').removeClass('editor-open');
     closeMobilePreview();
+    ResumeTour.stopIfActive();
 
     if (elementFocusedBeforeOpen && document.body.contains(elementFocusedBeforeOpen)) {
       elementFocusedBeforeOpen.focus();
@@ -444,6 +446,7 @@ const ResumeEditor = (function () {
 
   function bindEvents() {
     $('#editorBackBtn').on('click', close);
+    $('#tourHelpBtn').on('click', ResumeTour.start);
 
     $('#templateSwitcher').on('change', function () {
       state.templateId = $(this).val();
