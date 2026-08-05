@@ -49,6 +49,11 @@ const ResumeTour = (function () {
       selector: '#exportPdfBtn',
       title: 'Export your PDF',
       body: 'When you’re happy with it, download a clean, ATS-friendly PDF here.'
+    },
+    {
+      selector: '.editor-topbar a[aria-label="Send feedback"]',
+      title: 'Got thoughts?',
+      body: 'Ran into a bug or have an idea to make this better? Tap here to send quick feedback — it only takes a minute.'
     }
   ];
 
