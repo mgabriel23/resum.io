@@ -15,6 +15,10 @@ const ResumeEditor = (function () {
     certificates: { templateId: 'certificateEntryTemplate', listSelector: '#certificatesList', hasBullets: false }
   };
 
+  // Entry types whose template includes the drag handle + up/down arrows
+  // (see addEntry below) — education entries don't have reorder controls.
+  const REORDERABLE_ENTRY_TYPES = ['experience', 'projects', 'certificates'];
+
   const SECTION_LABELS = {
     summary: 'Summary',
     experience: 'Experience',
@@ -25,6 +29,8 @@ const ResumeEditor = (function () {
   };
 
   let dragSectionId = null;
+  let dragEntryCard = null;
+  let dragSkillChip = null;
 
   const PHOTO_MAX_DIMENSION = 480; // px, longest side, after resize
   const PHOTO_MAX_FILE_BYTES = 8 * 1024 * 1024; // reject absurdly large files before even reading them
@@ -269,7 +275,27 @@ const ResumeEditor = (function () {
       populateBullets(node, values.bullets);
     }
 
+    // Native drag only works with a mouse, so the attribute itself (not
+    // just a handle's visibility) stays conditional — same reasoning as
+    // the section-order rows above.
+    if (REORDERABLE_ENTRY_TYPES.includes(type) && isDragCapableViewport()) {
+      node.setAttribute('draggable', 'true');
+    }
+
     $(config.listSelector).append(node);
+    updateEntryArrowStates($(config.listSelector));
+  }
+
+  // Disables "up" on the first card and "down" on the last — a no-op for
+  // entry types without reorder arrows (projects/education/certificates),
+  // since .entry-card__arrow simply won't exist inside those.
+  function updateEntryArrowStates($list) {
+    const $cards = $list.children('.entry-card');
+    $cards.each(function (i) {
+      const $card = $(this);
+      $card.find('.entry-card__arrow[data-direction="up"]').prop('disabled', i === 0);
+      $card.find('.entry-card__arrow[data-direction="down"]').prop('disabled', i === $cards.length - 1);
+    });
   }
 
   // Accepts either the new array shape or the old newline-separated string
@@ -300,6 +326,7 @@ const ResumeEditor = (function () {
   function addSkillChip(skill) {
     const $chip = $('<span class="skill-chip"><span class="skill-chip__label"></span><button type="button" aria-label="Remove skill">&times;</button></span>');
     $chip.find('.skill-chip__label').text(skill);
+    if (isDragCapableViewport()) $chip.attr('draggable', 'true');
     $('#skillChips').append($chip);
   }
 
@@ -529,7 +556,51 @@ const ResumeEditor = (function () {
     });
 
     $(document).on('click', '.entry-remove', function () {
+      const $list = $(this).closest('.entry-list');
       $(this).closest('.entry-card').remove();
+      updateEntryArrowStates($list);
+      syncFromForm();
+    });
+
+    $(document).on('click', '.entry-card__arrow', function () {
+      if ($(this).is(':disabled')) return;
+      const $card = $(this).closest('.entry-card');
+      const direction = $(this).data('direction');
+      const $sibling = direction === 'up' ? $card.prev('.entry-card') : $card.next('.entry-card');
+      if (!$sibling.length) return;
+      if (direction === 'up') $card.insertBefore($sibling); else $card.insertAfter($sibling);
+      updateEntryArrowStates($card.closest('.entry-list'));
+      syncFromForm();
+    });
+
+    $(document).on('dragstart', '.entry-card[draggable="true"]', function (e) {
+      dragEntryCard = this;
+      e.originalEvent.dataTransfer.effectAllowed = 'move';
+      $(this).addClass('is-dragging');
+    });
+
+    $(document).on('dragend', '.entry-card[draggable="true"]', function () {
+      $(this).removeClass('is-dragging');
+      $('.entry-card').removeClass('is-drop-target');
+      dragEntryCard = null;
+    });
+
+    $(document).on('dragover', '.entry-card[draggable="true"]', function (e) {
+      e.preventDefault();
+      $('.entry-card').removeClass('is-drop-target');
+      if (this !== dragEntryCard) $(this).addClass('is-drop-target');
+    });
+
+    $(document).on('drop', '.entry-card[draggable="true"]', function (e) {
+      e.preventDefault();
+      if (!dragEntryCard || dragEntryCard === this) return;
+      const $list = $(this).closest('.entry-list');
+      const cards = $list.children('.entry-card').get();
+      const fromIndex = cards.indexOf(dragEntryCard);
+      const toIndex = cards.indexOf(this);
+      if (fromIndex === -1 || toIndex === -1) return;
+      if (fromIndex < toIndex) $(dragEntryCard).insertAfter(this); else $(dragEntryCard).insertBefore(this);
+      updateEntryArrowStates($list);
       syncFromForm();
     });
 
@@ -559,6 +630,36 @@ const ResumeEditor = (function () {
 
     $(document).on('click', '.skill-chip button', function () {
       $(this).closest('.skill-chip').remove();
+      syncFromForm();
+    });
+
+    $(document).on('dragstart', '.skill-chip[draggable="true"]', function (e) {
+      dragSkillChip = this;
+      e.originalEvent.dataTransfer.effectAllowed = 'move';
+      $(this).addClass('is-dragging');
+    });
+
+    $(document).on('dragend', '.skill-chip[draggable="true"]', function () {
+      $(this).removeClass('is-dragging');
+      $('.skill-chip').removeClass('is-drop-target');
+      dragSkillChip = null;
+    });
+
+    $(document).on('dragover', '.skill-chip[draggable="true"]', function (e) {
+      e.preventDefault();
+      $('.skill-chip').removeClass('is-drop-target');
+      if (this !== dragSkillChip) $(this).addClass('is-drop-target');
+    });
+
+    $(document).on('drop', '.skill-chip[draggable="true"]', function (e) {
+      e.preventDefault();
+      if (!dragSkillChip || dragSkillChip === this) return;
+      const $list = $('#skillChips');
+      const chips = $list.children('.skill-chip').get();
+      const fromIndex = chips.indexOf(dragSkillChip);
+      const toIndex = chips.indexOf(this);
+      if (fromIndex === -1 || toIndex === -1) return;
+      if (fromIndex < toIndex) $(dragSkillChip).insertAfter(this); else $(dragSkillChip).insertBefore(this);
       syncFromForm();
     });
 

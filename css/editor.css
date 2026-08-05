@@ -597,6 +597,57 @@ body.editor-open { overflow: hidden; }
 
 .entry-remove:hover { background: #fee2e2; color: #dc2626; }
 
+/* Reorder toolbar (Experience only) — the remove button above stays put in
+   its usual top-right corner; this sits at the top-left instead of
+   replacing it, so existing entry-card markup/behavior is untouched. */
+.entry-card__toolbar {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  margin-bottom: .6rem;
+  padding-right: 2.5rem;
+}
+
+.entry-card__handle {
+  cursor: grab;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1;
+  touch-action: none;
+  margin-right: .2rem;
+}
+
+.entry-card__arrow {
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 6px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-size: .8rem;
+  line-height: 1;
+}
+
+.entry-card__arrow:hover:not(:disabled) { background: var(--bg); }
+
+.entry-card__arrow:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+}
+
+.entry-card.is-dragging { opacity: .4; }
+
+.entry-card.is-drop-target { border-color: var(--indigo); }
+
+@media (max-width: 991.98px) {
+  .entry-card__handle { display: none; }
+  .entry-card__arrow { width: 36px; height: 36px; }
+}
+
 .add-entry-btn {
   border: 1px dashed #c7d2fe;
   border-radius: var(--radius-sm);
@@ -673,7 +724,14 @@ body.editor-open { overflow: hidden; }
   padding: .3rem .45rem .3rem .85rem;
   font-size: .85rem;
   font-weight: 500;
+  border: 1px solid transparent;
 }
+
+.skill-chip[draggable="true"] { cursor: grab; }
+
+.skill-chip.is-dragging { opacity: .4; }
+
+.skill-chip.is-drop-target { border-color: var(--indigo); }
 
 .skill-chip button {
   border: none;
