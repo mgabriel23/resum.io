@@ -721,6 +721,7 @@ const ResumeEditor = (function () {
       if (window.goatcounter && window.goatcounter.count) {
         window.goatcounter.count({ path: 'export-pdf', title: 'Export PDF', event: true });
       }
+      ResumeSound.success();
       window.print();
     });
 

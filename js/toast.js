@@ -39,6 +39,8 @@ const ResumeToast = (function () {
     $toast.find('.toast-notice__icon').html(ICONS[severity]);
     $toast.find('.toast-notice__message').text(message);
 
+    ResumeSound[severity]();
+
     hideTimer = setTimeout(hide, AUTO_HIDE_MS);
   }
 
