@@ -723,6 +723,7 @@ const ResumeEditor = (function () {
     window.addEventListener('afterprint', function () {
       document.title = DEFAULT_TITLE;
       renderPreview();
+      ResumeFeedback.maybeShow();
     });
 
     $(document).on('keydown', function (e) {

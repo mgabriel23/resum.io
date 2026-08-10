@@ -1037,3 +1037,101 @@ body.editor-open { overflow: hidden; }
 }
 
 .score-panel__list li.is-fail span:last-child { color: var(--ink-soft); }
+
+/* ==========================================================================
+   Post-export feedback prompt
+   ========================================================================== */
+.feedback-modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2100;
+  background: rgba(15, 23, 42, .55);
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.feedback-modal-backdrop.is-open { display: flex; }
+
+.feedback-modal {
+  position: relative;
+  width: min(360px, 100%);
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: 1.75rem 1.5rem 1.5rem;
+  text-align: center;
+}
+
+.feedback-modal__close {
+  position: absolute;
+  top: .6rem;
+  right: .6rem;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.feedback-modal__close:hover { background: var(--bg); }
+
+.feedback-modal__title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: .5rem;
+}
+
+.feedback-modal__body {
+  font-size: .9rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  margin-bottom: 1.25rem;
+}
+
+.feedback-modal__actions {
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+}
+
+.feedback-modal__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--indigo);
+  color: #fff;
+  border: 1px solid var(--indigo);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: .9rem;
+  padding: .65rem 1rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.feedback-modal__cta:hover {
+  background: var(--indigo-dark);
+  border-color: var(--indigo-dark);
+  color: #fff;
+}
+
+.feedback-modal__later {
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: .4rem;
+}
+
+.feedback-modal__later:hover { color: var(--ink-soft); }
