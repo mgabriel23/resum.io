@@ -700,7 +700,7 @@ const ResumeEditor = (function () {
       // would silently produce a blank PDF with no explanation. Catch it
       // here instead of leaving people to wonder why their download is empty.
       if (!hasRealName(state)) {
-        alert('Add your name in Personal details first — the preview you\'re seeing is just guide text, so there\'s nothing real to export yet.');
+        ResumeToast.show('Add your name in Personal details first — the preview you\'re seeing is just guide text, so there\'s nothing real to export yet.', 'warning');
         return;
       }
       // Only counted once a real export actually proceeds — never for
