@@ -15,14 +15,26 @@ All data is stored in your browser's `localStorage`.
   button that opens a full-screen preview overlay (mobile).
 - **Guided sample content** — an untouched resume shows a full realistic
   example; the moment any real field is filled in, the whole preview
-  switches to showing only genuine content, never a mix of the two.
+  switches to showing only genuine content, never a mix of the two. Empty
+  sections show a dashed hint in the live preview (never in the export)
+  nudging you to fill them in or hide them.
 - **Section & entry reordering** — sections, individual experience/project/
   certificate entries, and skills can all be reordered by drag-and-drop
   (desktop) or up/down buttons (touch and keyboard).
+- **Required-field indicators** — labels for every field the Resume Score
+  checks are marked with `*`, and a blank/invalid one shows a small warning
+  icon that clears the moment it's fixed.
+- **Section-complete confirmation** — leaving a section that still has
+  required fields empty for a different one prompts a "finish this first, or
+  continue anyway?" choice, without ever hard-blocking navigation.
 - **Resume Score** — a live completeness/quality badge in the editor topbar
   that checks things like contact info validity, summary length, and bullet
   detail, with a breakdown of exactly what's passing or failing. Hidden
-  sections are excluded from scoring rather than penalized.
+  sections are excluded from scoring rather than penalized. PDF export is
+  blocked below 70% complete, with the badge showing exactly what's missing.
+- **Writing assistant** — a phrase-bank based helper (not a general AI chat)
+  that drafts a summary, a highlight bullet, or a skills list for a role you
+  name, and inserts or copies the result directly into your resume.
 - **Guided first-run tour** — a spotlight walkthrough of the editor shown
   once automatically, replayable anytime via the help icon.
 - **Autosave** — everything is saved to `localStorage` as you type, no save
@@ -30,6 +42,12 @@ All data is stored in your browser's `localStorage`.
 - **PDF export** — `window.print()` with dedicated print styles, sized to a
   real A4 page. Export always uses only genuinely-entered content, even if
   the on-screen preview is currently showing guided sample text.
+- **In-app notices & sound** — warnings, errors, and success confirmations
+  use a custom toast (not the browser's native `alert()`), each paired with
+  a short synthesized sound (Web Audio API, no audio files).
+- **Post-export feedback prompt** — after a successful export, sometimes
+  (capped, randomized, at most once per browser session) invites feedback
+  via a Tally form in a new tab. Never shown otherwise.
 
 ## Tech stack
 
@@ -48,8 +66,10 @@ when running locally.
 - [GoatCounter](https://www.goatcounter.com/) — free, cookie-free page-view
   analytics. A single async `<script>` tag; the site is still fully static
   and works with it removed.
-- [Tally](https://tally.so/) — a "Send feedback" link (header nav and editor
-  topbar) that opens a hosted Tally form in a new tab. No embed, no backend.
+- [Tally](https://tally.so/) — powers the post-export feedback popup (see
+  `js/feedback.js`), which links out to a hosted Tally form in a new tab. No
+  embed, no backend. There is no persistent "Send feedback" link anywhere in
+  the UI — it only ever appears after a successful export.
 
 ## Project structure
 
@@ -57,7 +77,8 @@ when running locally.
 index.html              Landing page + full-screen editor markup
 css/
   style.css              Landing page styles
-  editor.css              Full-screen editor layout (form panel, live preview, mobile overlay)
+  editor.css              Full-screen editor layout (form panel, live preview, mobile overlay,
+                           score badge, toast, feedback/section-confirm modals, writing assistant)
   templates.css            The 3 resume templates + landing-page template card previews
   print.css               A4 print/PDF export rules
 js/
@@ -66,6 +87,10 @@ js/
   editor.js                Form bindings, autosave, focus trap, template switching, reordering
   tour.js                 First-run guided spotlight tour of the editor
   score.js                Resume completeness/quality score badge + breakdown
+  toast.js                In-app replacement for the browser's native alert()
+  sound.js                Synthesized success/warning/error sound effects (Web Audio API)
+  feedback.js             Post-export feedback popup (Tally link-out)
+  assistant.js             Phrase-bank writing assistant (summary/bullet/skills suggestions)
   app.js                  Landing page interactions (template card -> opens editor)
 assets/                  Static assets
 ```

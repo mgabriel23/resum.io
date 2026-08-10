@@ -1,8 +1,8 @@
 /**
  * In-app replacement for the browser's native alert() — a small, non-blocking
  * notice that appears at the top of the screen, announced to screen readers
- * via aria-live, auto-dismisses, or can be closed manually. Supports 'warning'
- * (default) and 'error' severities; more can be added the same way if needed.
+ * via aria-live, auto-dismisses, or can be closed manually. Supports
+ * 'success', 'warning' (default), and 'error' severities.
  */
 const ResumeToast = (function () {
   const AUTO_HIDE_MS = 6000;

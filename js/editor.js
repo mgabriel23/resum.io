@@ -942,6 +942,12 @@ const ResumeEditor = (function () {
       if (!$('#editorOverlay').hasClass('is-open')) return;
 
       if (e.key === 'Escape') {
+        // Each of these floating panels has its own Escape handler already.
+        // Without this check, the same keypress would ALSO hit this handler
+        // and close the whole editor out from under whichever lighter-weight
+        // overlay the user actually meant to dismiss.
+        if ($('#scorePanel, #feedbackModalBackdrop, #sectionConfirmBackdrop, #assistantPanel, .tour-tooltip').is(':visible')) return;
+
         if ($('#previewPanel').hasClass('mobile-open')) {
           closeMobilePreview();
         } else {
