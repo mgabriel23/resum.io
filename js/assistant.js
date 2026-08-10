@@ -314,7 +314,7 @@ const ResumeAssistant = (function () {
   function buildUI() {
     $fab = $(
       '<button type="button" id="assistantFab" class="assistant-fab" aria-label="Open writing assistant" aria-expanded="false">' +
-        '<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"></path><circle cx="12" cy="12" r="3"></circle></svg>' +
+        '<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.94 15.5a2 2 0 0 0-1.44-1.44l-6.13-1.58a.5.5 0 0 1 0-.96l6.13-1.58a2 2 0 0 0 1.44-1.44l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14a2 2 0 0 0 1.44 1.44l6.13 1.58a.5.5 0 0 1 0 .96l-6.13 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.13a.5.5 0 0 1-.96 0z"></path><path d="M19 3v3"></path><path d="M20.5 4.5h-3"></path><path d="M5 17v2"></path><path d="M6 18H4"></path></svg>' +
       '</button>'
     ).appendTo('body');
 
@@ -324,7 +324,7 @@ const ResumeAssistant = (function () {
           '<span>Writing assistant</span>' +
           '<button type="button" class="assistant-panel__close" aria-label="Close">&times;</button>' +
         '</div>' +
-        '<div class="assistant-panel__messages" id="assistantMessages"></div>' +
+        '<div class="assistant-panel__messages" id="assistantMessages" tabindex="0"></div>' +
         '<form class="assistant-panel__input-row" id="assistantForm">' +
           '<input type="text" class="assistant-panel__input" id="assistantInput" autocomplete="off" placeholder="Ask for a summary, bullet, or skills…" />' +
           '<button type="submit" class="assistant-panel__send" aria-label="Send">' +

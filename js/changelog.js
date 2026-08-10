@@ -82,7 +82,7 @@ const ResumeChangelog = (function () {
             '<h2 class="changelog-modal__title">What’s new</h2>' +
             '<button type="button" class="changelog-modal__close" aria-label="Close">&times;</button>' +
           '</div>' +
-          '<div class="changelog-modal__body">' + CHANGELOG.map(entryHtml).join('') + '</div>' +
+          '<div class="changelog-modal__body" tabindex="0">' + CHANGELOG.map(entryHtml).join('') + '</div>' +
         '</div>' +
       '</div>'
     ).appendTo('body');

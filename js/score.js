@@ -132,7 +132,7 @@ const ResumeScore = (function () {
     $badgeValue = $('#scoreBadgeValue');
 
     $panel = $(
-      '<div id="scorePanel" class="score-panel" role="dialog" aria-label="Resume score breakdown">' +
+      '<div id="scorePanel" class="score-panel" role="dialog" aria-label="Resume score breakdown" tabindex="0">' +
         '<div class="score-panel__header">' +
           '<span>Resume Score</span>' +
           '<span id="scorePanelValue" class="score-panel__value">0%</span>' +

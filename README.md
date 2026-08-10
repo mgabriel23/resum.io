@@ -122,9 +122,14 @@ Clearing your browser's site data for this page will erase your saved resume.
 ## Accessibility
 
 - Keyboard-operable throughout (accordion sections, add/remove entry
-  buttons, skill chips, template switcher).
+  buttons, skill chips, template switcher, all popups/modals).
 - A "Skip to main content" link is available on first Tab press.
 - The full-screen editor traps focus while open and returns focus to the
   triggering element on close.
 - Placeholder/sample text is styled to meet WCAG AA contrast rather than
   relying on opacity alone.
+- Every scrollable popup (score breakdown, writing assistant transcript,
+  changelog) is independently keyboard-focusable and scrollable.
+- Passes an [axe-core](https://github.com/dequelabs/axe-core) automated scan
+  (WCAG 2 A/AA, WCAG 2.1/2.2 AA, best-practice rules) with zero violations
+  across the landing page and every editor/modal state.
