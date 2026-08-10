@@ -219,9 +219,25 @@ const ResumeRender = (function () {
   // `hide` skips fabricated content for the export/print pass: a section
   // with no real entries at all is omitted outright rather than showing
   // someone else's sample company/school as if it were the user's own.
-  function renderSection(entries, schema, hide) {
+  // `showEmptyHints` is only ever true for the on-screen live preview, never
+  // for export — when a real-but-empty section would otherwise be silently
+  // omitted, it shows a small dashed hint instead, nudging the user to fill
+  // it in or hide it (never printed, since export always passes it false).
+  function emptyHint(label, message) {
+    return `
+      <div class="resume-doc__section resume-doc__section--hint">
+        <h2 class="resume-doc__label">${label}</h2>
+        <p class="resume-doc__hint">${message}</p>
+      </div>`;
+  }
+
+  function renderSection(entries, schema, hide, showEmptyHints) {
     const real = (entries || []).filter(e => entryHasContent(e, schema));
-    if (hide && !real.length) return '';
+    if (hide && !real.length) {
+      if (!showEmptyHints) return '';
+      const label = schema.label.toLowerCase();
+      return emptyHint(schema.label, `No ${label} added yet — add one, or hide this section above if it doesn't apply to you.`);
+    }
     const items = real.length ? real : (schema.samplePlaceholder || [schema.sample]);
     const forcePlaceholder = real.length === 0;
     const rows = items.map(e => renderEntryRow(e, schema, forcePlaceholder, hide)).join('');
@@ -232,9 +248,12 @@ const ResumeRender = (function () {
       </div>`;
   }
 
-  function renderSkills(skills, hide) {
+  function renderSkills(skills, hide, showEmptyHints) {
     const real = (skills || []).filter(Boolean);
-    if (hide && !real.length) return '';
+    if (hide && !real.length) {
+      if (!showEmptyHints) return '';
+      return emptyHint('Skills', 'No skills added yet — add a few, or hide this section above if it doesn\'t apply to you.');
+    }
     const isPlaceholder = real.length === 0;
     const items = isPlaceholder ? SAMPLE.skills : real;
     const pills = items.map(s => `<span class="skill-pill${isPlaceholder ? ' is-placeholder' : ''}">${escapeHtml(s)}</span>`).join('');
@@ -245,9 +264,12 @@ const ResumeRender = (function () {
       </div>`;
   }
 
-  function renderSummary(summary, hide) {
+  function renderSummary(summary, hide, showEmptyHints) {
     const f = fieldValue(summary, SAMPLE.summary, hide);
-    if (hide && !f.text) return '';
+    if (hide && !f.text) {
+      if (!showEmptyHints) return '';
+      return emptyHint('Summary', 'No summary yet — write a short intro, or hide this section above if you\'d rather skip it.');
+    }
     return `
       <div class="resume-doc__section">
         <h2 class="resume-doc__label">Summary</h2>
@@ -282,12 +304,12 @@ const ResumeRender = (function () {
   // instead of a fixed sequence. Personal details isn't in here — it's
   // always shown, via renderHeader() below.
   const SECTION_RENDERERS = {
-    summary: (data, hide) => renderSummary(data.summary, hide),
-    experience: (data, hide) => renderSection(data.experience, SECTIONS.experience, hide),
-    projects: (data, hide) => renderSection(data.projects, SECTIONS.projects, hide),
-    education: (data, hide) => renderSection(data.education, SECTIONS.education, hide),
-    certificates: (data, hide) => renderSection(data.certificates, SECTIONS.certificates, hide),
-    skills: (data, hide) => renderSkills(data.skills, hide)
+    summary: (data, hide, showEmptyHints) => renderSummary(data.summary, hide, showEmptyHints),
+    experience: (data, hide, showEmptyHints) => renderSection(data.experience, SECTIONS.experience, hide, showEmptyHints),
+    projects: (data, hide, showEmptyHints) => renderSection(data.projects, SECTIONS.projects, hide, showEmptyHints),
+    education: (data, hide, showEmptyHints) => renderSection(data.education, SECTIONS.education, hide, showEmptyHints),
+    certificates: (data, hide, showEmptyHints) => renderSection(data.certificates, SECTIONS.certificates, hide, showEmptyHints),
+    skills: (data, hide, showEmptyHints) => renderSkills(data.skills, hide, showEmptyHints)
   };
 
   // A resume saved before a given section type existed (or before this
@@ -301,10 +323,10 @@ const ResumeRender = (function () {
     return [...(order || []), ...missing];
   }
 
-  function toHtml(data, hide) {
+  function toHtml(data, hide, showEmptyHints) {
     const body = normalizedSectionOrder(data.sectionOrder)
       .filter(section => section.visible)
-      .map(section => (SECTION_RENDERERS[section.id] ? SECTION_RENDERERS[section.id](data, hide) : ''))
+      .map(section => (SECTION_RENDERERS[section.id] ? SECTION_RENDERERS[section.id](data, hide, showEmptyHints) : ''))
       .join('');
     return renderHeader(data.personal || {}, hide) + body;
   }
@@ -313,9 +335,12 @@ const ResumeRender = (function () {
   // fallback text anywhere. Used for the export/print pass (see editor.js's
   // beforeprint handler) so an unfinished resume can never be exported with
   // someone else's fake name, job history, or skills baked into the PDF.
-  function renderInto(el, data, hide) {
+  // `showEmptyHints` additionally shows a small dashed hint in place of an
+  // omitted empty section — only ever passed true for the live on-screen
+  // preview, never for export, so it can never end up in the printed PDF.
+  function renderInto(el, data, hide, showEmptyHints) {
     el.className = 'resume-doc template-' + (data.templateId || 'default');
-    el.innerHTML = toHtml(data, hide);
+    el.innerHTML = toHtml(data, hide, showEmptyHints);
   }
 
   return { renderInto };

@@ -411,7 +411,7 @@ const ResumeEditor = (function () {
   }
 
   function renderPreview() {
-    ResumeRender.renderInto(previewEl(), state, !isStateEmpty(state));
+    ResumeRender.renderInto(previewEl(), state, !isStateEmpty(state), true);
     updatePageBreaks();
     ResumeScore.update(state);
   }

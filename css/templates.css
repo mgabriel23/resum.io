@@ -291,3 +291,18 @@
 .resume-doc .is-placeholder {
   color: #4b5563;
 }
+
+/* ==========================================================================
+   Empty-section hint (live preview only — see render.js's showEmptyHints;
+   export always passes it false, so this never reaches the printed PDF)
+   ========================================================================== */
+.resume-doc__hint {
+  margin: 0;
+  padding: .6em .8em;
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #94a3b8;
+  font-size: .82em;
+  font-style: italic;
+}

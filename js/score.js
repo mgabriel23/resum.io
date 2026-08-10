@@ -9,7 +9,7 @@
 const ResumeScore = (function () {
   const RULES = [
     {
-      points: 10, section: null, label: 'Full name added (2+ characters each)',
+      points: 10, section: null, label: 'Full name added',
       test: s => (s.personal.firstName || '').trim().length >= 2 && (s.personal.lastName || '').trim().length >= 2
     },
     {
@@ -17,43 +17,43 @@ const ResumeScore = (function () {
       test: s => isValidEmail(s.personal.email)
     },
     {
-      points: 5, section: null, label: 'Valid phone number (7+ digits)',
+      points: 5, section: null, label: 'Valid phone number',
       test: s => digitCount(s.personal.phone) >= 7
     },
     {
-      points: 5, section: null, label: 'Location added (3+ characters)',
+      points: 5, section: null, label: 'Location added',
       test: s => (s.personal.location || '').trim().length >= 3
     },
     {
-      points: 10, section: null, label: 'Headline / role added (3+ characters)',
+      points: 10, section: null, label: 'Headline / role added',
       test: s => (s.personal.headline || '').trim().length >= 3
     },
     {
-      points: 10, section: 'summary', label: 'Summary added (20+ characters)',
+      points: 10, section: 'summary', label: 'Summary added',
       test: s => (s.summary || '').trim().length >= 20
     },
     {
-      points: 5, section: 'summary', label: 'Summary has strong detail (80+ characters)',
+      points: 5, section: 'summary', label: 'Summary has good detail',
       test: s => (s.summary || '').trim().length >= 80
     },
     {
-      points: 10, section: 'experience', label: 'At least one real experience entry (company + role filled in)',
+      points: 10, section: 'experience', label: 'At least one experience entry with company and role',
       test: s => hasRealExperienceEntries(s.experience)
     },
     {
-      points: 10, section: 'experience', label: 'Every real experience entry has a real bullet (20+ characters)',
+      points: 10, section: 'experience', label: 'Every experience entry has a highlight',
       test: s => everyEntryHasRealBullet(s.experience)
     },
     {
-      points: 10, section: 'experience', label: 'Bullets describe impact in detail (60+ characters on average)',
+      points: 10, section: 'experience', label: 'Highlights describe your impact in detail',
       test: s => avgBulletLength(s.experience) >= 60
     },
     {
-      points: 10, section: 'education', label: 'At least one real education entry (school + degree filled in)',
+      points: 10, section: 'education', label: 'At least one education entry with school and degree',
       test: s => hasRealEducationEntries(s.education)
     },
     {
-      points: 10, section: 'skills', label: 'At least 3 real skills (2+ characters each)',
+      points: 10, section: 'skills', label: 'At least 3 skills added',
       test: s => (s.skills || []).filter(sk => (sk || '').trim().length >= 2).length >= 3
     }
   ];
