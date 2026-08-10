@@ -75,6 +75,7 @@ const ResumeEditor = (function () {
     renderSectionList();
     renderPhotoField();
     renderPreview();
+    syncAccordionButtonStates();
 
     elementFocusedBeforeOpen = document.activeElement;
     $('body').addClass('editor-open');
@@ -459,6 +460,125 @@ const ResumeEditor = (function () {
     updateEntryFieldIndicators('education', ['school', 'degree']);
   }
 
+  // True once at least one entry in that list has every one of `fields`
+  // filled in with real content — same bar as the field-indicator icons use.
+  function hasCompleteEntry(type, fields) {
+    return $(ENTRY_CONFIG[type].listSelector).children('.entry-card').toArray().some(function (card) {
+      return fields.every(function (field) {
+        return $(card).find('[data-field="' + field + '"]').val().trim().length >= 2;
+      });
+    });
+  }
+
+  function isPersonalComplete() {
+    return Object.keys(REQUIRED_FIELD_TESTS).every(function (id) {
+      return REQUIRED_FIELD_TESTS[id]($('#' + id).val() || '');
+    });
+  }
+
+  function isSummaryComplete() {
+    return !isSectionVisible('summary') || $('#summaryInput').val().trim().length >= 20;
+  }
+
+  function isExperienceComplete() {
+    return !isSectionVisible('experience') || hasCompleteEntry('experience', ['company', 'role']);
+  }
+
+  function isEducationComplete() {
+    return !isSectionVisible('education') || hasCompleteEntry('education', ['school', 'degree']);
+  }
+
+  // Not gated on order — every accordion stays freely clickable (not every
+  // user needs every section). This just names which panels have a
+  // completeness check, for the "still incomplete, continue anyway?" prompt
+  // shown when someone opens a different section while the current one
+  // hasn't cleared its required fields yet.
+  const ACCORDION_SECTIONS = [
+    { target: '#panelPersonal', label: 'Personal details', isComplete: isPersonalComplete },
+    { target: '#panelSummary', label: 'Summary', isComplete: isSummaryComplete },
+    { target: '#panelExperience', label: 'Experience', isComplete: isExperienceComplete },
+    { target: '#panelProjects', label: 'Projects', isComplete: function () { return true; } },
+    { target: '#panelEducation', label: 'Education', isComplete: isEducationComplete },
+    { target: '#panelCertificates', label: 'Certificates', isComplete: function () { return true; } },
+    { target: '#panelSkills', label: 'Skills', isComplete: function () { return true; } }
+  ];
+
+  function accordionSectionByTarget(target) {
+    return ACCORDION_SECTIONS.find(function (s) { return s.target === target; });
+  }
+
+  let $sectionConfirmBackdrop;
+  let pendingAccordionTarget = null;
+
+  function buildSectionConfirmUI() {
+    $sectionConfirmBackdrop = $(
+      '<div id="sectionConfirmBackdrop" class="section-confirm-backdrop">' +
+        '<div class="section-confirm" role="dialog" aria-modal="true" aria-label="Section incomplete">' +
+          '<span class="section-confirm__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span>' +
+          '<h2 class="section-confirm__title">Finish this section first?</h2>' +
+          '<p class="section-confirm__body" id="sectionConfirmMessage"></p>' +
+          '<div class="section-confirm__actions">' +
+            '<button type="button" class="section-confirm__stay">Finish this section</button>' +
+            '<button type="button" class="section-confirm__continue">Continue anyway</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    ).appendTo('body');
+
+    $sectionConfirmBackdrop.on('click', function (e) {
+      if (e.target === this) closeSectionConfirm();
+    });
+    $sectionConfirmBackdrop.find('.section-confirm__stay').on('click', closeSectionConfirm);
+    $sectionConfirmBackdrop.find('.section-confirm__continue').on('click', function () {
+      const target = pendingAccordionTarget;
+      closeSectionConfirm();
+      if (target) openAccordionSection(target);
+    });
+
+    $(document).on('keydown.sectionConfirm', function (e) {
+      if (e.key === 'Escape' && $sectionConfirmBackdrop.hasClass('is-open')) closeSectionConfirm();
+    });
+  }
+
+  function showSectionConfirm(currentLabel, target) {
+    if (!$sectionConfirmBackdrop) buildSectionConfirmUI();
+    pendingAccordionTarget = target;
+    $('#sectionConfirmMessage').text(
+      'You still have required fields left in ' + currentLabel + '. You can continue anyway, or go back and finish it first.'
+    );
+    $sectionConfirmBackdrop.addClass('is-open');
+  }
+
+  function closeSectionConfirm() {
+    pendingAccordionTarget = null;
+    if ($sectionConfirmBackdrop) $sectionConfirmBackdrop.removeClass('is-open');
+  }
+
+  // Bypasses the confirm check entirely — used once the user has explicitly
+  // chosen "Continue anyway", so this should behave exactly like a normal
+  // accordion click would have.
+  function openAccordionSection(target) {
+    const el = document.querySelector(target);
+    if (!el || !window.bootstrap) return;
+    bootstrap.Collapse.getOrCreateInstance(el).show();
+  }
+
+  // The accordion buttons no longer carry data-bs-toggle (see bindEvents —
+  // Bootstrap's own data-api click listener runs in the capture phase on
+  // document, registered before this script even loads, so it always wins
+  // any race against code trying to intercept the click). With
+  // data-bs-toggle removed, Bootstrap also stops managing .collapsed/
+  // aria-expanded on these buttons itself, so this keeps them in sync
+  // whenever any panel in the accordion finishes opening or closing.
+  function syncAccordionButtonStates() {
+    ACCORDION_SECTIONS.forEach(function (section) {
+      const isOpen = $(section.target).hasClass('show');
+      $('.accordion-button[data-bs-target="' + section.target + '"]')
+        .toggleClass('collapsed', !isOpen)
+        .attr('aria-expanded', isOpen ? 'true' : 'false');
+    });
+  }
+
   function renderPreview() {
     ResumeRender.renderInto(previewEl(), state, !isStateEmpty(state), true);
     updatePageBreaks();
@@ -556,6 +676,33 @@ const ResumeEditor = (function () {
   function bindEvents() {
     $('#editorBackBtn').on('click', close);
     $('#tourHelpBtn').on('click', ResumeTour.start);
+
+    // Accordion buttons don't use data-bs-toggle (see index.html) — toggling
+    // is handled here instead of leaving it to Bootstrap, so a section with
+    // required fields still missing can be confirmed before leaving it.
+    $('#resumeAccordion').on('click', '.accordion-button', function () {
+      const target = $(this).attr('data-bs-target');
+      const $targetPanel = target ? $(target) : $();
+      if (!$targetPanel.length) return;
+
+      if ($targetPanel.hasClass('show')) {
+        bootstrap.Collapse.getOrCreateInstance($targetPanel[0]).hide();
+        return;
+      }
+
+      const $openPanel = $('#resumeAccordion .accordion-collapse.show');
+      if ($openPanel.length) {
+        const openSection = accordionSectionByTarget('#' + $openPanel.attr('id'));
+        if (openSection && !openSection.isComplete()) {
+          showSectionConfirm(openSection.label, target);
+          return;
+        }
+      }
+
+      openAccordionSection(target);
+    });
+
+    $('#resumeAccordion').on('shown.bs.collapse hidden.bs.collapse', syncAccordionButtonStates);
 
     $('#templateSwitcher').on('change', function () {
       state.templateId = $(this).val();
