@@ -48,6 +48,8 @@ All data is stored in your browser's `localStorage`.
 - **Post-export feedback prompt** — after a successful export, sometimes
   (capped, randomized, at most once per browser session) invites feedback
   via a Tally form in a new tab. Never shown otherwise.
+- **Changelog** — the version badge in the footer opens a "What's new" modal
+  listing highlights for every release.
 
 ## Tech stack
 
@@ -76,7 +78,7 @@ when running locally.
 ```
 index.html              Landing page + full-screen editor markup
 css/
-  style.css              Landing page styles
+  style.css              Landing page styles, incl. the changelog modal
   editor.css              Full-screen editor layout (form panel, live preview, mobile overlay,
                            score badge, toast, feedback/section-confirm modals, writing assistant)
   templates.css            The 3 resume templates + landing-page template card previews
@@ -91,6 +93,7 @@ js/
   sound.js                Synthesized success/warning/error sound effects (Web Audio API)
   feedback.js             Post-export feedback popup (Tally link-out)
   assistant.js             Phrase-bank writing assistant (summary/bullet/skills suggestions)
+  changelog.js             "What's new" modal (footer version badge -> release history)
   app.js                  Landing page interactions (template card -> opens editor)
 assets/                  Static assets
 ```

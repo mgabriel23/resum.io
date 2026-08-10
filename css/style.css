@@ -401,6 +401,19 @@ select:focus-visible {
   border: 1px solid var(--line);
   border-radius: 999px;
   padding: .2rem .65rem;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.site-footer__version:hover {
+  color: var(--indigo);
+  border-color: var(--indigo);
+  background: #eef2ff;
+}
+
+.site-footer__version:focus-visible {
+  outline: 2px solid var(--indigo);
+  outline-offset: 2px;
 }
 
 .site-footer__badges {
@@ -448,3 +461,104 @@ select:focus-visible {
   flex-shrink: 0;
   color: #22c55e;
 }
+
+/* ==========================================================================
+   "What's new" changelog modal (opened from the footer version badge)
+   ========================================================================== */
+.changelog-modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2100;
+  background: rgba(15, 23, 42, .55);
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.changelog-modal-backdrop.is-open { display: flex; }
+
+.changelog-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(440px, 100%);
+  max-height: min(600px, 100%);
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.changelog-modal__header {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.changelog-modal__title {
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.changelog-modal__close {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.changelog-modal__close:hover { background: var(--bg); }
+
+.changelog-modal__body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 1.1rem 1.25rem 1.4rem;
+}
+
+.changelog-entry { margin-bottom: 1.3rem; }
+.changelog-entry:last-child { margin-bottom: 0; }
+
+.changelog-entry__header {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin-bottom: .5rem;
+}
+
+.changelog-entry__version {
+  font-family: var(--font-mono);
+  font-size: .92rem;
+  font-weight: 700;
+}
+
+.changelog-entry__badge {
+  font-size: .68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  color: var(--indigo);
+  background: #eef2ff;
+  border-radius: 999px;
+  padding: .15rem .55rem;
+}
+
+.changelog-entry__list {
+  margin: 0;
+  padding-left: 1.15rem;
+  color: var(--ink-soft);
+  font-size: .86rem;
+  line-height: 1.55;
+}
+
+.changelog-entry__list li + li { margin-top: .35rem; }
