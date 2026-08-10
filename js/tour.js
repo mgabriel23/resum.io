@@ -1,9 +1,9 @@
 /**
  * First-run guided tour for the editor: a sequence of tooltips that spotlight
- * real UI elements (template switcher, sections, form, preview, autosave,
- * export), teaching a new user what each part does. Shown automatically the
- * first time the editor opens, then never again unless replayed via the
- * help button in the topbar.
+ * real UI elements (template switcher, sections, form, writing assistant,
+ * preview, score, autosave, export), teaching a new user what each part
+ * does. Shown automatically the first time the editor opens, then never
+ * again unless replayed via the help button in the topbar.
  */
 const ResumeTour = (function () {
   const SEEN_KEY = 'resumio.tourSeen.v1';
@@ -22,12 +22,17 @@ const ResumeTour = (function () {
     {
       selector: '#resumeAccordion',
       title: 'Fill in your details',
-      body: 'Open any section and start typing — your resume builds itself as you go.'
+      body: 'Open any section and start typing — your resume builds itself as you go. Fields marked with * count toward your score, and a warning icon shows up on any that still need attention.'
+    },
+    {
+      selector: '#assistantFab',
+      title: 'Stuck on what to write?',
+      body: 'The writing assistant can draft a summary, a highlight bullet, or a skills list for you — just tell it the role, like "summary for a web developer."'
     },
     {
       selector: '[data-bs-target="#panelExperience"]',
       title: 'Reorder anytime',
-      body: 'Added a few jobs or skills? Drag them — or use the ↑↓ buttons — into whatever order tells your story best.'
+      body: 'Jobs, projects, certificates, and skills can all be reordered — drag them, or use the ↑↓ buttons, into whatever order tells your story best.'
     },
     {
       selector: '.preview-panel',
@@ -38,7 +43,7 @@ const ResumeTour = (function () {
     {
       selector: '#scoreBadge',
       title: 'Resume Score',
-      body: 'Checks completeness and quality as you go. Click it anytime to see exactly what’s still missing.'
+      body: 'Checks completeness and quality as you go — export unlocks at 70%. Click it anytime to see exactly what’s still missing.'
     },
     {
       selector: '#saveIndicator',
