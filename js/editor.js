@@ -82,6 +82,7 @@ const ResumeEditor = (function () {
     $('#editorOverlay').addClass('is-open').attr('aria-hidden', 'false');
     $('#editorBackBtn').trigger('focus');
     ResumeTour.maybeAutoStart();
+    ResumeAssistant.show();
   }
 
   function close() {
@@ -89,6 +90,7 @@ const ResumeEditor = (function () {
     $('body').removeClass('editor-open');
     closeMobilePreview();
     ResumeTour.stopIfActive();
+    ResumeAssistant.hide();
 
     if (elementFocusedBeforeOpen && document.body.contains(elementFocusedBeforeOpen)) {
       elementFocusedBeforeOpen.focus();
