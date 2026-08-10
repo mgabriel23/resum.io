@@ -410,10 +410,60 @@ const ResumeEditor = (function () {
     return !(hasPersonal || hasSummary || hasLists || hasSkills);
   }
 
+  // Mirrors the Resume Score rules exactly (score.js) so the amber marker on
+  // a field always agrees with why the score panel says it's incomplete —
+  // just aimed at one field instead of a whole rule.
+  const REQUIRED_FIELD_TESTS = {
+    firstName: v => v.trim().length >= 2,
+    lastName: v => v.trim().length >= 2,
+    headline: v => v.trim().length >= 3,
+    email: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
+    phone: v => (v.match(/\d/g) || []).length >= 7,
+    location: v => v.trim().length >= 3
+  };
+
+  function isSectionVisible(id) {
+    const entry = (state.sectionOrder || []).find(s => s.id === id);
+    return !entry || entry.visible !== false;
+  }
+
+  function toggleFieldIndicator($input, isValid) {
+    $input.siblings('.field-indicator').toggleClass('is-visible', !isValid);
+  }
+
+  // Company/role, school/degree count the same way the score's "real entry"
+  // check does — just per-field instead of requiring both at once, so
+  // whichever one is still blank is the one that lights up.
+  function updateEntryFieldIndicators(type, fields) {
+    const visible = isSectionVisible(type);
+    $(ENTRY_CONFIG[type].listSelector).children('.entry-card').each(function () {
+      const $card = $(this);
+      fields.forEach(function (field) {
+        const $input = $card.find('[data-field="' + field + '"]');
+        const isValid = !visible || $input.val().trim().length >= 2;
+        toggleFieldIndicator($input, isValid);
+      });
+    });
+  }
+
+  function updateFieldIndicators() {
+    Object.keys(REQUIRED_FIELD_TESTS).forEach(function (id) {
+      const $input = $('#' + id);
+      toggleFieldIndicator($input, REQUIRED_FIELD_TESTS[id]($input.val() || ''));
+    });
+
+    const summaryValid = !isSectionVisible('summary') || $('#summaryInput').val().trim().length >= 20;
+    toggleFieldIndicator($('#summaryInput'), summaryValid);
+
+    updateEntryFieldIndicators('experience', ['company', 'role']);
+    updateEntryFieldIndicators('education', ['school', 'degree']);
+  }
+
   function renderPreview() {
     ResumeRender.renderInto(previewEl(), state, !isStateEmpty(state), true);
     updatePageBreaks();
     ResumeScore.update(state);
+    updateFieldIndicators();
   }
 
   // Browsers suggest document.title as the "Save as PDF" filename, so a

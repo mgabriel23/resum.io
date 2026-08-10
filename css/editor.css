@@ -563,6 +563,39 @@ body.editor-open { overflow: hidden; }
   color: var(--indigo);
 }
 
+/* Amber "needs attention" glyph shown inside a field that's still blank/invalid
+   for a rule the Resume Score checks — hidden by default, toggled on by JS.
+   Lives either inside .input-icon (personal details, icon already on the
+   left) or its own .field-check wrapper (summary / entry fields, no other
+   icon), so both need to reserve space on the right and position the glyph. */
+.field-check {
+  position: relative;
+}
+
+.input-icon .form-control,
+.field-check .form-control {
+  padding-right: 2.1rem;
+}
+
+.field-indicator {
+  display: none;
+  position: absolute;
+  top: 50%;
+  right: .7rem;
+  transform: translateY(-50%);
+  color: #f59e0b;
+  pointer-events: none;
+}
+
+.field-check--textarea .field-indicator {
+  top: .65rem;
+  transform: none;
+}
+
+.field-indicator.is-visible {
+  display: inline-flex;
+}
+
 /* ==========================================================================
    Repeatable entries (experience / education)
    ========================================================================== */
@@ -685,6 +718,13 @@ body.editor-open { overflow: hidden; }
 }
 
 .bullet-row .form-control { flex: 1 1 auto; }
+
+/* Lines the button's text up with the bullet inputs above it, not the card
+   edge — the inputs themselves start indented past the dot marker
+   (.3rem margin + 5px dot + .5rem gap), so the button matches that offset. */
+.add-bullet-btn {
+  margin-left: calc(.3rem + 5px + .5rem);
+}
 
 .bullet-remove {
   flex-shrink: 0;
