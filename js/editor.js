@@ -598,10 +598,6 @@ const ResumeEditor = (function () {
     return (name || 'Resume') + ' - Resume';
   }
 
-  function hasRealName(s) {
-    return !!((s.personal.firstName || '').trim() || (s.personal.lastName || '').trim());
-  }
-
   // Draws a dashed line + "Page N" label wherever content crosses another
   // A4 page height, so the preview shows a multi-page resume before export.
   // One page's height is derived from the page's own current on-screen
@@ -898,17 +894,12 @@ const ResumeEditor = (function () {
     $(window).on('resize', fitPreviewToViewport);
 
     $('#exportPdfBtn').on('click', function () {
-      // The preview always looks like a full resume (guided sample text),
-      // but export strips all of that — a resume with no real name yet
-      // would silently produce a blank PDF with no explanation. Catch it
-      // here instead of leaving people to wonder why their download is empty.
-      if (!hasRealName(state)) {
-        ResumeToast.show('Add your name in Personal details first — the preview you\'re seeing is just guide text, so there\'s nothing real to export yet.', 'warning');
-        return;
-      }
       // A too-thin resume isn't worth downloading yet, and exporting it
       // would also trigger the post-export feedback prompt on effectively
       // no effort — block both by gating export on the Resume Score itself.
+      // (This alone also covers a completely blank resume — with no name
+      // and nothing else filled in, the score sits at 0%, well under the
+      // threshold, so there's no separate blank-preview case to catch.)
       const score = ResumeScore.getPercent(state);
       if (score < MIN_EXPORT_SCORE) {
         ResumeToast.show('Your resume is only ' + score + '% complete. Fill in more details to reach ' + MIN_EXPORT_SCORE + '%+ before exporting — check the Resume Score badge to see exactly what\'s missing.', 'warning');
