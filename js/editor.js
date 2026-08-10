@@ -8,6 +8,10 @@ const ResumeEditor = (function () {
   let saveTimer = null;
   let elementFocusedBeforeOpen = null;
 
+  // Below this Resume Score, export is blocked — too little real content to
+  // be worth downloading (and not worth prompting for feedback afterward).
+  const MIN_EXPORT_SCORE = 70;
+
   const ENTRY_CONFIG = {
     experience: { templateId: 'experienceEntryTemplate', listSelector: '#experienceList', hasBullets: true },
     projects: { templateId: 'projectEntryTemplate', listSelector: '#projectsList', hasBullets: true },
@@ -703,8 +707,16 @@ const ResumeEditor = (function () {
         ResumeToast.show('Add your name in Personal details first — the preview you\'re seeing is just guide text, so there\'s nothing real to export yet.', 'warning');
         return;
       }
+      // A too-thin resume isn't worth downloading yet, and exporting it
+      // would also trigger the post-export feedback prompt on effectively
+      // no effort — block both by gating export on the Resume Score itself.
+      const score = ResumeScore.getPercent(state);
+      if (score < MIN_EXPORT_SCORE) {
+        ResumeToast.show('Your resume is only ' + score + '% complete. Fill in more details to reach ' + MIN_EXPORT_SCORE + '%+ before exporting — check the Resume Score badge to see exactly what\'s missing.', 'warning');
+        return;
+      }
       // Only counted once a real export actually proceeds — never for
-      // attempts blocked by the guard above, so this reflects genuine
+      // attempts blocked by the guards above, so this reflects genuine
       // resume downloads, not button clicks.
       if (window.goatcounter && window.goatcounter.count) {
         window.goatcounter.count({ path: 'export-pdf', title: 'Export PDF', event: true });

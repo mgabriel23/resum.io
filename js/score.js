@@ -111,6 +111,12 @@ const ResumeScore = (function () {
     return { percent, results };
   }
 
+  // Public accessor so other modules (the export guard) can check the score
+  // without duplicating the rule set or reaching into calculate()'s internals.
+  function getPercent(state) {
+    return calculate(state).percent;
+  }
+
   let $badge, $badgeValue, $panel, $panelValue, $panelList;
   let isOpen = false;
 
@@ -198,5 +204,5 @@ const ResumeScore = (function () {
     if (isOpen) positionPanel();
   }
 
-  return { update };
+  return { update, getPercent };
 })();
