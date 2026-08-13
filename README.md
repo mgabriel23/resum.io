@@ -8,7 +8,7 @@
 
 | Desktop Editor & Live Preview | Mobile Preview Overlay |
 | :---: | :---: |
-| ![resum.io Desktop Preview](https://github.com/mgabriel23/portfolio/blob/master/assets/resum.io-gallery-3.webp?text=resum.io+Desktop+Editor+Previe) | ![resum.io Mobile Preview](https://github.com/mgabriel23/portfolio/blob/master/assets/resum.io-gallery-3.webp?text=resum.io+Mobile+ Preview) |
+| ![resum.io Desktop Preview](https://github.com/mgabriel23/portfolio/blob/master/assets/resum.io-gallery-3.webp?text=resum.io+Desktop+Editor+Previe) | ![resum.io Mobile Preview](https://github.com/mgabriel23/portfolio/blob/master/assets/resum.io-gallery-4.webp?text=resum.io+Mobile+Preview) |
 
 ---
 
