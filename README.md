@@ -4,7 +4,7 @@
 
 ---
 
-## 📸 Visual Preview
+## Visual Preview
 
 | Desktop Editor & Live Preview | Mobile Preview Overlay |
 | :---: | :---: |
@@ -12,7 +12,7 @@
 
 ---
 
-## ✨ Features
+## Features
 
 * **3 ATS-Friendly Templates:** Choose between *Default*, *Operator*, and *Highlight*. Built with a single-column, semantic layout under the hood to ensure top compatibility with Applicant Tracking Systems.
 * **Live Split Preview:** Real-time rendering as you type. Features a dual-panel desktop editor and a full-screen mobile overlay preview.
@@ -28,7 +28,7 @@
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 * **Core:** Plain HTML5, CSS3, JavaScript (ES6+) — *No heavy frameworks or build steps.*
 * **UI Components:** Bootstrap 5 (Layout & Accordion primitives)
