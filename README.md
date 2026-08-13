@@ -8,9 +8,7 @@
 
 | Desktop Editor & Live Preview | Mobile Preview Overlay |
 | :---: | :---: |
-| ![resum.io Desktop Preview](https://via.placeholder.com/800x450.png?text=resum.io+Desktop+Editor+Preview) | ![resum.io Mobile Preview](https://via.placeholder.com/350x650.png?text=resum.io+Mobile+ Preview) |
-
-> 💡 *Replace the placeholder URLs above with actual screenshots or short demo GIFs of your app.*
+| ![resum.io Desktop Preview](https://github.com/mgabriel23/portfolio/blob/master/assets/resum.io-gallery-3.webp?text=resum.io+Desktop+Editor+Previe) | ![resum.io Mobile Preview](https://github.com/mgabriel23/portfolio/blob/master/assets/resum.io-gallery-3.webp?text=resum.io+Mobile+ Preview) |
 
 ---
 
@@ -39,6 +37,3 @@
 * **Analytics & Feedback (Optional):** GoatCounter (cookie-free analytics), Tally.so (post-export feedback modal)
 
 ---
-   ```bash
-   git clone [https://github.com/your-username/resum.io.git](https://github.com/your-username/resum.io.git)
-   cd resum.io
