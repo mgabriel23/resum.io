@@ -19,30 +19,24 @@
     <img alt="itsmebryle.com" src="assets/btn-site-light.svg">
   </picture>
 </a>
-<a href="https://github.com/mgabriel23">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/btn-author-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="assets/btn-author-light.svg">
-    <img alt="More by Mark" src="assets/btn-author-light.svg">
-  </picture>
-</a>
 </p>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/privacy-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="assets/privacy-light.svg">
   <img alt="No sign-up, no backend, no tracking cookies. Everything autosaves to your browser's localStorage." src="assets/privacy-light.svg" width="880">
+  <br/>
 </picture>
 
 ## Preview
 
-| Desktop Editor & Live Preview | Mobile Preview Overlay |
-| :---: | :---: |
+|                                                           Desktop Editor & Live Preview                                                           |                                                           Mobile Preview Overlay                                                            |
+| :-----------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------: |
 | ![resum.io desktop editor with live resume preview](https://raw.githubusercontent.com/mgabriel23/portfolio/master/assets/resum.io-gallery-3.webp) | ![resum.io full-screen mobile preview overlay](https://raw.githubusercontent.com/mgabriel23/portfolio/master/assets/resum.io-gallery-4.png) |
 
 ## Features
 
-- **3 ATS-friendly templates** — Choose between *Default*, *Operator*, and *Highlight*. Built with a single-column, semantic layout under the hood to ensure top compatibility with Applicant Tracking Systems.
+- **3 ATS-friendly templates** — Choose between _Default_, _Operator_, and _Highlight_. Built with a single-column, semantic layout under the hood to ensure top compatibility with Applicant Tracking Systems.
 - **Live split preview** — Real-time rendering as you type, with a dual-panel desktop editor and a full-screen mobile overlay preview.
 - **Guided sample content** — Starts with a realistic dummy resume. The instant you type into any field, sample text disappears automatically. Empty sections present dashed editor hints that never show up on export.
 - **Smart drag-and-drop reordering** — Reorder sections, experience, projects, certificates, and skill chips by dragging on desktop, or with action buttons on touch and keyboard.
@@ -62,21 +56,3 @@
 </picture>
 
 No frameworks, no bundler, no build step — the repository is the deployable artifact.
-
-## Run It Locally
-
-There is nothing to install and nothing to compile.
-
-```bash
-git clone https://github.com/mgabriel23/resum.io.git
-cd resum.io
-python3 -m http.server 8000
-```
-
-Then open `http://localhost:8000`.
-
-Opening `index.html` directly from the filesystem mostly works, but a local server is worth the one command: `file://` origins restrict `localStorage` in some browsers, which is exactly the feature you would want to test.
-
----
-
-Built by [Mark Bryan Gabriel](https://github.com/mgabriel23) · [itsmebryle.com](https://itsmebryle.com) · [Live app](https://resume.itsmebryle.com/)
