@@ -1,39 +1,82 @@
-# resum.io
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/hero-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/hero-light.svg">
+  <img alt="resum.io — Resume Builder. Pick an ATS-friendly template, fill in your details, export a clean A4 PDF. No sign-up, no login, no server — your data never leaves the browser." src="assets/hero-light.svg" width="880">
+</picture>
 
-> A free, privacy-first, single-page resume builder. Pick an ATS-friendly template, fill in your details, and export a clean A4 PDF — no sign-up, no login, and no backend.
+<p>
+<a href="https://resume.itsmebryle.com/">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/btn-live-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/btn-live-light.svg">
+    <img alt="Try it live" src="assets/btn-live-light.svg">
+  </picture>
+</a>
+<a href="https://itsmebryle.com">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/btn-site-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/btn-site-light.svg">
+    <img alt="itsmebryle.com" src="assets/btn-site-light.svg">
+  </picture>
+</a>
+<a href="https://github.com/mgabriel23">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/btn-author-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/btn-author-light.svg">
+    <img alt="More by Mark" src="assets/btn-author-light.svg">
+  </picture>
+</a>
+</p>
 
----
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/privacy-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/privacy-light.svg">
+  <img alt="No sign-up, no backend, no tracking cookies. Everything autosaves to your browser's localStorage." src="assets/privacy-light.svg" width="880">
+</picture>
 
-## Visual Preview
+## Preview
 
 | Desktop Editor & Live Preview | Mobile Preview Overlay |
 | :---: | :---: |
-| ![resum.io Desktop Preview](https://github.com/mgabriel23/portfolio/blob/master/assets/resum.io-gallery-3.webp?text=resum.io+Desktop+Editor+Preview) | ![resum.io Mobile Preview](https://github.com/mgabriel23/portfolio/blob/master/assets/resum.io-gallery-4.png?text=resum.io+Mobile+Preview) |
-
----
+| ![resum.io desktop editor with live resume preview](https://raw.githubusercontent.com/mgabriel23/portfolio/master/assets/resum.io-gallery-3.webp) | ![resum.io full-screen mobile preview overlay](https://raw.githubusercontent.com/mgabriel23/portfolio/master/assets/resum.io-gallery-4.png) |
 
 ## Features
 
-* **3 ATS-Friendly Templates:** Choose between *Default*, *Operator*, and *Highlight*. Built with a single-column, semantic layout under the hood to ensure top compatibility with Applicant Tracking Systems.
-* **Live Split Preview:** Real-time rendering as you type. Features a dual-panel desktop editor and a full-screen mobile overlay preview.
-* **Guided Sample Content:** Starts with a realistic dummy resume. The instant you type into any field, sample text disappears automatically. Empty sections present dashed editor hints that never show up on export.
-* **Smart Drag-and-Drop Reordering:** Easily reorder sections, experience, projects, certificates, and skill chips using drag-and-drop on desktop or simple action buttons on touch/keyboard interfaces.
-* **Live Resume Quality Score:** A dynamic completeness badge in the editor topbar that checks contact validity, summary length, and bullet detail with explicit feedback. Blocked from PDF export if score is below 70%.
-* **Writing Assistant:** Integrated phrase-bank tool helping you draft targeted summaries, highlight bullet points, and role-specific skill sets.
-* **Privacy-First Autosave:** Zero backend. Everything is saved instantly to your browser's `localStorage`.
-* **Guided Onboarding Tour:** Built-in spotlight walkthrough on first launch, replayable anytime.
-* **A4 PDF Export:** Uses native browser print engine (`window.print()`) pre-configured with precise CSS print styling.
-* **Full Accessibility (WCAG Compliant):** Keyboard operable, zero `axe-core` violations, focus-trap modals, and high-contrast placeholder designs.
-* **In-App Toast & Audio FX:** Custom, non-intrusive notifications synthesized using the Web Audio API (no external sound files loaded).
-
----
+- **3 ATS-friendly templates** — Choose between *Default*, *Operator*, and *Highlight*. Built with a single-column, semantic layout under the hood to ensure top compatibility with Applicant Tracking Systems.
+- **Live split preview** — Real-time rendering as you type, with a dual-panel desktop editor and a full-screen mobile overlay preview.
+- **Guided sample content** — Starts with a realistic dummy resume. The instant you type into any field, sample text disappears automatically. Empty sections present dashed editor hints that never show up on export.
+- **Smart drag-and-drop reordering** — Reorder sections, experience, projects, certificates, and skill chips by dragging on desktop, or with action buttons on touch and keyboard.
+- **Live resume quality score** — A completeness badge in the editor topbar checks contact validity, summary length, and bullet detail with explicit feedback. PDF export stays blocked below 70%.
+- **Writing assistant** — An integrated phrase bank for drafting targeted summaries, highlight bullets, and role-specific skill sets.
+- **Guided onboarding tour** — A spotlight walkthrough on first launch, replayable any time.
+- **A4 PDF export** — Uses the native browser print engine (`window.print()`) with precise CSS print styling.
+- **Accessible by default** — Keyboard operable, zero `axe-core` violations, focus-trapped modals, and high-contrast placeholders.
+- **In-app toast and audio feedback** — Non-intrusive notifications synthesized with the Web Audio API — no external sound files loaded.
 
 ## Tech Stack
 
-* **Core:** Plain HTML5, CSS3, JavaScript (ES6+) — *No heavy frameworks or build steps.*
-* **UI Components:** Bootstrap 5 (Layout & Accordion primitives)
-* **DOM Operations:** jQuery
-* **Typography:** Google Fonts (*Inter*, *JetBrains Mono*)
-* **Analytics & Feedback (Optional):** GoatCounter (cookie-free analytics), Tally.so (post-export feedback modal)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/stack-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/stack-light.svg">
+  <img alt="Core: HTML5, CSS3, JavaScript (ES6+), No build step; UI: Bootstrap 5; DOM: jQuery; Type: Inter, JetBrains Mono; Optional: GoatCounter, Tally.so" src="assets/stack-light.svg" width="880">
+</picture>
+
+No frameworks, no bundler, no build step — the repository is the deployable artifact.
+
+## Run It Locally
+
+There is nothing to install and nothing to compile.
+
+```bash
+git clone https://github.com/mgabriel23/resum.io.git
+cd resum.io
+python3 -m http.server 8000
+```
+
+Then open `http://localhost:8000`.
+
+Opening `index.html` directly from the filesystem mostly works, but a local server is worth the one command: `file://` origins restrict `localStorage` in some browsers, which is exactly the feature you would want to test.
 
 ---
+
+Built by [Mark Bryan Gabriel](https://github.com/mgabriel23) · [itsmebryle.com](https://itsmebryle.com) · [Live app](https://resume.itsmebryle.com/)
