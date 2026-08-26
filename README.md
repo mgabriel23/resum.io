@@ -16,32 +16,9 @@
 
 ## Preview
 
-<table>
-  <tr>
-    <td width="65%">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="assets/preview-label-desktop-dark.svg">
-        <source media="(prefers-color-scheme: light)" srcset="assets/preview-label-desktop-light.svg">
-        <img alt="Desktop — Editor + Live Preview" src="assets/preview-label-desktop-light.svg">
-      </picture>
-    </td>
-    <td width="35%">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="assets/preview-label-mobile-dark.svg">
-        <source media="(prefers-color-scheme: light)" srcset="assets/preview-label-mobile-light.svg">
-        <img alt="Mobile — Preview Overlay" src="assets/preview-label-mobile-light.svg">
-      </picture>
-    </td>
-  </tr>
-  <tr>
-    <td width="65%">
-      <img alt="resum.io desktop editor with live resume preview" src="https://raw.githubusercontent.com/mgabriel23/portfolio/master/assets/resum.io-gallery-3.webp" width="100%">
-    </td>
-    <td width="35%">
-      <img alt="resum.io full-screen mobile preview overlay" src="https://raw.githubusercontent.com/mgabriel23/portfolio/master/assets/resum.io-gallery-4.png" width="100%">
-    </td>
-  </tr>
-</table>
+| Desktop . Editor + Live Preview | Mobile . Preview Overlay |
+| :---: | :---: |
+| ![Sense multi-device viewport preview](https://raw.githubusercontent.com/mgabriel23/portfolio/master/assets/resum.io-gallery-3.webp) | ![Sense extension options page](https://raw.githubusercontent.com/mgabriel23/portfolio/master/assets/resum.io-gallery-4.png) |
 
 ## Features
 
