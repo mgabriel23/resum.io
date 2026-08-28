@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://resume.itsmebryle.com/sitemap.xml
+Sitemap: https://resum.io.itsmebryle.com/sitemap.xml

@@ -5,7 +5,7 @@
 </picture>
 
 <p>
-<a href="https://resume.itsmebryle.com/">
+<a href="https://resum.io.itsmebryle.com/">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/btn-live-dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="assets/btn-live-light.svg">
@@ -16,8 +16,8 @@
 
 ## Preview
 
-| Desktop . Editor + Live Preview | Mobile . Preview Overlay |
-| :---: | :---: |
+|                                                   Desktop . Editor + Live Preview                                                    |                                                   Mobile . Preview Overlay                                                   |
+| :----------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------: |
 | ![Sense multi-device viewport preview](https://raw.githubusercontent.com/mgabriel23/portfolio/master/assets/resum.io-gallery-3.webp) | ![Sense extension options page](https://raw.githubusercontent.com/mgabriel23/portfolio/master/assets/resum.io-gallery-4.png) |
 
 ## Features
