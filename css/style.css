@@ -571,6 +571,408 @@ select:focus-visible {
 	color: #22c55e;
 }
 
+/* ============ PRICING ============ */
+
+.pricing__grid {
+	margin-top: 2rem;
+}
+
+.pricing-tier {
+	margin-bottom: 1.5rem;
+}
+
+.pricing-tier__card {
+	position: relative;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	padding: 2rem;
+	border: 1px solid var(--line);
+	border-radius: var(--radius-md);
+	background-color: var(--surface);
+	box-shadow: var(--shadow-card);
+}
+
+/* Pro tier isn't launched yet — dimmed and non-interactive rather than
+   removed, so visitors know it's planned without being able to act on it */
+.pricing-tier__card--disabled {
+	opacity: 0.6;
+	filter: grayscale(0.4);
+}
+
+.pricing-tier__badge {
+	position: absolute;
+	top: -0.75rem;
+	left: 2rem;
+	padding: 0.25rem 0.75rem;
+	border-radius: 999px;
+	background-color: var(--indigo);
+	color: #fff;
+	font-family: var(--font-sans);
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+}
+
+.pricing-tier__badge--soon {
+	background-color: var(--muted);
+	color: var(--surface);
+}
+
+.pricing-tier__header {
+	margin-bottom: 1.5rem;
+}
+
+.pricing-tier__name {
+	margin: 0 0 0.5rem;
+	color: var(--ink);
+	font-family: var(--font-sans);
+	font-size: 1.25rem;
+}
+
+.pricing-tier__price {
+	margin: 0 0 0.5rem;
+	display: flex;
+	align-items: baseline;
+	gap: 0.375rem;
+}
+
+.pricing-tier__amount {
+	color: var(--ink);
+	font-family: var(--font-mono);
+	font-size: 2.5rem;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.pricing-tier__period {
+	color: var(--muted);
+	font-family: var(--font-sans);
+	font-size: 0.875rem;
+}
+
+.pricing-tier__tagline {
+	margin: 0;
+	color: var(--ink-soft);
+	font-family: var(--font-sans);
+	font-size: 0.9375rem;
+}
+
+.pricing-tier__features {
+	flex: 1; /* pushes the CTA button to the same baseline across both cards regardless of feature-list length */
+	margin: 0 0 2rem;
+	padding: 0;
+	list-style: none;
+}
+
+.pricing-tier__features li {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.625rem;
+	padding: 0.5rem 0;
+	color: var(--ink-soft);
+	font-family: var(--font-sans);
+	font-size: 0.9375rem;
+}
+
+.pricing-tier__features li svg {
+	flex-shrink: 0;
+	margin-top: 0.125rem;
+	color: var(--indigo);
+}
+
+.pricing-tier__feature-note {
+	color: var(--muted);
+	font-size: 0.8125rem;
+	margin-left: 0.25rem;
+}
+
+.pricing-tier__cta {
+	width: 100%;
+	text-align: center;
+}
+
+.pricing-tier__card--disabled .pricing-tier__cta {
+	cursor: not-allowed;
+	opacity: 0.7;
+}
+
+/* ============ CONCIERGE / DONE-FOR-YOU SERVICE ============ */
+
+.concierge {
+	padding: 1rem 0 6rem;
+}
+
+.concierge__card {
+	position: relative;
+	overflow: hidden;
+	padding: 2.5rem;
+	border: 1px solid var(--line);
+	border-radius: var(--radius-md);
+	background-color: var(--surface);
+	box-shadow: var(--shadow-card);
+}
+
+/* Accent top border ties it visually to the pricing cards above while
+   giving this section its own identity as the "human, premium" option */
+.concierge__card::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 4px;
+	background: linear-gradient(
+		90deg,
+		var(--indigo) 0%,
+		var(--indigo-dark) 100%
+	);
+}
+
+.concierge__badge {
+	display: inline-block;
+	margin-bottom: 1.25rem;
+	padding: 0.25rem 0.75rem;
+	border-radius: 999px;
+	background-color: color-mix(in srgb, var(--indigo) 12%, var(--surface));
+	color: var(--indigo-dark);
+	font-family: var(--font-sans);
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+}
+
+.concierge__layout {
+	display: grid;
+	grid-template-columns: 1.4fr 1fr;
+	gap: 2.5rem;
+	align-items: start;
+}
+
+.concierge__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	margin-bottom: 1rem;
+	border-radius: var(--radius-sm);
+	background-color: color-mix(in srgb, var(--indigo) 10%, var(--surface));
+	color: var(--indigo);
+}
+
+.concierge__eyebrow {
+	margin: 0 0 0.375rem;
+	color: var(--muted);
+	font-family: var(--font-sans);
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+}
+
+.concierge__title {
+	margin: 0 0 0.5rem;
+	color: var(--ink);
+	font-family: var(--font-sans);
+	font-size: 1.375rem;
+}
+
+.concierge__text {
+	margin: 0 0 1.25rem;
+	color: var(--ink-soft);
+	font-family: var(--font-sans);
+	font-size: 0.9375rem;
+	max-width: 42ch;
+}
+
+.concierge__features {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.concierge__features li {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.625rem;
+	padding: 0.4375rem 0;
+	color: var(--ink-soft);
+	font-family: var(--font-sans);
+	font-size: 0.9375rem;
+}
+
+.concierge__features li svg {
+	flex-shrink: 0;
+	margin-top: 0.125rem;
+	color: var(--indigo);
+}
+
+/* Right column reads like a compact order/checkout summary, visually
+   distinct from the descriptive left column */
+.concierge__order {
+	padding: 1.75rem;
+	border: 1px solid var(--line);
+	border-radius: var(--radius-md);
+	background-color: var(--bg);
+	box-shadow: var(--shadow-card);
+	text-align: center;
+}
+
+.concierge__order-label {
+	margin: 0 0 0.25rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.375rem;
+	color: var(--muted);
+	font-family: var(--font-sans);
+	font-size: 0.8125rem;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+}
+
+.concierge__order-label svg {
+	color: var(--indigo);
+}
+
+.concierge__price-row {
+	margin: 0 0 1.25rem;
+	display: flex;
+	align-items: baseline;
+	justify-content: center;
+	gap: 0.375rem;
+}
+
+.concierge__price {
+	color: var(--ink);
+	font-family: var(--font-mono);
+	font-size: 2.25rem;
+	font-weight: 700;
+}
+
+.concierge__price-unit {
+	color: var(--muted);
+	font-family: var(--font-sans);
+	font-size: 0.875rem;
+}
+
+.concierge__currency-toggle {
+	display: flex;
+	justify-content: center;
+	gap: 0.375rem;
+	margin-bottom: 1.5rem;
+}
+
+.concierge__currency-btn {
+	padding: 0.25rem 0.625rem;
+	border: 1px solid var(--line);
+	border-radius: var(--radius-sm);
+	background-color: var(--surface);
+	color: var(--ink-soft);
+	font-family: var(--font-sans);
+	font-size: 0.8125rem;
+	cursor: pointer;
+	transition:
+		background-color 0.15s ease,
+		border-color 0.15s ease,
+		color 0.15s ease;
+}
+
+.concierge__currency-btn:hover {
+	border-color: var(--indigo);
+}
+
+.concierge__currency-btn.is-active {
+	background-color: var(--indigo);
+	border-color: var(--indigo);
+	color: #fff;
+}
+
+.concierge__divider {
+	margin: 0 0 1.25rem;
+	border: none;
+	border-top: 1px solid var(--line);
+}
+
+.concierge__cta {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	width: 100%;
+	text-align: center;
+	transition:
+		transform 0.15s ease,
+		box-shadow 0.15s ease;
+}
+
+.concierge__cta:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 6px 16px -8px rgba(15, 23, 42, 0.35);
+}
+
+.concierge__cta svg {
+	flex-shrink: 0;
+	transition: transform 0.15s ease;
+}
+
+.concierge__cta:hover svg {
+	transform: translateX(2px);
+}
+
+.concierge__pay-methods {
+	display: flex;
+	justify-content: center;
+	gap: 0.5rem;
+	margin-top: 1rem;
+}
+
+.concierge__pay-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.375rem;
+	padding: 0.1875rem 0.625rem;
+	border: 1px solid var(--line);
+	border-radius: var(--radius-sm);
+	background-color: var(--surface);
+	color: var(--ink-soft);
+	font-family: var(--font-sans);
+	font-size: 0.75rem;
+	font-weight: 600;
+}
+
+.concierge__pay-dot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background-color: currentColor;
+}
+
+/* Brand-recognizable accent colors on the dot only — keeps the badge
+   itself neutral/consistent with the theme while still giving a fast
+   visual cue for which payment method each pill represents */
+.concierge__pay-badge--gcash .concierge__pay-dot {
+	color: #0dc143;
+}
+
+.concierge__pay-badge--paypal .concierge__pay-dot {
+	color: #003087;
+}
+
+@media (max-width: 900px) {
+	.concierge__layout {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 767px) {
+	.concierge__card {
+		padding: 1.75rem;
+	}
+}
+
 /* ==========================================================================
    "What's new" changelog modal (opened from the footer version badge)
    ========================================================================== */
