@@ -323,8 +323,8 @@ select:focus-visible {
 
 .how-step__index {
 	position: absolute;
-	top: 1.5rem;
-	right: 1.5rem;
+	top: 1rem;
+	right: 1rem;
 	font-family: var(--font-mono);
 	font-weight: 700;
 	font-size: 0.78rem;
