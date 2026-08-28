@@ -119,6 +119,7 @@ select:focus-visible {
 }
 
 .brand {
+	margin-left: 4px;
 	font-weight: 800;
 	font-size: 1.15rem;
 	letter-spacing: -0.02em;
