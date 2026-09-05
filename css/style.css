@@ -1040,100 +1040,194 @@ select:focus-visible {
 }
 
 /* ==========================================================================
-   Footer
+   FOOTER STYLES (THEMED WITH DESIGN SYSTEM TOKENS)
    ========================================================================== */
+
 .site-footer {
+    background-color: var(--bg);
+    color: var(--ink-soft);
+    padding: 3.5rem 0 2rem 0;
     border-top: 1px solid var(--line);
-    padding: 1.75rem 0;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
 }
 
-.site-footer__inner {
+.site-footer__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* Main Layout Grid */
+.site-footer__main {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
     justify-content: space-between;
-    gap: 0.75rem 1.5rem;
+    align-items: flex-start;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+}
+
+/* Brand Section */
+.site-footer__brand-col {
+    max-width: 360px;
 }
 
 .site-footer__brand-group {
     display: flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 0.5rem 0.75rem;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
 }
 
 .site-footer__brand {
-    font-size: 1rem;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: -0.02em;
 }
 
+.site-footer__brand .brand__accent {
+    color: var(--indigo);
+}
+
+/* Version Pill Button */
 .site-footer__version {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    background: var(--surface);
     color: var(--muted);
-    background: var(--bg);
     border: 1px solid var(--line);
-    border-radius: 999px;
     padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
     cursor: pointer;
-    line-height: 1.4;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    transition: all 0.2s ease;
 }
 
 .site-footer__version:hover {
-    color: var(--indigo);
     border-color: var(--indigo);
-    background: #eef2ff;
+    color: var(--indigo);
+    background: rgba(79, 70, 229, 0.04);
 }
 
-.site-footer__version:focus-visible {
-    outline: 2px solid var(--indigo);
-    outline-offset: 2px;
+.version-pulse {
+    width: 6px;
+    height: 6px;
+    background-color: #10b981; /* Live status indicator */
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+.site-footer__tagline {
+    color: var(--muted);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Privacy Column & Badges */
+.footer-col-title {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 0.85rem;
 }
 
 .site-footer__badges {
     display: flex;
+    gap: 0.625rem;
     flex-wrap: wrap;
-    align-items: center;
-    gap: 0.6rem;
-}
-
-/* Once the brand group and badges no longer fit on one line, stack and
-   center both instead of leaving them ragged-left on their own lines. */
-@media (max-width: 991.98px) {
-    .site-footer__inner {
-        justify-content: center;
-        text-align: center;
-    }
-
-    .site-footer__brand-group,
-    .site-footer__badges {
-        justify-content: center;
-        width: 100%;
-    }
-
-    .site-footer__brand-group {
-        flex-direction: column;
-        align-items: center;
-        gap: 0.2rem;
-    }
 }
 
 .footer-badge {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    font-size: 0.78rem;
-    font-weight: 500;
-    color: var(--ink-soft);
-    background: var(--bg);
+    gap: 0.45rem;
+    background: var(--surface);
+    color: var(--ink);
     border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 0.35rem 0.75rem 0.35rem 0.65rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    transition: all 0.2s ease;
+}
+
+.footer-badge:hover {
+    border-color: var(--indigo);
+    color: var(--indigo);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-card);
 }
 
 .footer-badge svg {
-    flex-shrink: 0;
-    color: #22c55e;
+    color: var(--indigo);
+}
+
+/* Divider Line */
+.site-footer__divider {
+    height: 1px;
+    background: var(--line);
+    margin: 2.25rem 0 1.5rem 0;
+}
+
+/* Bottom Row */
+.site-footer__bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8125rem;
+    color: var(--muted);
+}
+
+.site-footer__copyright strong {
+    color: var(--ink);
+}
+
+.site-footer__back-to-top {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.site-footer__back-to-top:hover {
+    color: var(--indigo);
+}
+
+/* Responsive Layout */
+@media (max-width: 768px) {
+    .site-footer__main {
+        flex-direction: column;
+        gap: 1.75rem;
+    }
+
+    .site-footer__badges {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .footer-badge {
+        width: 100%;
+    }
+
+    .site-footer__bottom {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
 }
 
 /* ==========================================================================
