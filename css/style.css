@@ -231,54 +231,44 @@ select:focus-visible {
 }
 
 /* ==========================================================================
-   How it works
+   How it works (Borderless Flow Design)
    ========================================================================== */
 .how-it-works {
-    padding: 3rem 0 5rem;
+    padding: 4rem 0 5rem;
     text-align: center;
 }
 
 .how-it-works__grid {
-    margin-top: 2.5rem;
-    row-gap: 1.75rem;
+    margin-top: 3rem;
+    row-gap: 2.5rem;
 }
 
 .how-step {
     position: relative;
     text-align: left;
-    padding: 0 0.5rem;
+    padding: 0 1rem;
 }
 
-.how-step__card {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    height: 100%;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-    padding: 1.75rem 1.5rem;
-    transition:
-        transform 0.15s ease,
-        box-shadow 0.15s ease,
-        border-color 0.15s ease;
-}
-
-.how-step__card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-card);
-    border-color: #c7d2fe;
-}
-
+/* Borderless Media Container with slight floating shadow */
 .how-step__media {
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
     overflow: hidden;
-    border-radius: 12px;
-    margin-bottom: 1.25rem;
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
     background-color: var(--color-surface-muted, #f2f2f2);
-    isolation: isolate; /* keeps border-radius clipping the video's own stacking context */
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+    isolation: isolate;
+}
+
+.how-step:hover .how-step__media {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 35px -10px rgba(79, 70, 229, 0.15);
 }
 
 .how-step__video {
@@ -286,7 +276,7 @@ select:focus-visible {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: top center; /* keeps UI chrome/text in frame rather than centering on empty space */
+    object-position: top center;
 }
 
 .how-step__play {
@@ -300,7 +290,7 @@ select:focus-visible {
     border: none;
     padding: 0;
     cursor: pointer;
-    background-color: rgba(0, 0, 0, 0.25); /* dims the paused frame so the button reads clearly */
+    background-color: rgba(15, 23, 42, 0.25);
     color: #fff;
     transition: background-color 0.2s ease;
 }
@@ -309,77 +299,82 @@ select:focus-visible {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #111;
-    transition: transform 0.15s ease;
+    background-color: #ffffff;
+    color: #4f46e5;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease;
 }
 
 .how-step__play-icon svg {
-    /* The play triangle's visual mass sits right of its bounding-box center,
-	   so a small left nudge is needed for it to *look* centered in the circle
-	   even though the circle itself is centered via flexbox, not padding. */
     margin-left: 2px;
 }
 
-.how-step__play:hover .how-step__play-icon,
-.how-step__play:focus-visible .how-step__play-icon {
-    transform: scale(1.08);
+.how-step__play:hover .how-step__play-icon {
+    transform: scale(1.1);
+    background-color: #ffffff;
 }
 
-.how-step__play:focus-visible {
-    outline: 2px solid #fff;
-    outline-offset: -4px;
-}
-
-/* Hide the button while the clip is playing; video keeps filling the media box */
 .how-step__media.is-playing .how-step__play {
     display: none;
 }
 
-/* Index badge overlaps the media corner rather than sitting as a separate line */
-.how-step__index {
-    position: relative;
-    margin-top: -2.5rem;
-    margin-left: 0.5rem;
-    z-index: 1;
-}
-
+/* Floating Step Index Badge */
 .how-step__index {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: 0.75rem;
+    right: 0.75rem;
     font-family: var(--font-mono);
     font-weight: 700;
-    font-size: 0.78rem;
-    color: var(--muted);
+    font-size: 0.75rem;
+    color: #ffffff;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+}
+
+/* Header & Text Content */
+.how-step__content {
+    padding: 0 0.25rem;
+}
+
+.how-step__header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
 }
 
 .how-step__icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: var(--radius-sm);
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
     background: #eef2ff;
-    color: var(--indigo);
-    margin-bottom: 1.1rem;
+    color: #4f46e5;
+    flex-shrink: 0;
 }
 
 .how-step h3 {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: 700;
-    margin-bottom: 0.4rem;
+    margin: 0;
+    color: var(--ink, #0f172a);
 }
 
 .how-step p {
-    color: var(--ink-soft);
-    font-size: 0.95rem;
-    line-height: 1.55;
-    margin-bottom: 0;
+    color: var(--ink-soft, #64748b);
+    font-size: 0.925rem;
+    line-height: 1.6;
+    margin: 0;
 }
 
 /* ==========================================================================
