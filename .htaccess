@@ -3,4 +3,9 @@
   Header always set X-Frame-Options "SAMEORIGIN"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+
+  Header unset Content-Security-Policy
+  
+  # Added frame-src 'self' to permit iframe PDF loading
+  Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://gc.zgo.at; connect-src 'self' https://*.goatcounter.com https://cdn.jsdelivr.net; object-src 'self'; frame-src 'self';"
 </IfModule>
