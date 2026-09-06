@@ -7,202 +7,254 @@
  * actually chosen to include count toward it.
  */
 const ResumeScore = (function () {
-  const RULES = [
-    {
-      points: 10, section: null, label: 'Full name added',
-      test: s => (s.personal.firstName || '').trim().length >= 2 && (s.personal.lastName || '').trim().length >= 2
-    },
-    {
-      points: 5, section: null, label: 'Valid email address',
-      test: s => isValidEmail(s.personal.email)
-    },
-    {
-      points: 5, section: null, label: 'Valid phone number',
-      test: s => digitCount(s.personal.phone) >= 7
-    },
-    {
-      points: 5, section: null, label: 'Location added',
-      test: s => (s.personal.location || '').trim().length >= 3
-    },
-    {
-      points: 10, section: null, label: 'Headline / role added',
-      test: s => (s.personal.headline || '').trim().length >= 3
-    },
-    {
-      points: 10, section: 'summary', label: 'Summary added',
-      test: s => (s.summary || '').trim().length >= 20
-    },
-    {
-      points: 5, section: 'summary', label: 'Summary has good detail',
-      test: s => (s.summary || '').trim().length >= 80
-    },
-    {
-      points: 10, section: 'experience', label: 'At least one experience entry with company and role',
-      test: s => hasRealExperienceEntries(s.experience)
-    },
-    {
-      points: 10, section: 'experience', label: 'Every experience entry has a highlight',
-      test: s => everyEntryHasRealBullet(s.experience)
-    },
-    {
-      points: 10, section: 'experience', label: 'Highlights describe your impact in detail',
-      test: s => avgBulletLength(s.experience) >= 60
-    },
-    {
-      points: 10, section: 'education', label: 'At least one education entry with school and degree',
-      test: s => hasRealEducationEntries(s.education)
-    },
-    {
-      points: 10, section: 'skills', label: 'At least 3 skills added',
-      test: s => (s.skills || []).filter(sk => (sk || '').trim().length >= 2).length >= 3
+    const RULES = [
+        {
+            points: 10,
+            section: null,
+            label: 'Full name added',
+            test: (s) =>
+                (s.personal.firstName || '').trim().length >= 2 && (s.personal.lastName || '').trim().length >= 2,
+        },
+        {
+            points: 5,
+            section: null,
+            label: 'Valid email address',
+            test: (s) => isValidEmail(s.personal.email),
+        },
+        {
+            points: 5,
+            section: null,
+            label: 'Valid phone number',
+            test: (s) => digitCount(s.personal.phone) >= 7,
+        },
+        {
+            points: 5,
+            section: null,
+            label: 'Location added',
+            test: (s) => (s.personal.location || '').trim().length >= 3,
+        },
+        {
+            points: 10,
+            section: null,
+            label: 'Headline / role added',
+            test: (s) => (s.personal.headline || '').trim().length >= 3,
+        },
+        {
+            points: 10,
+            section: 'summary',
+            label: 'Summary added',
+            test: (s) => (s.summary || '').trim().length >= 20,
+        },
+        {
+            points: 5,
+            section: 'summary',
+            label: 'Summary has good detail',
+            test: (s) => (s.summary || '').trim().length >= 80,
+        },
+        {
+            points: 10,
+            section: 'experience',
+            label: 'At least one experience entry with company and role',
+            test: (s) => hasRealExperienceEntries(s.experience),
+        },
+        {
+            points: 10,
+            section: 'experience',
+            label: 'Every experience entry has a highlight',
+            test: (s) => everyEntryHasRealBullet(s.experience),
+        },
+        {
+            points: 10,
+            section: 'experience',
+            label: 'Highlights describe your impact in detail',
+            test: (s) => avgBulletLength(s.experience) >= 60,
+        },
+        {
+            points: 10,
+            section: 'education',
+            label: 'At least one education entry with school and degree',
+            test: (s) => hasRealEducationEntries(s.education),
+        },
+        {
+            points: 10,
+            section: 'skills',
+            label: 'At least 3 skills added',
+            test: (s) => (s.skills || []).filter((sk) => (sk || '').trim().length >= 2).length >= 3,
+        },
+    ];
+
+    function isValidEmail(value) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((value || '').trim());
     }
-  ];
 
-  function isValidEmail(value) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((value || '').trim());
-  }
+    function digitCount(value) {
+        return ((value || '').match(/\d/g) || []).length;
+    }
 
-  function digitCount(value) {
-    return ((value || '').match(/\d/g) || []).length;
-  }
+    // "Real" means the two identifying fields are both filled in with more
+    // than a token character — a single letter in "Company" shouldn't count
+    // the same as an actual company name.
+    function hasRealExperienceEntries(list) {
+        return (list || []).some((e) => (e.company || '').trim().length >= 2 && (e.role || '').trim().length >= 2);
+    }
 
-  // "Real" means the two identifying fields are both filled in with more
-  // than a token character — a single letter in "Company" shouldn't count
-  // the same as an actual company name.
-  function hasRealExperienceEntries(list) {
-    return (list || []).some(e => (e.company || '').trim().length >= 2 && (e.role || '').trim().length >= 2);
-  }
+    function hasRealEducationEntries(list) {
+        return (list || []).some((e) => (e.school || '').trim().length >= 2 && (e.degree || '').trim().length >= 2);
+    }
 
-  function hasRealEducationEntries(list) {
-    return (list || []).some(e => (e.school || '').trim().length >= 2 && (e.degree || '').trim().length >= 2);
-  }
+    function everyEntryHasRealBullet(list) {
+        const real = (list || []).filter(
+            (e) => (e.company || '').trim().length >= 2 && (e.role || '').trim().length >= 2
+        );
+        if (!real.length) return false;
+        return real.every((e) => (e.bullets || []).some((b) => (b || '').trim().length >= 20));
+    }
 
-  function everyEntryHasRealBullet(list) {
-    const real = (list || []).filter(e => (e.company || '').trim().length >= 2 && (e.role || '').trim().length >= 2);
-    if (!real.length) return false;
-    return real.every(e => (e.bullets || []).some(b => (b || '').trim().length >= 20));
-  }
+    function avgBulletLength(list) {
+        const bullets = [];
+        (list || []).forEach((e) =>
+            (e.bullets || []).forEach((b) => {
+                if ((b || '').trim()) bullets.push(b.trim());
+            })
+        );
+        if (!bullets.length) return 0;
+        return bullets.reduce((sum, b) => sum + b.length, 0) / bullets.length;
+    }
 
-  function avgBulletLength(list) {
-    const bullets = [];
-    (list || []).forEach(e => (e.bullets || []).forEach(b => { if ((b || '').trim()) bullets.push(b.trim()); }));
-    if (!bullets.length) return 0;
-    return bullets.reduce((sum, b) => sum + b.length, 0) / bullets.length;
-  }
+    function isSectionVisible(state, sectionId) {
+        if (!sectionId) return true;
+        const entry = (state.sectionOrder || []).find((s) => s.id === sectionId);
+        return !entry || entry.visible !== false;
+    }
 
-  function isSectionVisible(state, sectionId) {
-    if (!sectionId) return true;
-    const entry = (state.sectionOrder || []).find(s => s.id === sectionId);
-    return !entry || entry.visible !== false;
-  }
+    function calculate(state) {
+        let earned = 0;
+        let possible = 0;
+        const results = RULES.filter((rule) => isSectionVisible(state, rule.section)).map((rule) => {
+            const passed = !!rule.test(state);
+            possible += rule.points;
+            if (passed) earned += rule.points;
+            return { label: rule.label, passed };
+        });
+        const percent = possible ? Math.round((earned / possible) * 100) : 0;
+        return { percent, results };
+    }
 
-  function calculate(state) {
-    let earned = 0;
-    let possible = 0;
-    const results = RULES
-      .filter(rule => isSectionVisible(state, rule.section))
-      .map(rule => {
-        const passed = !!rule.test(state);
-        possible += rule.points;
-        if (passed) earned += rule.points;
-        return { label: rule.label, passed };
-      });
-    const percent = possible ? Math.round((earned / possible) * 100) : 0;
-    return { percent, results };
-  }
+    // Public accessor so other modules (the export guard) can check the score
+    // without duplicating the rule set or reaching into calculate()'s internals.
+    function getPercent(state) {
+        return calculate(state).percent;
+    }
 
-  // Public accessor so other modules (the export guard) can check the score
-  // without duplicating the rule set or reaching into calculate()'s internals.
-  function getPercent(state) {
-    return calculate(state).percent;
-  }
+    let $badge, $badgeValue, $panel, $panelValue, $panelList;
+    let isOpen = false;
 
-  let $badge, $badgeValue, $panel, $panelValue, $panelList;
-  let isOpen = false;
+    function buildUI() {
+        // Prevent duplicate injection if buildUI runs multiple times
+        if ($('#scoreBadge').length) return;
 
-  function buildUI() {
-    $('#saveIndicator').after(
-      '<button type="button" id="scoreBadge" class="score-badge" aria-expanded="false" aria-haspopup="true">' +
-        '<span class="score-badge__dot" aria-hidden="true"></span>' +
-        '<span class="score-badge__label">Resume Score</span>' +
-        '<span id="scoreBadgeValue">0%</span>' +
-      '</button>'
-    );
-    $badge = $('#scoreBadge');
-    $badgeValue = $('#scoreBadgeValue');
+        $('#saveIndicator').after(
+            '<button type="button" id="scoreBadge" class="score-badge" aria-expanded="false" aria-haspopup="true">' +
+                '<span class="score-dot score-dot--warning" aria-hidden="true"></span>' +
+                '<span class="score-label">Resume Score</span>' +
+                '<strong id="scoreBadgeValue">0%</strong>' +
+                '</button>'
+        );
 
-    $panel = $(
-      '<div id="scorePanel" class="score-panel" role="dialog" aria-label="Resume score breakdown" tabindex="0">' +
-        '<div class="score-panel__header">' +
-          '<span>Resume Score</span>' +
-          '<span id="scorePanelValue" class="score-panel__value">0%</span>' +
-        '</div>' +
-        '<ul class="score-panel__list" id="scorePanelList"></ul>' +
-      '</div>'
-    ).appendTo('body').hide();
-    $panelValue = $('#scorePanelValue');
-    $panelList = $('#scorePanelList');
+        $badge = $('#scoreBadge');
+        $badgeValue = $('#scoreBadgeValue');
 
-    $badge.on('click', toggle);
-    $(document).on('click.resumeScore', (e) => {
-      if (!isOpen) return;
-      if ($(e.target).closest('#scorePanel, #scoreBadge').length) return;
-      close();
-    });
-    $(document).on('keydown.resumeScore', (e) => {
-      if (isOpen && e.key === 'Escape') close();
-    });
-    $(window).on('resize.resumeScore scroll.resumeScore', () => { if (isOpen) positionPanel(); });
-  }
+        if (!$('#scorePanel').length) {
+            $panel = $(
+                '<div id="scorePanel" class="score-panel" role="dialog" aria-label="Resume score breakdown" tabindex="0">' +
+                    '<div class="score-panel__header">' +
+                    '<span>Resume Score</span>' +
+                    '<span id="scorePanelValue" class="score-panel__value">0%</span>' +
+                    '</div>' +
+                    '<ul class="score-panel__list" id="scorePanelList"></ul>' +
+                    '</div>'
+            )
+                .appendTo('body')
+                .hide();
 
-  function scoreColorClass(percent) {
-    if (percent >= 80) return 'is-good';
-    if (percent >= 50) return 'is-fair';
-    return 'is-low';
-  }
+            $panelValue = $('#scorePanelValue');
+            $panelList = $('#scorePanelList');
+        }
 
-  function positionPanel() {
-    const rect = $badge[0].getBoundingClientRect();
-    const panelWidth = $panel.outerWidth();
-    const left = Math.max(16, Math.min(rect.right - panelWidth, window.innerWidth - panelWidth - 16));
-    $panel.css({ top: (rect.bottom + 8) + 'px', left: left + 'px' });
-  }
+        $badge.off('click').on('click', toggle);
 
-  function toggle() {
-    if (isOpen) close(); else open();
-  }
+        $(document)
+            .off('click.resumeScore')
+            .on('click.resumeScore', (e) => {
+                if (!isOpen) return;
+                if ($(e.target).closest('#scorePanel, #scoreBadge').length) return;
+                close();
+            });
 
-  function open() {
-    isOpen = true;
-    $panel.show();
-    positionPanel();
-    $badge.attr('aria-expanded', 'true');
-  }
+        $(document)
+            .off('keydown.resumeScore')
+            .on('keydown.resumeScore', (e) => {
+                if (isOpen && e.key === 'Escape') close();
+            });
 
-  function close() {
-    isOpen = false;
-    $panel.hide();
-    $badge.attr('aria-expanded', 'false');
-  }
+        $(window)
+            .off('resize.resumeScore scroll.resumeScore')
+            .on('resize.resumeScore scroll.resumeScore', () => {
+                if (isOpen) positionPanel();
+            });
+    }
 
-  function update(state) {
-    if (!$badge) buildUI();
-    const score = calculate(state);
+    function scoreColorClass(percent) {
+        if (percent >= 80) return 'is-good';
+        if (percent >= 50) return 'is-fair';
+        return 'is-low';
+    }
 
-    $badge.removeClass('is-good is-fair is-low').addClass(scoreColorClass(score.percent));
-    $badgeValue.text(score.percent + '%');
-    $panelValue.text(score.percent + '%');
+    function positionPanel() {
+        const rect = $badge[0].getBoundingClientRect();
+        const panelWidth = $panel.outerWidth();
+        const left = Math.max(16, Math.min(rect.right - panelWidth, window.innerWidth - panelWidth - 16));
+        $panel.css({ top: rect.bottom + 8 + 'px', left: left + 'px' });
+    }
 
-    $panelList.empty();
-    score.results.forEach(r => {
-      const $li = $('<li></li>').addClass(r.passed ? 'is-pass' : 'is-fail');
-      $('<span class="score-panel__icon" aria-hidden="true"></span>').text(r.passed ? '✓' : '✕').appendTo($li);
-      $('<span></span>').text(r.label).appendTo($li);
-      $panelList.append($li);
-    });
+    function toggle() {
+        if (isOpen) close();
+        else open();
+    }
 
-    if (isOpen) positionPanel();
-  }
+    function open() {
+        isOpen = true;
+        $panel.show();
+        positionPanel();
+        $badge.attr('aria-expanded', 'true');
+    }
 
-  return { update, getPercent };
+    function close() {
+        isOpen = false;
+        $panel.hide();
+        $badge.attr('aria-expanded', 'false');
+    }
+
+    function update(state) {
+        if (!$badge) buildUI();
+        const score = calculate(state);
+
+        $badge.removeClass('is-good is-fair is-low').addClass(scoreColorClass(score.percent));
+        $badgeValue.text(score.percent + '%');
+        $panelValue.text(score.percent + '%');
+
+        $panelList.empty();
+        score.results.forEach((r) => {
+            const $li = $('<li></li>').addClass(r.passed ? 'is-pass' : 'is-fail');
+            $('<span class="score-panel__icon" aria-hidden="true"></span>')
+                .text(r.passed ? '✓' : '✕')
+                .appendTo($li);
+            $('<span></span>').text(r.label).appendTo($li);
+            $panelList.append($li);
+        });
+
+        if (isOpen) positionPanel();
+    }
+
+    return { update, getPercent };
 })();

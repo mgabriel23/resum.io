@@ -1076,7 +1076,7 @@ select:focus-visible {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.3rem;
 }
 
 .site-footer__brand {
@@ -1124,9 +1124,10 @@ select:focus-visible {
 }
 
 .site-footer__tagline {
+    font-size: 0.7rem;
     color: var(--muted);
-    line-height: 1.5;
-    margin: 0;
+    /* line-height: 1.5; */
+    margin-left: 4px;
 }
 
 /* Privacy Column & Badges */
