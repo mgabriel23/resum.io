@@ -168,8 +168,18 @@ const ResumeScore = (function () {
             $panel = $(
                 '<div id="scorePanel" class="score-panel" role="dialog" aria-label="Score breakdown" tabindex="0">' +
                     '<div class="score-panel__header">' +
-                    '<span>Score</span>' +
+                    '<div class="score-panel__header-top">' +
+                    '<span class="score-panel__title">Resume Strength</span>' +
                     '<span id="scorePanelValue" class="score-panel__value">0%</span>' +
+                    '</div>' +
+                    '<div class="score-panel__bar-bg">' +
+                    '<div id="scorePanelBar" class="score-panel__bar-fill" style="width: 0%;"></div>' +
+                    '</div>' +
+                    '<div class="score-panel__summary-meta">' +
+                    '<span><strong id="scorePanelDoneCount">0</strong> completed</span>' +
+                    '<span class="score-panel__meta-divider">•</span>' +
+                    '<span><strong id="scorePanelTodoCount">0</strong> remaining</span>' +
+                    '</div>' +
                     '</div>' +
                     '<ul class="score-panel__list" id="scorePanelList"></ul>' +
                     '</div>'
@@ -243,8 +253,21 @@ const ResumeScore = (function () {
         $badgeValue.text(score.percent + '%');
         $panelValue.text(score.percent + '%');
 
+        // 1. Fix width setting to use score.percent
+        $('#scorePanelBar').css('width', score.percent + '%');
+
+        // 2. Count passed and failed items
+        let doneCount = 0;
+        let todoCount = 0;
+
         $panelList.empty();
         score.results.forEach((r) => {
+            if (r.passed) {
+                doneCount++;
+            } else {
+                todoCount++;
+            }
+
             const $li = $('<li></li>').addClass(r.passed ? 'is-pass' : 'is-fail');
             $('<span class="score-panel__icon" aria-hidden="true"></span>')
                 .text(r.passed ? '✓' : '✕')
@@ -252,6 +275,10 @@ const ResumeScore = (function () {
             $('<span></span>').text(r.label).appendTo($li);
             $panelList.append($li);
         });
+
+        // 3. Update header meta numbers
+        $('#scorePanelDoneCount').text(doneCount);
+        $('#scorePanelTodoCount').text(todoCount);
 
         if (isOpen) positionPanel();
     }
