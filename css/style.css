@@ -97,7 +97,7 @@ select:focus-visible {
 }
 
 /* ==========================================================================
-   Site header
+   Site Header
    ========================================================================== */
 .site-header {
     position: sticky;
@@ -113,10 +113,10 @@ select:focus-visible {
     align-items: center;
     justify-content: space-between;
     padding: 0.9rem 1rem;
+    position: relative;
 }
 
 .brand {
-    margin-left: 4px;
     font-weight: 800;
     font-size: 1.15rem;
     letter-spacing: -0.02em;
@@ -131,9 +131,19 @@ select:focus-visible {
     color: var(--indigo);
 }
 
+/* Centered Menu Wrapper on Desktop */
+.site-header__menu {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .site-nav {
-    margin-left: -50px;
+    display: flex;
+    align-items: center;
     gap: 1.75rem;
+    margin-left: -45px;
 }
 
 .site-nav a {
@@ -147,12 +157,12 @@ select:focus-visible {
     color: var(--ink);
 }
 
+/* CTA Styles */
 .site-header__cta {
     border-radius: var(--radius-sm);
     font-weight: 600;
 }
 
-/* revision for navbar cta button to mmake it more vibes of a facebook page */
 .site-header__cta--facebook {
     display: inline-flex;
     align-items: center;
@@ -165,6 +175,7 @@ select:focus-visible {
         border-color 0.15s ease,
         transform 0.1s ease;
 }
+
 .site-header__cta--facebook:hover,
 .site-header__cta--facebook:focus-visible {
     background-color: #0d63d1;
@@ -172,12 +183,110 @@ select:focus-visible {
     color: #fff;
     transform: translateY(-1px);
 }
+
 .site-header__cta--facebook:active {
     transform: translateY(0);
     background-color: #0a56b8;
 }
+
 .site-header__cta-icon {
     flex-shrink: 0;
+}
+
+/* Hamburger Icon Styles */
+.menu-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 50;
+}
+
+.hamburger {
+    display: block;
+    position: relative;
+    width: 22px;
+    height: 2px;
+    background-color: var(--ink, #1e293b);
+    transition: background-color 0.2s ease-in-out;
+}
+
+.hamburger::before,
+.hamburger::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: var(--ink, #1e293b);
+    left: 0;
+    transition:
+        transform 0.2s ease-in-out,
+        top 0.2s ease-in-out;
+}
+
+.hamburger::before {
+    top: -6px;
+}
+.hamburger::after {
+    top: 6px;
+}
+
+/* Hamburger Close Animation */
+.menu-toggle.is-active .hamburger {
+    background-color: transparent;
+}
+
+.menu-toggle.is-active .hamburger::before {
+    top: 0;
+    transform: rotate(45deg);
+}
+
+.menu-toggle.is-active .hamburger::after {
+    top: 0;
+    transform: rotate(-45deg);
+}
+
+/* Responsive Mobile Layout (768px and below) */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+    }
+
+    .site-header__cta--facebook {
+        display: none;
+        /* margin-right: 0.5rem; */
+    }
+
+    .site-header__menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(248, 250, 252, 0.98);
+        backdrop-filter: blur(12px);
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.25rem 1.5rem;
+        display: none;
+        /* Card outline and prominent floating drop-shadow */
+        border: 1px solid var(--line, #e2e8f0);
+        box-shadow:
+            0 10px 25px -5px rgba(15, 23, 42, 0.15),
+            0 8px 10px -6px rgba(15, 23, 42, 0.08);
+    }
+
+    .site-header__menu.is-active {
+        display: flex;
+    }
+
+    .site-nav {
+        margin-left: 0;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        gap: 1rem;
+    }
 }
 
 /* ==========================================================================

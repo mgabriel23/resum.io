@@ -92,17 +92,22 @@
         <!-- ============ SITE HEADER ============ -->
         <header class="site-header">
             <div class="container site-header__inner">
+                <!-- Logo -->
                 <a href="#top" class="brand site-header__logo" aria-label="resum.io home">
                     <img src="assets/icon-128x128.png" alt="resum.io" width="32" height="32" />
                     &nbsp; resum
                     <span class="brand__accent">.io</span>
                 </a>
 
-                <nav class="site-nav d-none d-md-flex">
-                    <a href="#how-it-works">App Overview</a>
-                    <a href="#templates">Templates</a>
-                    <a href="#testimonials">Testimonials</a>
-                </nav>
+                <!-- Navigation & CTA Wrapper -->
+                <div class="site-header__menu" id="siteMenu">
+                    <nav class="site-nav">
+                        <a href="#how-it-works">App Overview</a>
+                        <a href="#templates">Templates</a>
+                        <a href="#testimonials">Testimonials</a>
+                    </nav>
+                </div>
+
                 <a
                     href="https://www.facebook.com/resum.io.imb"
                     class="btn btn-sm site-header__cta site-header__cta--facebook"
@@ -121,6 +126,11 @@
                     </svg>
                     Follow us
                 </a>
+
+                <!-- Mobile Hamburger Toggle Button -->
+                <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">
+                    <span class="hamburger"></span>
+                </button>
             </div>
         </header>
 
