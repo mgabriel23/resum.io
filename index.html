@@ -289,6 +289,17 @@
                                         </svg>
                                     </span>
                                 </button>
+                                <button type="button" class="how-step__expand" aria-label="Expand video preview">
+                                    <svg
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                                    </svg>
+                                </button>
                                 <span class="how-step__index">01</span>
                             </div>
                             <div class="how-step__content">
@@ -330,6 +341,17 @@
                                         </svg>
                                     </span>
                                 </button>
+                                <button type="button" class="how-step__expand" aria-label="Expand video preview">
+                                    <svg
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                                    </svg>
+                                </button>
                                 <span class="how-step__index">02</span>
                             </div>
                             <div class="how-step__content">
@@ -366,6 +388,17 @@
                                             <path d="M8 5v14l11-7z"></path>
                                         </svg>
                                     </span>
+                                </button>
+                                <button type="button" class="how-step__expand" aria-label="Expand video preview">
+                                    <svg
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                                    </svg>
                                 </button>
                                 <span class="how-step__index">03</span>
                             </div>
@@ -2033,6 +2066,17 @@
                 </div>
             </div>
         </template>
+
+        <!-- short video demos modal -->
+        <div id="video-modal" class="video-modal" aria-hidden="true" role="dialog">
+            <div class="video-modal__backdrop"></div>
+            <div class="video-modal__content">
+                <button type="button" class="video-modal__close" aria-label="Close video preview">&times;</button>
+                <div class="video-modal__body">
+                    <video id="video-modal-player" controls playsinline></video>
+                </div>
+            </div>
+        </div>
 
         <script
             src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"

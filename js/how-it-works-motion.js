@@ -2,35 +2,70 @@
 // each clip is paused by default, plays once on click, and resets
 // to frame 0 when it ends so a second click replays from the start.
 (() => {
-	const mediaBlocks = document.querySelectorAll(".how-step__media");
+    const mediaBlocks = document.querySelectorAll('.how-step__media');
+    const modal = document.getElementById('video-modal');
+    const modalPlayer = document.getElementById('video-modal-player');
+    const closeBtn = modal?.querySelector('.video-modal__close');
+    const backdrop = modal?.querySelector('.video-modal__backdrop');
 
-	mediaBlocks.forEach((media) => {
-		const video = media.querySelector(".how-step__video");
-		const playButton = media.querySelector(".how-step__play");
+    // Card Inline Controls
+    mediaBlocks.forEach((media) => {
+        const video = media.querySelector('.how-step__video');
+        const playButton = media.querySelector('.how-step__play');
+        const expandBtn = media.querySelector('.how-step__expand');
 
-		if (!video || !playButton) return;
+        if (!video) return;
 
-		playButton.addEventListener("click", () => {
-			video.currentTime = 0; // ensures replay starts from the beginning, not mid/end frame
-			video.play().catch(() => {
-				/* Playback can be rejected (e.g. media not ready yet); safe to ignore. */
-			});
-		});
+        if (playButton) {
+            playButton.addEventListener('click', () => {
+                video.currentTime = 0;
+                video.play().catch(() => {});
+            });
+        }
 
-		video.addEventListener("play", () => {
-			media.classList.add("is-playing");
-		});
+        if (expandBtn) {
+            expandBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                video.pause(); // Pause inline playback
 
-		video.addEventListener("ended", () => {
-			media.classList.remove("is-playing");
-			video.currentTime = 0; // rewinds so the poster/first frame shows again while idle
-		});
+                const source = video.querySelector('source')?.src;
+                if (source && modalPlayer) {
+                    modalPlayer.src = source;
+                    openModal();
+                }
+            });
+        }
 
-		// Also handle a native pause (e.g. user right-clicks and pauses via
-		// browser context menu) so the button reliably comes back.
-		video.addEventListener("pause", () => {
-			if (video.ended) return; // 'ended' handler already covers this case
-			media.classList.remove("is-playing");
-		});
-	});
+        video.addEventListener('play', () => media.classList.add('is-playing'));
+        video.addEventListener('ended', () => {
+            media.classList.remove('is-playing');
+            video.currentTime = 0;
+        });
+        video.addEventListener('pause', () => {
+            if (!video.ended) media.classList.remove('is-playing');
+        });
+    });
+
+    // Modal Mechanics
+    function openModal() {
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        modalPlayer.play().catch(() => {});
+    }
+
+    function closeModal() {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+        modalPlayer.pause();
+        modalPlayer.src = '';
+    }
+
+    closeBtn?.addEventListener('click', closeModal);
+    backdrop?.addEventListener('click', closeModal);
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal?.classList.contains('is-open')) {
+            closeModal();
+        }
+    });
 })();
