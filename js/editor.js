@@ -146,23 +146,48 @@ const ResumeEditor = (function () {
         return window.matchMedia('(min-width: 992px)').matches;
     }
 
+    const SECTION_DESCRIPTIONS = {
+        summary: 'Brief professional overview & value statement',
+        experience: 'Work history, key roles, and achievements',
+        projects: 'Highlighted personal or professional projects',
+        education: 'Degrees, academic accomplishments, and study',
+        skills: 'Core technical tools and key competencies',
+        certificates: 'Industry licenses, certifications, and courses',
+    };
+
     function sectionOrderRowHtml(item, index, total) {
         const label = SECTION_LABELS[item.id] || item.id;
-        const hiddenClass = item.visible ? '' : ' section-order-row--hidden';
+        const desc = SECTION_DESCRIPTIONS[item.id] || 'Customize section details';
+        const isVisible = item.visible;
+        const hiddenClass = isVisible ? '' : ' section-order-row--inactive';
         const draggableAttr = isDragCapableViewport() ? ' draggable="true"' : '';
+
         return `
-      <div class="section-order-row${hiddenClass}"${draggableAttr} data-section-id="${item.id}">
-        <span class="section-order-row__handle" aria-hidden="true">&#8942;&#8942;</span>
-        <span class="section-order-row__label">${label}</span>
-        <div class="section-order-row__actions">
-          <button type="button" class="section-order-row__arrow" data-direction="up" aria-label="Move ${label} up"${index === 0 ? ' disabled' : ''}>&uarr;</button>
-          <button type="button" class="section-order-row__arrow" data-direction="down" aria-label="Move ${label} down"${index === total - 1 ? ' disabled' : ''}>&darr;</button>
-          <label class="toggle-switch">
-            <input type="checkbox" ${item.visible ? 'checked' : ''} aria-label="Show ${label} section">
-            <span class="toggle-switch__track" aria-hidden="true"></span>
-          </label>
-        </div>
-      </div>`;
+        <div class="section-order-row${hiddenClass}"${draggableAttr} data-section-id="${item.id}">
+            <span class="section-order-row__handle" aria-hidden="true" title="Drag to reorder">&#8942;&#8942;</span>
+
+            <div class="section-order-row__info">
+            <span class="section-order-row__label">${label}</span>
+            <p class="section-order-row__desc">${desc}</p>
+            </div>
+
+            <div class="section-order-row__actions">
+            <div class="section-order-row__arrow-group">
+                <button type="button" class="section-order-row__arrow" data-direction="up" aria-label="Move ${label} up"${index === 0 ? ' disabled' : ''}>&uarr;</button>
+                <button type="button" class="section-order-row__arrow" data-direction="down" aria-label="Move ${label} down"${index === total - 1 ? ' disabled' : ''}>&darr;</button>
+            </div>
+
+            <!-- Toggle switch with inner ON/OFF text -->
+            <label class="toggle-switch">
+                <input type="checkbox" ${isVisible ? 'checked' : ''} aria-label="Show ${label} section">
+                <span class="toggle-switch__track" aria-hidden="true">
+                <span class="toggle-switch__label toggle-switch__label--on">ON</span>
+                <span class="toggle-switch__label toggle-switch__label--off">OFF</span>
+                <span class="toggle-switch__handle"></span>
+                </span>
+            </label>
+            </div>
+        </div>`;
     }
 
     function renderSectionList() {

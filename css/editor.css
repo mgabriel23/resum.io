@@ -379,106 +379,158 @@ body.editor-open {
 
 /* ==========================================================================
    Section visibility + order
-   Drag-and-drop reorders on desktop (mouse); the up/down arrows are the
-   keyboard-accessible path everywhere and the only path on touch screens,
-   where the drag handle is hidden since native HTML5 drag doesn't work there.
    ========================================================================== */
+
 .section-order {
     border: 1px solid var(--line);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     margin-bottom: 1.25rem;
+    background: var(--bg);
     overflow: hidden;
+    box-shadow: var(--shadow-card);
+    font-family: var(--font-sans);
 }
 
+/* Header */
 .section-order__header {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
-    gap: 0.5rem;
+    gap: 0.75rem;
     width: 100%;
-    padding: 0.7rem 1rem;
-    background: var(--bg);
+    padding: 0.9rem 1.15rem;
+    background: var(--surface);
+    border: none;
     border-bottom: 1px solid var(--line);
-    border-left: none;
-    border-right: none;
-    border-top: none;
-    font-family: inherit;
     text-align: left;
     cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
 .section-order__header:hover {
-    background: #eef1f6;
+    background: var(--bg);
+}
+
+.section-order__header-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
 }
 
 .section-order__title {
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    color: var(--ink);
 }
 
 .section-order__hint {
-    flex: 1 1 auto;
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     color: var(--muted);
+    line-height: 1.35;
 }
 
 .section-order__chevron {
     flex-shrink: 0;
-    align-self: center;
     color: var(--muted);
-    transition: transform 0.2s ease;
+    transition: transform 0.25s ease;
 }
 
 .section-order__header.collapsed .section-order__chevron {
     transform: rotate(-90deg);
 }
 
+/* List & Cards */
+.section-order__list {
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
 .section-order-row {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    padding: 0.55rem 0.75rem;
-    background: #fff;
-    border-bottom: 1px solid var(--line);
+    gap: 0.75rem;
+    padding: 0.75rem 0.9rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
-.section-order-row:last-child {
-    border-bottom: none;
+.section-order-row:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 2px 4px rgba(15, 23, 42, 0.05);
 }
 
-.section-order-row.is-dragging {
-    opacity: 0.4;
-}
-
-.section-order-row.is-drop-target {
-    background: #eef2ff;
-}
-
+/* Drag Handle */
 .section-order-row__handle {
     flex-shrink: 0;
     cursor: grab;
     color: var(--muted);
-    font-size: 1rem;
+    font-size: 0.95rem;
     line-height: 1;
     touch-action: none;
+    padding: 0.2rem;
+    border-radius: 4px;
+    user-select: none;
+    transition:
+        color 0.15s ease,
+        background 0.15s ease;
+}
+
+.section-order-row__handle:hover {
+    color: var(--ink-soft);
+    background: var(--bg);
+}
+
+/* Info Section & Text Inactive State */
+.section-order-row__info {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+    transition: opacity 0.2s ease;
 }
 
 .section-order-row__label {
-    flex: 1 1 auto;
     font-size: 0.88rem;
     font-weight: 600;
+    color: var(--ink);
+    transition: color 0.2s ease;
 }
 
-.section-order-row--hidden .section-order-row__label {
+.section-order-row__desc {
+    font-size: 0.75rem;
     color: var(--muted);
-    font-weight: 500;
+    margin: 0;
+    line-height: 1.3;
+    transition: color 0.2s ease;
 }
 
+/* When OFF: Only dim the title and description (text info block) */
+.section-order-row--inactive .section-order-row__info {
+    opacity: 0.55;
+}
+
+.section-order-row--inactive .section-order-row__label {
+    color: var(--muted);
+}
+
+/* Row Actions */
 .section-order-row__actions {
     display: flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0.75rem;
     flex-shrink: 0;
+}
+
+.section-order-row__arrow-group {
+    display: flex;
+    gap: 0.25rem;
 }
 
 .section-order-row__arrow {
@@ -488,83 +540,121 @@ body.editor-open {
     align-items: center;
     justify-content: center;
     border: 1px solid var(--line);
-    background: #fff;
+    background: var(--surface);
     border-radius: 6px;
     color: var(--ink-soft);
     cursor: pointer;
     font-size: 0.85rem;
     line-height: 1;
+    transition: all 0.15s ease;
 }
 
 .section-order-row__arrow:hover:not(:disabled) {
     background: var(--bg);
+    color: var(--ink);
+    border-color: #cbd5e1;
 }
 
 .section-order-row__arrow:disabled {
-    opacity: 0.35;
+    opacity: 0.3;
     cursor: not-allowed;
+    background: var(--bg);
 }
 
-/* Shared hidden-checkbox toggle switch — used by section-order rows and
-   the profile photo's "show on resume" control. Deliberately generic (not
-   scoped to either feature's name) since both reuse it as-is. */
+/* ==========================================================================
+   Inner ON / OFF Toggle Switch Component
+   ========================================================================== */
+
 .toggle-switch {
     position: relative;
-    display: inline-flex;
-    flex-shrink: 0;
-    width: 34px;
-    height: 20px;
-    margin-left: 0.15rem;
+    display: inline-block;
+    width: 54px;
+    height: 26px;
     cursor: pointer;
+    user-select: none;
+    margin: 0;
 }
 
 .toggle-switch input {
-    position: absolute;
-    inset: 0;
     opacity: 0;
-    margin: 0;
-    cursor: pointer;
+    width: 0;
+    height: 0;
+    position: absolute;
 }
 
 .toggle-switch__track {
     position: absolute;
-    inset: 0;
-    background: #cbd5e1;
-    border-radius: 999px;
-    transition: background-color 0.15s ease;
-    pointer-events: none;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #cbd5e1;
+    border-radius: 30px;
+    transition: background-color 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6px;
+    overflow: hidden;
 }
 
-.toggle-switch__track::before {
-    content: '';
+/* ON / OFF Labels inside Track */
+.toggle-switch__label {
+    font-size: 0.62rem;
+    font-weight: 800;
+    font-family: var(--font-sans);
+    letter-spacing: 0.02em;
+    line-height: 1;
+    z-index: 1;
+    transition: opacity 0.2s ease;
+}
+
+.toggle-switch__label--on {
+    color: #ffffff;
+    opacity: 0;
+}
+
+.toggle-switch__label--off {
+    color: var(--muted);
+    opacity: 1;
+    margin-left: auto;
+}
+
+/* White Circle Knob */
+.toggle-switch__handle {
     position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 16px;
-    height: 16px;
-    background: #fff;
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: #ffffff;
     border-radius: 50%;
-    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.25);
-    transition: transform 0.15s ease;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.2);
+    z-index: 2;
 }
 
+/* Checked State (ON) */
 .toggle-switch input:checked + .toggle-switch__track {
-    background: var(--indigo);
+    background-color: var(--indigo);
 }
 
-.toggle-switch input:checked + .toggle-switch__track::before {
-    transform: translateX(14px);
+.toggle-switch input:checked + .toggle-switch__track .toggle-switch__handle {
+    transform: translateX(28px);
 }
 
+.toggle-switch input:checked + .toggle-switch__track .toggle-switch__label--on {
+    opacity: 1;
+}
+
+.toggle-switch input:checked + .toggle-switch__track .toggle-switch__label--off {
+    opacity: 0;
+}
+
+/* Focus outline for accessibility */
 .toggle-switch input:focus-visible + .toggle-switch__track {
     outline: 2px solid var(--indigo);
     outline-offset: 2px;
-}
-
-@media (max-width: 991.98px) {
-    .section-order-row__handle {
-        display: none;
-    }
 }
 
 /* ==========================================================================
