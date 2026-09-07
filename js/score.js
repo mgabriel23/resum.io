@@ -156,7 +156,7 @@ const ResumeScore = (function () {
         $('#saveIndicator').after(
             '<button type="button" id="scoreBadge" class="score-badge" aria-expanded="false" aria-haspopup="true">' +
                 '<span class="score-dot score-dot--warning" aria-hidden="true"></span>' +
-                '<span class="score-label">Resume Score</span>' +
+                '<span class="score-label">Score</span>' +
                 '<strong id="scoreBadgeValue">0%</strong>' +
                 '</button>'
         );
@@ -166,9 +166,9 @@ const ResumeScore = (function () {
 
         if (!$('#scorePanel').length) {
             $panel = $(
-                '<div id="scorePanel" class="score-panel" role="dialog" aria-label="Resume score breakdown" tabindex="0">' +
+                '<div id="scorePanel" class="score-panel" role="dialog" aria-label="Score breakdown" tabindex="0">' +
                     '<div class="score-panel__header">' +
-                    '<span>Resume Score</span>' +
+                    '<span>Score</span>' +
                     '<span id="scorePanelValue" class="score-panel__value">0%</span>' +
                     '</div>' +
                     '<ul class="score-panel__list" id="scorePanelList"></ul>' +

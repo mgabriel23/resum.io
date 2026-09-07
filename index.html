@@ -947,13 +947,17 @@
             aria-modal="true"
             aria-label="Resume editor">
             <div class="editor-topbar">
-                <!-- Left Section: Navigation & Branding -->
+                <!-- Left Section: Navigation & Guided Tour -->
                 <div class="editor-topbar__left">
-                    <button type="button" id="editorBackBtn" class="btn-icon" aria-label="Back to home">
+                    <button
+                        type="button"
+                        id="editorBackBtn"
+                        class="btn-topbar-secondary"
+                        aria-label="Exit editor and go back">
                         <svg
                             aria-hidden="true"
-                            width="18"
-                            height="18"
+                            width="16"
+                            height="16"
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
@@ -963,13 +967,14 @@
                             <line x1="19" y1="12" x2="5" y2="12"></line>
                             <polyline points="12 19 5 12 12 5"></polyline>
                         </svg>
+                        <span class="btn-text">Exit</span>
                     </button>
 
-                    <button type="button" id="tourHelpBtn" class="btn-icon" aria-label="Show guided tour">
+                    <button type="button" id="tourHelpBtn" class="btn-topbar-secondary" aria-label="Show guided tour">
                         <svg
                             aria-hidden="true"
-                            width="18"
-                            height="18"
+                            width="16"
+                            height="16"
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
@@ -980,20 +985,14 @@
                             <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 2-3 4"></path>
                             <line x1="12" y1="17" x2="12.01" y2="17"></line>
                         </svg>
+                        <span class="btn-text">Tour</span>
                     </button>
-
-                    <div class="editor-topbar__brand">
-                        <img src="assets/icon-128x128.png" alt="resum.io" width="28" height="28" class="brand-logo" />
-                        <span class="brand-text">
-                            resum
-                            <span class="brand__accent">.io</span>
-                        </span>
-                    </div>
                 </div>
 
-                <!-- Right Section: Template Switcher, Indicators & Export -->
+                <!-- Right Section: Status, Template, Score & Primary CTA -->
                 <div class="editor-topbar__right">
-                    <label class="editor-template-switcher">
+                    <!-- Template Switcher -->
+                    <label class="editor-template-switcher" title="Change template style">
                         <span class="visually-hidden">Template</span>
                         <select id="templateSwitcher" aria-label="Choose template">
                             <option value="default">Default</option>
@@ -1002,14 +1001,14 @@
                         </select>
                     </label>
 
-                    <!-- Local Save Status -->
-                    <span id="saveIndicator" class="save-indicator" aria-live="polite">
+                    <!-- Save Status Indicator -->
+                    <span id="saveIndicator" class="save-indicator" aria-live="polite" title="Saved locally">
                         <span class="save-dot"></span>
                         <span class="save-text">Saved locally</span>
                     </span>
 
-                    <!-- Export PDF Button -->
-                    <button type="button" id="exportPdfBtn" class="btn btn-primary editor-export-btn">
+                    <!-- Export PDF (Primary Action) -->
+                    <button type="button" id="exportPdfBtn" class="editor-export-btn">
                         <svg
                             aria-hidden="true"
                             width="16"
