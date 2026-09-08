@@ -415,6 +415,7 @@ body.editor-open {
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
+    min-width: 0;
 }
 
 .section-order__title {
@@ -449,8 +450,9 @@ body.editor-open {
 
 .section-order-row {
     display: flex;
-    align-items: center;
-    gap: 0.75rem;
+    align-items: flex-start; /* Changed from center to prevent vertical clipping */
+    flex-wrap: wrap; /* Allows actions to wrap smoothly on very narrow screens */
+    gap: 0.65rem 0.75rem;
     padding: 0.75rem 0.9rem;
     background: var(--surface);
     border: 1px solid var(--line);
@@ -470,10 +472,11 @@ body.editor-open {
     flex-shrink: 0;
     cursor: grab;
     color: var(--muted);
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     line-height: 1;
     touch-action: none;
-    padding: 0.2rem;
+    padding: 0.2rem 0.1rem;
+    margin-top: 0.1rem;
     border-radius: 4px;
     user-select: none;
     transition:
@@ -488,11 +491,13 @@ body.editor-open {
 
 /* Info Section & Text Inactive State */
 .section-order-row__info {
-    flex: 1 1 auto;
+    flex: 1 1 150px; /* Forces wrap on very narrow containers */
     display: flex;
     flex-direction: column;
-    gap: 0.15rem;
+    gap: 0.2rem;
     min-width: 0;
+    word-break: break-word;
+    overflow-wrap: anywhere;
     transition: opacity 0.2s ease;
 }
 
@@ -500,6 +505,7 @@ body.editor-open {
     font-size: 0.88rem;
     font-weight: 600;
     color: var(--ink);
+    line-height: 1.25;
     transition: color 0.2s ease;
 }
 
@@ -507,11 +513,10 @@ body.editor-open {
     font-size: 0.75rem;
     color: var(--muted);
     margin: 0;
-    line-height: 1.3;
+    line-height: 1.35;
     transition: color 0.2s ease;
 }
 
-/* When OFF: Only dim the title and description (text info block) */
 .section-order-row--inactive .section-order-row__info {
     opacity: 0.55;
 }
@@ -524,8 +529,10 @@ body.editor-open {
 .section-order-row__actions {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    justify-content: flex-end;
+    gap: 0.65rem;
     flex-shrink: 0;
+    margin-left: auto;
 }
 
 .section-order-row__arrow-group {
@@ -559,6 +566,105 @@ body.editor-open {
     opacity: 0.3;
     cursor: not-allowed;
     background: var(--bg);
+}
+
+/* ==========================================================================
+   Custom Toggle Switch with Inner ON/OFF Text
+   ========================================================================== */
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 54px;
+    height: 28px;
+    flex-shrink: 0;
+    cursor: pointer;
+    user-select: none;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.toggle-switch__track {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #94a3b8;
+    border-radius: 999px;
+    transition: background-color 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 7px;
+    box-sizing: border-box;
+}
+
+.toggle-switch input:checked + .toggle-switch__track {
+    background-color: #4f46e5; /* Primary indigo active state */
+}
+
+.toggle-switch input:focus-visible + .toggle-switch__track {
+    outline: 2px solid #4f46e5;
+    outline-offset: 2px;
+}
+
+.toggle-switch__label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1;
+    text-transform: uppercase;
+    transition: opacity 0.2s ease;
+    z-index: 1;
+}
+
+.toggle-switch__label--on {
+    opacity: 0;
+}
+
+.toggle-switch__label--off {
+    opacity: 1;
+}
+
+.toggle-switch input:checked + .toggle-switch__track .toggle-switch__label--on {
+    opacity: 1;
+}
+
+.toggle-switch input:checked + .toggle-switch__track .toggle-switch__label--off {
+    opacity: 0;
+}
+
+.toggle-switch__handle {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+}
+
+.toggle-switch input:checked + .toggle-switch__track .toggle-switch__handle {
+    transform: translateX(26px);
+}
+
+/* Micro-screen optimization (< 360px) */
+@media (max-width: 360px) {
+    .section-order-row__actions {
+        width: 100%;
+        justify-content: space-between;
+        padding-top: 0.35rem;
+        border-top: 1px dashed var(--line);
+    }
 }
 
 /* ==========================================================================
