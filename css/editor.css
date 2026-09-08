@@ -1904,83 +1904,142 @@ body.editor-open {
 }
 
 /* ==========================================================================
-   Toast notice (in-app replacement for the browser's native alert())
+   Toast notice (In-App Notification)
+   Matches the core app aesthetic with understated status accents
    ========================================================================== */
+
 .toast-notice {
     position: fixed;
-    top: 1rem;
+    top: 1.25rem;
     left: 50%;
     z-index: 2200;
     display: flex;
-    align-items: flex-start;
-    gap: 0.6rem;
+    align-items: center;
+    gap: 0.75rem;
     width: min(420px, calc(100vw - 2rem));
-    background: var(--surface);
-    border-radius: var(--radius-md);
-    border-left: 4px solid var(--line);
-    box-shadow: var(--shadow-card);
+
+    /* 100% Solid White Background Layer */
+    background-color: #ffffff;
+    background-image: none; /* Prevents any inherited transparent gradients */
+
+    border: 1px solid var(--line, #e2e8f0);
+    border-left: 4px solid var(--muted, #94a3b8);
+    border-radius: var(--radius-md, 8px);
+    box-shadow:
+        0 10px 25px -5px rgba(15, 23, 42, 0.15),
+        0 4px 6px -2px rgba(15, 23, 42, 0.08);
     padding: 0.85rem 1rem;
     opacity: 0;
     pointer-events: none;
-    transform: translate(-50%, -12px);
+    transform: translate(-50%, -16px) scale(0.97);
     transition:
-        opacity 0.2s ease,
-        transform 0.2s ease;
+        opacity 0.25s ease,
+        transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 0.2s ease;
 }
 
+/* Slide & Fade-in state */
 .toast-notice.is-open {
     opacity: 1;
     pointer-events: auto;
-    transform: translate(-50%, 0);
+    transform: translate(-50%, 0) scale(1);
 }
 
+/* Variant Accents — Controlled & Non-Intrusive Colors */
+/* Status variants with solid white bases */
 .toast-notice.is-success {
-    border-left-color: #16a34a;
+    border-left-color: #10b981;
+    background-color: #ffffff;
+    background-image: linear-gradient(90deg, rgba(16, 185, 129, 0.06) 0%, #ffffff 25%);
 }
+
 .toast-notice.is-warning {
     border-left-color: #f59e0b;
-}
-.toast-notice.is-error {
-    border-left-color: #dc2626;
+    background-color: #ffffff;
+    background-image: linear-gradient(90deg, rgba(245, 158, 11, 0.06) 0%, #ffffff 25%);
 }
 
+.toast-notice.is-error {
+    border-left-color: #ef4444;
+    background-color: #ffffff;
+    background-image: linear-gradient(90deg, rgba(239, 68, 68, 0.06) 0%, #ffffff 25%);
+}
+
+/* Icon Container & Dynamic Mask SVG Icons */
 .toast-notice__icon {
     flex-shrink: 0;
-    display: inline-flex;
-    margin-top: 0.1rem;
+    width: 20px;
+    height: 20px;
+    background-color: var(--muted, #94a3b8);
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+    transition: background-color 0.2s ease;
 }
 
+/* SVG Icon Shapes for Status Variants */
 .toast-notice.is-success .toast-notice__icon {
-    color: #16a34a;
-}
-.toast-notice.is-warning .toast-notice__icon {
-    color: #f59e0b;
-}
-.toast-notice.is-error .toast-notice__icon {
-    color: #dc2626;
+    background-color: #10b981;
+    /* Check Circle Icon */
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 11.08V12a10 10 0 1 1-5.93-9.14'%3E%3C/path%3E%3Cpolyline points='22 4 12 14.01 9 11.01'%3E%3C/polyline%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 11.08V12a10 10 0 1 1-5.93-9.14'%3E%3C/path%3E%3Cpolyline points='22 4 12 14.01 9 11.01'%3E%3C/polyline%3E%3C/svg%3E");
 }
 
+.toast-notice.is-warning .toast-notice__icon {
+    background-color: #d97706;
+    /* Alert Triangle Icon */
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'%3E%3C/path%3E%3Cline x1='12' y1='9' x2='12' y2='13'%3E%3C/line%3E%3Cline x1='12' y1='17' x2='12.01' y2='17'%3E%3C/line%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'%3E%3C/path%3E%3Cline x1='12' y1='9' x2='12' y2='13'%3E%3C/line%3E%3Cline x1='12' y1='17' x2='12.01' y2='17'%3E%3C/line%3E%3C/svg%3E");
+}
+
+.toast-notice.is-error .toast-notice__icon {
+    background-color: #ef4444;
+    /* Alert Octagon/Circle Icon */
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cline x1='15' y1='9' x2='9' y2='15'%3E%3C/line%3E%3Cline x1='9' y1='9' x2='15' y2='15'%3E%3C/line%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cline x1='15' y1='9' x2='9' y2='15'%3E%3C/line%3E%3Cline x1='9' y1='9' x2='15' y2='15'%3E%3C/line%3E%3C/svg%3E");
+}
+
+/* Typography */
 .toast-notice__message {
     flex: 1 1 auto;
-    font-size: 0.88rem;
-    color: var(--ink);
-    line-height: 1.45;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--ink, #0f172a);
+    line-height: 1.4;
+    word-break: break-word;
 }
 
+/* Close Button */
 .toast-notice__close {
     flex-shrink: 0;
-    margin-top: -0.1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
     border: none;
+    border-radius: var(--radius-sm, 4px);
     background: transparent;
-    color: var(--muted);
-    font-size: 1.2rem;
+    color: var(--muted, #94a3b8);
+    font-size: 1.25rem;
     line-height: 1;
     cursor: pointer;
-    padding: 0;
+    transition:
+        color 0.15s ease,
+        background-color 0.15s ease;
 }
 
 .toast-notice__close:hover {
-    color: var(--ink-soft);
+    color: var(--ink, #0f172a);
+    background-color: var(--bg, #f8fafc);
+}
+
+.toast-notice__close:focus-visible {
+    outline: 2px solid var(--accent, #4f46e5);
+    outline-offset: 1px;
 }
 
 /* ==========================================================================

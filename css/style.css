@@ -1346,7 +1346,7 @@ select:focus-visible {
     font-size: 0.7rem;
     color: var(--muted);
     /* line-height: 1.5; */
-    margin-left: 4px;
+    /* margin-left: 4px; */
 }
 
 /* Privacy Column & Badges */
