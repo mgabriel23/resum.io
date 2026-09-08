@@ -9,8 +9,11 @@ const ResumeChangelog = (function () {
             version: 'v1.0.5',
             current: true,
             highlights: [
+                'Redesigned resume templates with a premium aesthetic and elevated typography hierarchy.',
                 'Redesigned landing page sections with an upgraded modern visual theme.',
                 'Added Hero final output preview to showcase expected resume results instantly.',
+                'Improved navigation on smaller screens with a responsive navbar and mobile hamburger menu.',
+                'Upgraded resume scoring algorithm for more precise feedback and actionable suggestions.',
                 'Added short video demos for quick visual guidance on key features.',
                 'Added user testimonials to build trust and highlight real success stories.',
                 'Integrated official Facebook page link for real-time updates and announcements.',
