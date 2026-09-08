@@ -1306,6 +1306,12 @@ body.editor-open {
     box-shadow: 0 10px 24px -8px rgba(15, 23, 42, 0.45);
 }
 
+@media (max-width: 768px) {
+    .editor-form-panel {
+        padding: 1.5rem 0.75rem 4rem;
+    }
+}
+
 @media (max-width: 991.98px) {
     .editor-body {
         flex-direction: column;

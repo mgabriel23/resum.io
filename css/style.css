@@ -1756,3 +1756,9 @@ select:focus-visible {
     margin: 0.35rem 0 0 0;
     line-height: 1.4;
 }
+
+@media (max-width: 768px) {
+    .accordion-body {
+        padding: 1rem 0.75rem !important;
+    }
+}
