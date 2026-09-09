@@ -881,7 +881,8 @@ body.editor-open {
 }
 
 .resume-doc {
-    padding: clamp(20px, 4vw, 18mm) clamp(18px, 3.5vw, 16mm);
+    padding: var(--page-margin);
+    /* padding: clamp(20px, 4vw, 18mm) clamp(18px, 3.5vw, 16mm); */
 }
 
 /* Approximate marker for where content crosses into another A4 page —
